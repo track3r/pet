@@ -1,0 +1,51 @@
+﻿Build started 2/8/2015 1:20:11 AM.
+     1>Project "F:\myprojects\game\cave\cave.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         F:\vs2013express\VC\bin\CL.exe /c /I..\libs\glm /I..\libs\glew /I..\libs\sdl /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+       Link:
+         F:\vs2013express\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\myprojects\game\cave\Debug\cave.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\myprojects\game\cave\Debug\cave.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\myprojects\game\cave\Debug\cave.lib" /MACHINE:X86 Debug\main.obj
+     1>main.obj : error LNK2019: unresolved external symbol __imp__glClear@4 referenced in function "void __cdecl Display(void)" (?Display@@YAXXZ)
+     1>main.obj : error LNK2019: unresolved external symbol __imp__glClearColor@16 referenced in function "void __cdecl Initialize(void)" (?Initialize@@YAXXZ)
+     1>main.obj : error LNK2019: unresolved external symbol __imp__glDisable@4 referenced in function "void __cdecl Display(void)" (?Display@@YAXXZ)
+     1>main.obj : error LNK2019: unresolved external symbol __imp__glDrawArrays@12 referenced in function "void __cdecl Display(void)" (?Display@@YAXXZ)
+     1>main.obj : error LNK2019: unresolved external symbol __imp__glDrawElements@16 referenced in function "void __cdecl Display(void)" (?Display@@YAXXZ)
+     1>main.obj : error LNK2019: unresolved external symbol __imp__glEnable@4 referenced in function "void __cdecl Display(void)" (?Display@@YAXXZ)
+     1>main.obj : error LNK2019: unresolved external symbol __imp__glViewport@16 referenced in function "void __cdecl Reshape(int,int)" (?Reshape@@YAXHH@Z)
+     1>main.obj : error LNK2019: unresolved external symbol __imp__glewInit@0 referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol __imp__glewGetErrorString@4 referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_GetError referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_CreateWindow referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_DestroyWindow referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_GL_SetAttribute referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_GL_CreateContext referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_GL_SetSwapInterval referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_GL_SwapWindow referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_GL_DeleteContext referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_PollEvent referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_Init referenced in function _SDL_main
+     1>main.obj : error LNK2019: unresolved external symbol _SDL_Quit referenced in function _SDL_main
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewBindBuffer
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewBufferData
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewBufferSubData
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewDeleteBuffers
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewGenBuffers
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewDeleteProgram
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewEnableVertexAttribArray
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewGetUniformLocation
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewUniformMatrix4fv
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewUseProgram
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewVertexAttribPointer
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewDrawArraysInstanced
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewDrawElementsBaseVertex
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewBindVertexArray
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewDeleteVertexArrays
+     1>main.obj : error LNK2001: unresolved external symbol __imp____glewGenVertexArrays
+     1>main.obj : error LNK2001: unresolved external symbol __imp__glewExperimental
+     1>MSVCRTD.lib(crtexew.obj) : error LNK2019: unresolved external symbol _WinMain@16 referenced in function ___tmainCRTStartup
+     1>F:\myprojects\game\cave\Debug\cave.exe : fatal error LNK1120: 38 unresolved externals
+     1>Done Building Project "F:\myprojects\game\cave\cave.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.95
