@@ -25,6 +25,8 @@ RenderElement::RenderElement(GLenum primitive)
 	:m_mode(primitive)
 {
 	glGenBuffers(2, m_objects);
+	textures[0] = nullptr;
+	textures[1] = nullptr;
 }
 
 RenderElement::~RenderElement()
@@ -70,6 +72,19 @@ void RenderElement::render(int offset, int count) const
 	
 	if (count == -1)
 		count = (int)m_indices->elements();
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (textures[i] == nullptr)
+		{
+			continue;
+		}
+
+		glActiveTexture(GL_TEXTURE0 + 1);
+		CheckGlError();
+		glBindTexture(GL_TEXTURE_2D, textures[0]->getTexture());
+		CheckGlError();
+	}
 
 	glDrawElements(m_mode, count, m_indices->type(), NULL);
 	//glDrawArrays(m_mode, 0, count);

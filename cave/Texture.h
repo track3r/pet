@@ -6,43 +6,17 @@
 class Texture
 {
 public:
-	Texture()
-		:m_texture(0)
-		, m_size(0, 0)
-	{
+	Texture(const char* filename);
 
-	}
+	~Texture();
 
-	~Texture()
-	{
+	Texture& operator=(Texture&& other);
 
-	}
+	Texture(Texture&& other);
 
-	Texture& operator=(Texture&& other)
-	{
-		m_size = other.m_size;
-		m_texture = other.m_texture;
-		other.m_size = glm::ivec2();
-		other.m_texture = 0;
-	}
+	GLuint getTexture();
 
-	Texture(Texture&& other)
-	{
-		m_size = other.m_size;
-		m_texture = other.m_texture;
-		other.m_size = glm::ivec2();
-		other.m_texture = 0;
-	}
-
-	GLuint getTexture()
-	{
-		return m_texture;
-	}
-
-	const glm::vec2 size() 
-	{ 
-		return m_size; 
-	}
+	const glm::vec2 size();
 
 private:
 	Texture(const Texture& o) {}

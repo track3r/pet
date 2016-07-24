@@ -6,6 +6,8 @@
 #include "GlHeaders.h"
 #include <vector>
 
+class Texture;
+
 class Buffer
 {
 public:
@@ -84,6 +86,7 @@ public:
 
 	IndexBuffer* m_indices;
 	VertexBuffer* m_vertices;
+	Texture* textures[2];
 	
 private:
 	GLuint m_objects[2];
