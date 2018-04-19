@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <glm\glm.hpp>
 #include <SDL2\SDL.h>
 
@@ -8,7 +10,8 @@
 #include "UserInput.h"
 #include "ShaderProgram.h"
 #include "DebugDraw.h"
-#include <memory>
+#include "Ecs.h"
+
 
 const float c_speed = 3.0f;
 const float c_mouseSpeed = 0.005f;
@@ -41,5 +44,6 @@ private:
 	SDL_Window *m_win;
 	UserInput m_input;
 	DebugDraw m_debugDraw;
+    std::vector<Entity*> _entities;
 };
 

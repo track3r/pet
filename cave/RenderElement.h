@@ -1,7 +1,7 @@
 #pragma once
 
 #include "VertexFormat.h"
-
+#include "Texture.h"
 #include <glm/glm.hpp>
 #include "GlHeaders.h"
 #include <vector>

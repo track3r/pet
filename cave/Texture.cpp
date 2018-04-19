@@ -7,6 +7,8 @@
 #define STBI_ONLY_TGA
 
 #include <stb/stb_image.h>
+
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include <stb/stb_image_resize.h>
 
 static unsigned char mipBuffer2048[2048 * 2048 * 4] = { 0 };
