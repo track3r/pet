@@ -82,11 +82,14 @@ public:
 	~RenderElement();
 
 	void setupVbo() const;
-	void render(int offset = 0, int count = -1) const;
+	void render() const;
 
 	IndexBuffer* m_indices;
 	VertexBuffer* m_vertices;
 	Texture* textures[2];
+
+    int _offset = 0;
+    int _count = -1;
 	
 private:
 	GLuint m_objects[2];

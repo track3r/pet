@@ -50,7 +50,7 @@ void RenderElement::setupVbo() const
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void RenderElement::render(int offset, int count) const
+void RenderElement::render() const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_objects[0]);
 	CheckGlError();
@@ -69,9 +69,6 @@ void RenderElement::render(int offset, int count) const
 		glVertexAttribPointer((int)atr.index, atr.size, GL_FLOAT, GL_FALSE, (GLsizei)format.size(), (const void*)(size_t)format.attributeOffset(atr.index));
 		CheckGlError();
 	}
-	
-	if (count == -1)
-		count = (int)m_indices->elements();
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -86,6 +83,7 @@ void RenderElement::render(int offset, int count) const
 		CheckGlError();
 	}
 
+    const int count = _count != -1? _count: (int)m_indices->elements();
 	glDrawElements(m_mode, count, m_indices->type(), NULL);
 	//glDrawArrays(m_mode, 0, count);
 	CheckGlError();

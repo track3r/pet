@@ -7,6 +7,7 @@
 
 #include "Camera.h"
 #include "RenderElement.h"
+#include "Renderer.h"
 #include "UserInput.h"
 #include "ShaderProgram.h"
 #include "DebugDraw.h"
@@ -31,19 +32,18 @@ public:
 
 private:
 	void updateMouseView();
-	void renderElement(const ShaderProgram& program, const RenderElement& element, int offset = 0, int count = -1);
+	
 
 private:
 	float m_dt = 0;
 	glm::vec2 m_windowSize;
-	Camera m_camera;
-	RenderElement m_test;
-	std::unique_ptr<ShaderProgram> m_program;
+	
+	
 	int m_lastX = 0;
 	int m_lastY = 0;
 	SDL_Window *m_win;
 	UserInput m_input;
-	DebugDraw m_debugDraw;
-    std::vector<Entity*> _entities;
+  
+    Renderer _renderer;
 };
 
