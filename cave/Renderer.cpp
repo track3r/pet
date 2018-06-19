@@ -129,11 +129,11 @@ void Renderer::beginRender()
     //glDisable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 mat;
-    renderCube(mat);
+    //glm::mat4 mat;
+    //renderCube(mat);
 
-    mat = glm::translate(mat, glm::vec3(0, 0, 2));
-    renderCube(mat);
+    //mat = glm::translate(mat, glm::vec3(0, 0, 2));
+    //renderCube(mat);
 }
 
 void Renderer::endRender()

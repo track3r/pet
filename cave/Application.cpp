@@ -46,6 +46,11 @@ void GLAPIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint id, GL
 	}*/
 }
 
+Ecs ecs;
+RenderSystem* renderSys;
+
+Entity* root;
+Entity* child;
 
 bool Application::init(SDL_Window* window)
 {
@@ -69,20 +74,40 @@ bool Application::init(SDL_Window* window)
 	else
 		printf("glDebugMessageCallback not available\n");
 
+    
+
 #endif
 
     _renderer.init();
 
     //SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_ShowCursor(0);
+
+    root = new Entity(&ecs, nullptr);
+    child = new Entity(&ecs, root);
+    
+    child->_transform = glm::translate(root->_transform, glm::vec3(0, 0, 2));
+    child->updateTransform();
+
+    renderSys = new RenderSystem(&_renderer);
+    renderSys->init(&ecs);
+    renderSys->addComponent(root);
+    renderSys->addComponent(child);
+    
 	return true;
 }
 
 void Application::render()
 {
 	//printf("Application::render\n");
-    _renderer.beginRender();
 
+    root->_transform = glm::translate(root->_transform, glm::vec3(0, 0, -0.001));
+    root->updateTransform();
+
+    _renderer.beginRender();
+    ecs.beforeUpdate();
+    ecs.update();
+    ecs.afterUpdate();
     _renderer.endRender();
 
 	SDL_GL_SwapWindow(m_win);

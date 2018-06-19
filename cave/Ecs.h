@@ -19,7 +19,7 @@ struct Component
     {}
 
     const int _type;
-    Entity const* _entity;
+    Entity* _entity;
 };
 
 class Ecs;
@@ -27,6 +27,7 @@ class Ecs;
 struct Entity
 {
     Entity(Ecs* ecs, Entity* parent)
+        :_parent(parent)
     {
         if(parent != nullptr)
             parent->addChild(this);
@@ -43,7 +44,7 @@ struct Entity
     void addChild(Entity* entity)
     {
         _children.insert(entity);
-        entity->_parent = entity;
+        entity->_parent = this;
     }
 
     void removeChild(Entity* entity)
@@ -52,29 +53,15 @@ struct Entity
         _children.erase(entity);
     }
 
-    const glm::mat4 getGlobalTransform()
-    {
-        if (!_transformDirty)
-        {
-            return _globalTransform;
-        }
-
-        glm::mat4 parent = glm::mat4();
-
-        if (_parent != nullptr)
-        {
-            parent = _parent->getGlobalTransform();
-        }
-
-        _globalTransform = parent * _transform;
-        _transformDirty = false;
-
-        return _globalTransform;
-    }
+    const glm::mat4& getGlobalTransform();
 
     void updateTransform()
     {
         _transformDirty = true;
+        for (auto child : _children)
+        {
+            child->updateTransform();
+        }
     }
 };
 
@@ -84,9 +71,40 @@ public:
     System() {}
     virtual ~System() {}
     
-    virtual void beforeUpdate(Ecs* ecs) {}
-    virtual void update(Ecs* ecs) {}
-    virtual void afterUpdate(Ecs* ecs) {}
+    virtual void beforeUpdate() {}
+    virtual void update() {}
+    virtual void afterUpdate() {}
+
+    void init(Ecs* ecs);
+
+    int _id;
+    Ecs* _ecs;
+};
+
+struct RenderComponent : Component
+{
+    RenderComponent(int id, Entity* ent)
+        :Component(id, ent)
+    {
+
+    }
+};
+
+class Renderer;
+
+class RenderSystem : public System
+{
+public:
+    RenderSystem(Renderer* renderer)
+    {
+        _renderer = renderer;
+    }
+
+    void addComponent(Entity* ent);
+
+    virtual void afterUpdate();
+
+    Renderer* _renderer;
 };
 
 class Ecs
@@ -95,19 +113,17 @@ public:
     Ecs();
     ~Ecs();
 
-    std::vector<Component*>& getComponets(int id)
-    {
-        return _components[id];
-    }
+    std::unordered_set<Component*>& getComponets(int id);
+
+    int addSystem(System* system);
 
 public:
-private:
-    virtual void beforeUpdate(Ecs* ecs) {}
-    virtual void update(Ecs* ecs) {}
-    virtual void afterUpdate(Ecs* ecs) {}
+    void beforeUpdate();
+    void update();
+    void afterUpdate();
 
 private:
-    std::unordered_map<int, std::vector<Component*>> _components;
+    std::unordered_map<int, std::unordered_set<Component*>> _components;
     std::vector<System*> _systems;
 };
 
