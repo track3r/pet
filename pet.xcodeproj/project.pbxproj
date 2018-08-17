@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		F1011A272127695D003546DD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1011A262127695D003546DD /* OpenGL.framework */; };
 		F1011A2821276A02003546DD /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F17C0E9121275EBD00CDB801 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F1011A3521276F54003546DD /* ParentChildSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A2C21276F54003546DD /* ParentChildSystem.cpp */; };
+		F1011A3621276F54003546DD /* MeshSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A2D21276F54003546DD /* MeshSystem.cpp */; };
+		F1011A3721276F54003546DD /* RenderWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A3221276F54003546DD /* RenderWorld.cpp */; };
+		F1011A3821276F54003546DD /* EntityWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A3321276F54003546DD /* EntityWorld.cpp */; };
 		F17C0E7F21275E8B00CDB801 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E5921275E8B00CDB801 /* Utils.cpp */; };
 		F17C0E8021275E8B00CDB801 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E5C21275E8B00CDB801 /* Camera.cpp */; };
 		F17C0E8121275E8B00CDB801 /* VertexFormat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E6221275E8B00CDB801 /* VertexFormat.cpp */; };
@@ -48,6 +52,17 @@
 
 /* Begin PBXFileReference section */
 		F1011A262127695D003546DD /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		F1011A2A21276F54003546DD /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pch.h; sourceTree = "<group>"; };
+		F1011A2B21276F54003546DD /* RenderWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderWorld.h; sourceTree = "<group>"; };
+		F1011A2C21276F54003546DD /* ParentChildSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParentChildSystem.cpp; sourceTree = "<group>"; };
+		F1011A2D21276F54003546DD /* MeshSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshSystem.cpp; sourceTree = "<group>"; };
+		F1011A2E21276F54003546DD /* Ecs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ecs.h; sourceTree = "<group>"; };
+		F1011A2F21276F54003546DD /* MeshSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeshSystem.h; sourceTree = "<group>"; };
+		F1011A3021276F54003546DD /* ParentChildSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParentChildSystem.h; sourceTree = "<group>"; };
+		F1011A3121276F54003546DD /* ComponentTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComponentTypes.h; sourceTree = "<group>"; };
+		F1011A3221276F54003546DD /* RenderWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderWorld.cpp; sourceTree = "<group>"; };
+		F1011A3321276F54003546DD /* EntityWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EntityWorld.cpp; sourceTree = "<group>"; };
+		F1011A3421276F54003546DD /* EntityWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EntityWorld.h; sourceTree = "<group>"; };
 		F16A716321275D7B00E7AD3B /* pet */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = pet; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17C0E5721275E8B00CDB801 /* GeometryBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeometryBuilder.h; sourceTree = "<group>"; };
 		F17C0E5821275E8B00CDB801 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
@@ -83,7 +98,6 @@
 		F17C0E7A21275E8B00CDB801 /* DebugDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DebugDraw.cpp; sourceTree = "<group>"; };
 		F17C0E7B21275E8B00CDB801 /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Renderer.cpp; sourceTree = "<group>"; };
 		F17C0E7C21275E8B00CDB801 /* RenderElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderElement.cpp; sourceTree = "<group>"; };
-		F17C0E7E21275E8B00CDB801 /* cave.log */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cave.log; sourceTree = "<group>"; };
 		F17C0E9121275EBD00CDB801 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 		F17C0E9321275EBD00CDB801 /* SDL_test_random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_test_random.h; sourceTree = "<group>"; };
 		F17C0E9421275EBD00CDB801 /* SDL_power.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_power.h; sourceTree = "<group>"; };
@@ -457,6 +471,24 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		F1011A2921276F54003546DD /* ECS */ = {
+			isa = PBXGroup;
+			children = (
+				F1011A2A21276F54003546DD /* pch.h */,
+				F1011A2B21276F54003546DD /* RenderWorld.h */,
+				F1011A2C21276F54003546DD /* ParentChildSystem.cpp */,
+				F1011A2D21276F54003546DD /* MeshSystem.cpp */,
+				F1011A2E21276F54003546DD /* Ecs.h */,
+				F1011A2F21276F54003546DD /* MeshSystem.h */,
+				F1011A3021276F54003546DD /* ParentChildSystem.h */,
+				F1011A3121276F54003546DD /* ComponentTypes.h */,
+				F1011A3221276F54003546DD /* RenderWorld.cpp */,
+				F1011A3321276F54003546DD /* EntityWorld.cpp */,
+				F1011A3421276F54003546DD /* EntityWorld.h */,
+			);
+			path = ECS;
+			sourceTree = "<group>";
+		};
 		F16A715A21275D7B00E7AD3B = {
 			isa = PBXGroup;
 			children = (
@@ -478,6 +510,7 @@
 		F17C0E5621275E8B00CDB801 /* cave */ = {
 			isa = PBXGroup;
 			children = (
+				F1011A2921276F54003546DD /* ECS */,
 				F17C0E5721275E8B00CDB801 /* GeometryBuilder.h */,
 				F17C0E5821275E8B00CDB801 /* Utils.h */,
 				F17C0E5921275E8B00CDB801 /* Utils.cpp */,
@@ -509,7 +542,6 @@
 				F17C0E7A21275E8B00CDB801 /* DebugDraw.cpp */,
 				F17C0E7B21275E8B00CDB801 /* Renderer.cpp */,
 				F17C0E7C21275E8B00CDB801 /* RenderElement.cpp */,
-				F17C0E7D21275E8B00CDB801 /* Debug */,
 				F17C0FFC212762B800CDB801 /* GlmIncludes.h */,
 			);
 			path = cave;
@@ -532,14 +564,6 @@
 				F17C0E7621275E8B00CDB801 /* T_Brick_Cut_Stone_N.TGA */,
 			);
 			path = texture;
-			sourceTree = "<group>";
-		};
-		F17C0E7D21275E8B00CDB801 /* Debug */ = {
-			isa = PBXGroup;
-			children = (
-				F17C0E7E21275E8B00CDB801 /* cave.log */,
-			);
-			path = Debug;
 			sourceTree = "<group>";
 		};
 		F17C0E8D21275EBD00CDB801 /* libs */ = {
@@ -1052,8 +1076,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1011A3721276F54003546DD /* RenderWorld.cpp in Sources */,
 				F17C0E8021275E8B00CDB801 /* Camera.cpp in Sources */,
 				F17C0E8221275E8B00CDB801 /* Texture.cpp in Sources */,
+				F1011A3621276F54003546DD /* MeshSystem.cpp in Sources */,
+				F1011A3821276F54003546DD /* EntityWorld.cpp in Sources */,
 				F17C0E8721275E8B00CDB801 /* Application.cpp in Sources */,
 				F17C0E8A21275E8B00CDB801 /* DebugDraw.cpp in Sources */,
 				F17C0E8C21275E8B00CDB801 /* RenderElement.cpp in Sources */,
@@ -1061,6 +1088,7 @@
 				F17C0E8921275E8B00CDB801 /* main.cpp in Sources */,
 				F17C0E8B21275E8B00CDB801 /* Renderer.cpp in Sources */,
 				F17C0FFB21275EBD00CDB801 /* glm.cpp in Sources */,
+				F1011A3521276F54003546DD /* ParentChildSystem.cpp in Sources */,
 				F17C0E8521275E8B00CDB801 /* ShaderProgram.cpp in Sources */,
 				F17C0E8821275E8B00CDB801 /* GeometryBuilder.cpp in Sources */,
 				F17C0E8421275E8B00CDB801 /* Ecs.cpp in Sources */,
