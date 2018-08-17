@@ -12,7 +12,7 @@ const char c_vShaderStr[] =
 "} \n";
 
 const char c_fShaderStr[] =
-"precision mediump float; \n"
+"//precision mediump float; \n"
 "varying vec4 var_color;"
 "void main() \n"
 "{ \n"

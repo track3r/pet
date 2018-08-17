@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GlHeaders.h"
-#include <glm/glm.hpp>
+#include "GlmIncludes.h"
 
 class Texture
 {
@@ -20,7 +20,10 @@ public:
 
 private:
 	Texture(const Texture& o) {}
-	Texture& operator=(const Texture& other) {}
+	Texture& operator=(const Texture& other)
+    {
+        return *this;
+    }
 
 private:
 	GLuint m_texture;

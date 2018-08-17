@@ -5,7 +5,8 @@
 #include "Utils.h"
 #include "Room.h"
 
-void GLAPIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const  void* userParam)
+#if defined(WINDOWS)
+void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const  void* userParam)
 {
 	printf("%i - %s\n", severity, message);
 	/*std::cout << "message: " << message << " ";
@@ -45,6 +46,7 @@ void GLAPIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint id, GL
 	break;
 	}*/
 }
+#endif
 
 Ecs ecs;
 RenderSystem* renderSys;
@@ -57,7 +59,7 @@ bool Application::init(SDL_Window* window)
 	m_win = window;
 	while (glGetError() != GL_NO_ERROR);
 
-#if _DEBUG
+#if defined(_DEBUG) && defined(WINDOWS)
 	if (glDebugMessageCallback)
 	{
 		printf("Register OpenGL debug callback\n");
@@ -75,7 +77,6 @@ bool Application::init(SDL_Window* window)
 		printf("glDebugMessageCallback not available\n");
 
     
-
 #endif
 
     _renderer.init();

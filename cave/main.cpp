@@ -2,11 +2,10 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp> 
+
+#include "GlHeaders.h"
+#include "GlmIncludes.h"
+
 #include <SDL2/SDL.h>
 #include <iostream>
 
@@ -52,6 +51,7 @@ int main(int argc, char *argv[])
 
 	maincontext = SDL_GL_CreateContext(mainwindow);
 
+#if defined(WINDOWS)
 	GLenum rev;
 	glewExperimental = GL_TRUE;
 	rev = glewInit();
@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
 	{
 		std::cout << "GLEW Init: Success!" << std::endl;
 	}
+#endif
 
 	//SDL_GL_SetSwapInterval(1);
 

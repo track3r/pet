@@ -42,7 +42,7 @@ public:
 	template <class T>
 	void attribute(VertexAttributeIndex index, const T& value)
 	{
-		vertex.value<T, index>(vertexPos) = value;
+        m_vertex.value<T, index>(m_vertexPos) = value;
 	}
 
 	void index(int idx)

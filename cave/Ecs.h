@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm\glm.hpp>
+#include "GlmIncludes.h"
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>

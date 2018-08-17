@@ -24,7 +24,7 @@ void Renderer::init()
         "} \n";
 
     const char fShaderStr[] =
-        "precision mediump float; \n"
+        "//precision mediump float; \n"
         "varying vec3 pos;"
         "void main() \n"
         "{ \n"

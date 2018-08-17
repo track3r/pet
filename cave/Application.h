@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <glm\glm.hpp>
-#include <SDL2\SDL.h>
+#include "GlmIncludes.h"
+#include <SDL2/SDL.h>
 
 #include "Camera.h"
 #include "RenderElement.h"
