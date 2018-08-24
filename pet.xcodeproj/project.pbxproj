@@ -9,10 +9,11 @@
 /* Begin PBXBuildFile section */
 		F1011A272127695D003546DD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1011A262127695D003546DD /* OpenGL.framework */; };
 		F1011A2821276A02003546DD /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F17C0E9121275EBD00CDB801 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		F1011A3521276F54003546DD /* ParentChildSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A2C21276F54003546DD /* ParentChildSystem.cpp */; };
 		F1011A3621276F54003546DD /* MeshSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A2D21276F54003546DD /* MeshSystem.cpp */; };
 		F1011A3721276F54003546DD /* RenderWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A3221276F54003546DD /* RenderWorld.cpp */; };
 		F1011A3821276F54003546DD /* EntityWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A3321276F54003546DD /* EntityWorld.cpp */; };
+		F15A3FD22130A6E6001BD4C3 /* World.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F15A3FD02130A6E6001BD4C3 /* World.cpp */; };
+		F15A3FD42130C077001BD4C3 /* TransformSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F15A3FD32130C077001BD4C3 /* TransformSystem.cpp */; };
 		F17C0E7F21275E8B00CDB801 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E5921275E8B00CDB801 /* Utils.cpp */; };
 		F17C0E8021275E8B00CDB801 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E5C21275E8B00CDB801 /* Camera.cpp */; };
 		F17C0E8121275E8B00CDB801 /* VertexFormat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E6221275E8B00CDB801 /* VertexFormat.cpp */; };
@@ -54,15 +55,17 @@
 		F1011A262127695D003546DD /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		F1011A2A21276F54003546DD /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pch.h; sourceTree = "<group>"; };
 		F1011A2B21276F54003546DD /* RenderWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderWorld.h; sourceTree = "<group>"; };
-		F1011A2C21276F54003546DD /* ParentChildSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParentChildSystem.cpp; sourceTree = "<group>"; };
 		F1011A2D21276F54003546DD /* MeshSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshSystem.cpp; sourceTree = "<group>"; };
 		F1011A2E21276F54003546DD /* Ecs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ecs.h; sourceTree = "<group>"; };
 		F1011A2F21276F54003546DD /* MeshSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeshSystem.h; sourceTree = "<group>"; };
-		F1011A3021276F54003546DD /* ParentChildSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParentChildSystem.h; sourceTree = "<group>"; };
+		F1011A3021276F54003546DD /* TransformSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransformSystem.h; sourceTree = "<group>"; };
 		F1011A3121276F54003546DD /* ComponentTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComponentTypes.h; sourceTree = "<group>"; };
 		F1011A3221276F54003546DD /* RenderWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderWorld.cpp; sourceTree = "<group>"; };
 		F1011A3321276F54003546DD /* EntityWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EntityWorld.cpp; sourceTree = "<group>"; };
 		F1011A3421276F54003546DD /* EntityWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EntityWorld.h; sourceTree = "<group>"; };
+		F15A3FD02130A6E6001BD4C3 /* World.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = World.cpp; sourceTree = "<group>"; };
+		F15A3FD12130A6E6001BD4C3 /* World.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = World.h; sourceTree = "<group>"; };
+		F15A3FD32130C077001BD4C3 /* TransformSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TransformSystem.cpp; sourceTree = "<group>"; };
 		F16A716321275D7B00E7AD3B /* pet */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = pet; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17C0E5721275E8B00CDB801 /* GeometryBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeometryBuilder.h; sourceTree = "<group>"; };
 		F17C0E5821275E8B00CDB801 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
@@ -474,17 +477,19 @@
 		F1011A2921276F54003546DD /* ECS */ = {
 			isa = PBXGroup;
 			children = (
-				F1011A2A21276F54003546DD /* pch.h */,
-				F1011A2B21276F54003546DD /* RenderWorld.h */,
-				F1011A2C21276F54003546DD /* ParentChildSystem.cpp */,
-				F1011A2D21276F54003546DD /* MeshSystem.cpp */,
-				F1011A2E21276F54003546DD /* Ecs.h */,
-				F1011A2F21276F54003546DD /* MeshSystem.h */,
-				F1011A3021276F54003546DD /* ParentChildSystem.h */,
+				F15A3FD32130C077001BD4C3 /* TransformSystem.cpp */,
 				F1011A3121276F54003546DD /* ComponentTypes.h */,
-				F1011A3221276F54003546DD /* RenderWorld.cpp */,
+				F1011A2E21276F54003546DD /* Ecs.h */,
 				F1011A3321276F54003546DD /* EntityWorld.cpp */,
 				F1011A3421276F54003546DD /* EntityWorld.h */,
+				F1011A2D21276F54003546DD /* MeshSystem.cpp */,
+				F1011A2F21276F54003546DD /* MeshSystem.h */,
+				F1011A3021276F54003546DD /* TransformSystem.h */,
+				F1011A2A21276F54003546DD /* pch.h */,
+				F1011A3221276F54003546DD /* RenderWorld.cpp */,
+				F1011A2B21276F54003546DD /* RenderWorld.h */,
+				F15A3FD02130A6E6001BD4C3 /* World.cpp */,
+				F15A3FD12130A6E6001BD4C3 /* World.h */,
 			);
 			path = ECS;
 			sourceTree = "<group>";
@@ -510,39 +515,39 @@
 		F17C0E5621275E8B00CDB801 /* cave */ = {
 			isa = PBXGroup;
 			children = (
-				F1011A2921276F54003546DD /* ECS */,
-				F17C0E5721275E8B00CDB801 /* GeometryBuilder.h */,
-				F17C0E5821275E8B00CDB801 /* Utils.h */,
-				F17C0E5921275E8B00CDB801 /* Utils.cpp */,
-				F17C0E5A21275E8B00CDB801 /* Room.h */,
-				F17C0E5C21275E8B00CDB801 /* Camera.cpp */,
+				F17C0E6F21275E8B00CDB801 /* Application.cpp */,
 				F17C0E5D21275E8B00CDB801 /* Application.h */,
+				F17C0E7121275E8B00CDB801 /* assets */,
+				F17C0E5C21275E8B00CDB801 /* Camera.cpp */,
 				F17C0E5E21275E8B00CDB801 /* Camera.h */,
-				F17C0E5F21275E8B00CDB801 /* UserInput.h */,
-				F17C0E6021275E8B00CDB801 /* GlHeaders.h */,
-				F17C0E6121275E8B00CDB801 /* ShaderProgram.h */,
-				F17C0E6221275E8B00CDB801 /* VertexFormat.cpp */,
+				F17C0E7A21275E8B00CDB801 /* DebugDraw.cpp */,
 				F17C0E6321275E8B00CDB801 /* DebugDraw.h */,
-				F17C0E6421275E8B00CDB801 /* Renderer.h */,
-				F17C0E6521275E8B00CDB801 /* Texture.cpp */,
-				F17C0E6621275E8B00CDB801 /* Ecs.h */,
-				F17C0E6721275E8B00CDB801 /* primitive_restart.vs.glsl */,
-				F17C0E6821275E8B00CDB801 /* Room.cpp */,
+				F1011A2921276F54003546DD /* ECS */,
 				F17C0E6921275E8B00CDB801 /* Ecs.cpp */,
-				F17C0E6A21275E8B00CDB801 /* VertexFormat.h */,
+				F17C0E6621275E8B00CDB801 /* Ecs.h */,
+				F17C0E7821275E8B00CDB801 /* GeometryBuilder.cpp */,
+				F17C0E5721275E8B00CDB801 /* GeometryBuilder.h */,
+				F17C0E6021275E8B00CDB801 /* GlHeaders.h */,
+				F17C0FFC212762B800CDB801 /* GlmIncludes.h */,
+				F17C0E7921275E8B00CDB801 /* main.cpp */,
+				F17C0E7721275E8B00CDB801 /* primitive_restart.fs.glsl */,
+				F17C0E6721275E8B00CDB801 /* primitive_restart.vs.glsl */,
+				F17C0E7C21275E8B00CDB801 /* RenderElement.cpp */,
+				F17C0E6E21275E8B00CDB801 /* RenderElement.h */,
+				F17C0E7B21275E8B00CDB801 /* Renderer.cpp */,
+				F17C0E6421275E8B00CDB801 /* Renderer.h */,
+				F17C0E6821275E8B00CDB801 /* Room.cpp */,
+				F17C0E5A21275E8B00CDB801 /* Room.h */,
 				F17C0E6B21275E8B00CDB801 /* ShaderProgram.cpp */,
+				F17C0E6121275E8B00CDB801 /* ShaderProgram.h */,
+				F17C0E6521275E8B00CDB801 /* Texture.cpp */,
 				F17C0E6C21275E8B00CDB801 /* Texture.h */,
 				F17C0E6D21275E8B00CDB801 /* UserInput.cpp */,
-				F17C0E6E21275E8B00CDB801 /* RenderElement.h */,
-				F17C0E6F21275E8B00CDB801 /* Application.cpp */,
-				F17C0E7121275E8B00CDB801 /* assets */,
-				F17C0E7721275E8B00CDB801 /* primitive_restart.fs.glsl */,
-				F17C0E7821275E8B00CDB801 /* GeometryBuilder.cpp */,
-				F17C0E7921275E8B00CDB801 /* main.cpp */,
-				F17C0E7A21275E8B00CDB801 /* DebugDraw.cpp */,
-				F17C0E7B21275E8B00CDB801 /* Renderer.cpp */,
-				F17C0E7C21275E8B00CDB801 /* RenderElement.cpp */,
-				F17C0FFC212762B800CDB801 /* GlmIncludes.h */,
+				F17C0E5F21275E8B00CDB801 /* UserInput.h */,
+				F17C0E5921275E8B00CDB801 /* Utils.cpp */,
+				F17C0E5821275E8B00CDB801 /* Utils.h */,
+				F17C0E6221275E8B00CDB801 /* VertexFormat.cpp */,
+				F17C0E6A21275E8B00CDB801 /* VertexFormat.h */,
 			);
 			path = cave;
 			sourceTree = "<group>";
@@ -1082,19 +1087,20 @@
 				F1011A3621276F54003546DD /* MeshSystem.cpp in Sources */,
 				F1011A3821276F54003546DD /* EntityWorld.cpp in Sources */,
 				F17C0E8721275E8B00CDB801 /* Application.cpp in Sources */,
+				F15A3FD22130A6E6001BD4C3 /* World.cpp in Sources */,
 				F17C0E8A21275E8B00CDB801 /* DebugDraw.cpp in Sources */,
 				F17C0E8C21275E8B00CDB801 /* RenderElement.cpp in Sources */,
 				F17C0E8121275E8B00CDB801 /* VertexFormat.cpp in Sources */,
 				F17C0E8921275E8B00CDB801 /* main.cpp in Sources */,
 				F17C0E8B21275E8B00CDB801 /* Renderer.cpp in Sources */,
 				F17C0FFB21275EBD00CDB801 /* glm.cpp in Sources */,
-				F1011A3521276F54003546DD /* ParentChildSystem.cpp in Sources */,
 				F17C0E8521275E8B00CDB801 /* ShaderProgram.cpp in Sources */,
 				F17C0E8821275E8B00CDB801 /* GeometryBuilder.cpp in Sources */,
 				F17C0E8421275E8B00CDB801 /* Ecs.cpp in Sources */,
 				F17C0E8621275E8B00CDB801 /* UserInput.cpp in Sources */,
 				F17C0E7F21275E8B00CDB801 /* Utils.cpp in Sources */,
 				F17C0E8321275E8B00CDB801 /* Room.cpp in Sources */,
+				F15A3FD42130C077001BD4C3 /* TransformSystem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1233,6 +1239,10 @@
 					"$(PROJECT_DIR)/libs/glew",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = (
+					"-Wno-expansion-to-defined",
+					"-Wno-comma",
+				);
 			};
 			name = Debug;
 		};
@@ -1259,6 +1269,10 @@
 					"$(PROJECT_DIR)/libs/glew",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = (
+					"-Wno-expansion-to-defined",
+					"-Wno-comma",
+				);
 			};
 			name = Release;
 		};

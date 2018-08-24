@@ -328,9 +328,3 @@ public:
     virtual ComponentId createComponent() = 0;
     //virtual void debugComponent(ComponentId id, Writer* out) = 0;
 };
-
-struct Vec4
-{
-    float x,y,z;
-};
-

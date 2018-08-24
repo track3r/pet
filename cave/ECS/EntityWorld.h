@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Ecs.h"
+#include "ComponentTypes.h"
+
 struct Entity
 {
     int size = 0;
@@ -35,11 +38,13 @@ struct Entity
 
 void swap(Entity& a, Entity& b);
 
+class TransformSystem;
+
 class EntityWorld
 {
 public:
     System* _systems[MaxSystemsType];
-    ParentChildSystem _parentChildSystem;
+    TransformSystem* _parentChildSystem;
     PackedArrayIndex<EntityId> _index;
     Data<Entity> _entities;
     

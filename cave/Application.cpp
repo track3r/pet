@@ -56,8 +56,9 @@ Entity* child;
 
 bool Application::init(SDL_Window* window)
 {
+    _app = this;
 	m_win = window;
-	while (glGetError() != GL_NO_ERROR);
+    while (glGetError() != GL_NO_ERROR){}
 
 #if defined(_DEBUG) && defined(WINDOWS)
 	if (glDebugMessageCallback)
@@ -154,4 +155,16 @@ void Application::keyEvent(SDL_Keycode key, bool pressed)
 void Application::finish()
 {
 	glUseProgram(0);
+}
+
+Application* Application::_app = nullptr;
+
+Application* Application::get()
+{
+    return Application::_app;
+}
+
+Renderer* Application::getRenderer()
+{
+    return &Application::_app->_renderer;
 }

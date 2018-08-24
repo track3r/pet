@@ -11,7 +11,7 @@
 #include "Ecs.h"
 #include "ComponentTypes.h"
 
-#include "ParentChildSystem.h"
+#include "TransformSystem.h"
 #include "EntityWorld.h"
 
 
@@ -27,7 +27,8 @@ EntityWorld::EntityWorld()
 :_index(1024)
 ,_entities(1024)
 {
-    _systems[ParentChildType] = &_parentChildSystem;
+    _parentChildSystem =  new TransformSystem();
+    _systems[ParentChildType] = new TransformSystem();
 }
 
 ComponentId EntityWorld::addComponent(EntityId entityId, ComponentTypeId componentType)
@@ -54,13 +55,13 @@ void EntityWorld::setParent(EntityId child, EntityId parent)
     ComponentId childCompId = childEnt->getComponent(ParentChildType);
     if (childCompId == invalid<ComponentId>())
     {
-        childCompId = _parentChildSystem.createComponent();
+        childCompId = _systems[ParentChildType]->createComponent();
         childEnt->addComponent(childCompId, ParentChildType);
     }
     else
     {
-        const int pos = _parentChildSystem._index.lookup(childCompId);
-        const EntityId oldParentEntId = *_parentChildSystem._parents.getPointer(pos);
+        const int pos = _parentChildSystem->_index.lookup(childCompId);
+        const EntityId oldParentEntId = *_parentChildSystem->_parents.getPointer(pos);
         Entity* oldParentEnt = nullptr;
         if (oldParentEntId != invalid<EntityId>())
         {
@@ -80,7 +81,7 @@ void EntityWorld::setParent(EntityId child, EntityId parent)
         newParentCompId = parentEnt->getComponent(ParentChildType);
     }
     
-    _parentChildSystem.setParent(childCompId, child, oldParentCompId, newParentCompId, parent);
+    _parentChildSystem->setParent(childCompId, child, oldParentCompId, newParentCompId, parent);
 }
 
 EntityId EntityWorld::create()

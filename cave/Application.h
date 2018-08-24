@@ -29,6 +29,8 @@ public:
 	
 	void updateMouseView(int dx, int dy);
 	void keyEvent(SDL_Keycode key, bool pressed);
+    static Application* get();
+    static Renderer* getRenderer();
 
 private:
 	void updateMouseView();
@@ -37,7 +39,7 @@ private:
 private:
 	float m_dt = 0;
 	glm::vec2 m_windowSize;
-	
+    static Application* _app;
 	
 	int m_lastX = 0;
 	int m_lastY = 0;

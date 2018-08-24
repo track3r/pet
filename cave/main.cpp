@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 
 			if (event.type == SDL_WINDOWEVENT)
 			{
-				if (event.window.event = SDL_WINDOWEVENT_SIZE_CHANGED)
+				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 				{
 					int w, h;
 					SDL_GetWindowSize(mainwindow, &w, &h);

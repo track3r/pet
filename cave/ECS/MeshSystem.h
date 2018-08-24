@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Ecs.h"
+#include "../GlmIncludes.h"
 
 typedef ComponentId MeshId;
 
 class MeshSystem : public System
 {
 public:
-    Data<Vec4> _positions;
+    Data<glm::mat4> _positions;
     Data<uint16_t> _vbs;
     PackedArrayIndex<MeshId> _index;
     

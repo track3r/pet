@@ -9,7 +9,7 @@ RenderWorld::RenderWorld()
     
 }
 
-DataWriter<Vec4, MeshId> RenderWorld::getPositions()
+DataWriter<glm::mat4, MeshId> RenderWorld::getPositions()
 {
     return make_dataWriter(_meshSystem._positions, _meshSystem._index);
 }

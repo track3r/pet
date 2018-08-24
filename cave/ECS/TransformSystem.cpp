@@ -2,13 +2,13 @@
 #include "Ecs.h"
 
 #include "ComponentTypes.h"
-#include "ParentChildSystem.h"
+#include "TransformSystem.h"
 
 #include "EntityWorld.h"
 
 
 
-ParentChildSystem::ParentChildSystem()
+TransformSystem::TransformSystem()
 :_index(1024)
 ,_parents(1024)
 ,_heights(1024)
@@ -57,7 +57,7 @@ ParentChildSystem::ParentChildSystem()
  
  }*/
 
-void ParentChildSystem::update()
+void TransformSystem::update()
 {
     if (_dirty)
     {
@@ -65,7 +65,7 @@ void ParentChildSystem::update()
     }
 }
 
-void ParentChildSystem::removeComponent(ComponentId id)
+void TransformSystem::removeComponent(ComponentId id)
 {
     int dataId = _index.swapToEndAndRemove(id);
     _parents.remove(dataId);
@@ -75,11 +75,11 @@ void ParentChildSystem::removeComponent(ComponentId id)
     _current.remove(dataId);
 }
 
-ComponentId ParentChildSystem::createComponent()
+ComponentId TransformSystem::createComponent()
 {
     ComponentId ret = _index.create();
     
-    Vec4 zero = {0};
+    glm::mat4 zero;
     _localPos.add(zero);
     _globalPos.add(zero);
     
@@ -91,7 +91,7 @@ ComponentId ParentChildSystem::createComponent()
     return ret;
 }
 
-void ParentChildSystem::modifyHeight(EntityId parentEnt, int amount)
+void TransformSystem::modifyHeight(EntityId parentEnt, int amount)
 {
     for (int i = 0; i < _index._size; i++)
     {
@@ -112,7 +112,7 @@ void ParentChildSystem::modifyHeight(EntityId parentEnt, int amount)
     }
 }
 
-void ParentChildSystem::setParent(ComponentId childComp, EntityId childEnt, ComponentId oldParentCompId, ComponentId newParentCompId, EntityId parentEntity)
+void TransformSystem::setParent(ComponentId childComp, EntityId childEnt, ComponentId oldParentCompId, ComponentId newParentCompId, EntityId parentEntity)
 {
     const int childPos = _index.lookup(childComp);
     
@@ -144,8 +144,8 @@ void ParentChildSystem::setParent(ComponentId childComp, EntityId childEnt, Comp
             const int parentHeight = *_heights.getPointer(parentPos);
             change += parentHeight;
             
-            const Vec4 parentGlobalTransform = *_globalPos.getPointer(parentPos);
-            const Vec4 childGlobalTransform = *_globalPos.getPointer(childPos);
+            const glm::mat4 parentGlobalTransform = *_globalPos.getPointer(parentPos);
+            const glm::mat4 childGlobalTransform = *_globalPos.getPointer(childPos);
             //const Vec4 childLocalTransform = parentGlobalTransform.transpose() * childGlobalTransform
         }
         else
@@ -187,7 +187,7 @@ struct DataComp
     }
 };
 
-void ParentChildSystem::sortByParentChild()
+void TransformSystem::sortByParentChild()
 {
     short* indirection = (short*) alloca(sizeof(short) * _index._size);
     short* relocations = (short*) alloca(sizeof(short) * _index._size);
@@ -248,7 +248,7 @@ void ParentChildSystem::sortByParentChild()
     _dirty = false;
 }
 
-void ParentChildSystem::swapData(int a, int b)
+void TransformSystem::swapData(int a, int b)
 {
     if (a == b)
     {

@@ -1,6 +1,8 @@
 #pragma once
 
-class ParentChildSystem : public System
+#include "../GlmIncludes.h"
+
+class TransformSystem : public System
 {
 public:
     PackedArrayIndex<ComponentId> _index;
@@ -9,11 +11,11 @@ public:
     //Data<EntityId> _groups;
     Data<int> _heights;
     Data<int> _debugSort;
-    Data<Vec4> _localPos;
-    Data<Vec4> _globalPos;
+    Data<glm::mat4> _localPos;
+    Data<glm::mat4> _globalPos;
     bool _dirty = false;
     
-    ParentChildSystem();
+    TransformSystem();
     
     /*void debugComponent(ComponentId id, Writer* out) override
      {

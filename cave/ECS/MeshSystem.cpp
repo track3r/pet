@@ -13,7 +13,7 @@ void MeshSystem::update()
 {
     for(int i = 0; i < _index._size; i++)
     {
-        Vec4* pos = _positions.getPointer(i);
+        glm::mat4* pos = _positions.getPointer(i);
         int vb = *_vbs.getPointer(i);
         //render(pos, vb)
     }
@@ -30,7 +30,7 @@ ComponentId MeshSystem::createComponent()
 {
     MeshId ret = _index.create();
     
-    Vec4 zero = {0};
+    glm::mat4 zero;
     _positions.add(zero);
     
     _vbs.add(0);
