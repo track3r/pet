@@ -27,17 +27,35 @@ EntityWorld::EntityWorld()
 :_index(1024)
 ,_entities(1024)
 {
-    _parentChildSystem =  new TransformSystem();
-    _systems[ParentChildType] = new TransformSystem();
+    _systems[TransformType] = new TransformSystem();
 }
 
-ComponentId EntityWorld::addComponent(EntityId entityId, ComponentTypeId componentType)
+const ComponentId EntityWorld::addComponent(EntityId entityId, ComponentTypeId componentType)
 {
-    ComponentId comp = _systems[componentType]->createComponent();
+    const ComponentId comp = _systems[componentType]->createComponent(entityId);
     Entity* entity = get(entityId);
     entity->addComponent(comp, componentType);
     
     return comp;
+}
+
+void EntityWorld::addComponent(EntityId entityId, ComponentTypeId componentType, ComponentId componentId)
+{
+    Entity* entity = get(entityId);
+    entity->addComponent(componentId, componentType);
+}
+
+const ComponentId EntityWorld::getComponent(EntityId entityId, ComponentTypeId componentType)
+{
+    const Entity* entity = get(entityId);
+    
+    if (!entity->hasComponent(componentType))
+    {
+        return invalid<ComponentId>();
+    }
+    
+    const ComponentId id = entity->getComponent(componentType);
+    return id;
 }
 
 void EntityWorld::removeComponent(EntityId entityId, ComponentTypeId componentType)
@@ -52,11 +70,11 @@ void EntityWorld::setParent(EntityId child, EntityId parent)
     Entity* childEnt = get(child);
     ComponentId oldParentCompId;
     
-    ComponentId childCompId = childEnt->getComponent(ParentChildType);
+    ComponentId childCompId = childEnt->getComponent(TransformType);
     if (childCompId == invalid<ComponentId>())
     {
-        childCompId = _systems[ParentChildType]->createComponent();
-        childEnt->addComponent(childCompId, ParentChildType);
+        childCompId = _systems[TransformType]->createComponent(child);
+        childEnt->addComponent(childCompId, TransformType);
     }
     else
     {
@@ -70,7 +88,7 @@ void EntityWorld::setParent(EntityId child, EntityId parent)
         
         if (oldParentEnt != nullptr)
         {
-            oldParentCompId = oldParentEnt->getComponent(ParentChildType);
+            oldParentCompId = oldParentEnt->getComponent(TransformType);
         }
     }
     
@@ -78,10 +96,10 @@ void EntityWorld::setParent(EntityId child, EntityId parent)
     if (parent != invalid<EntityId>())
     {
         Entity* parentEnt = get(parent);
-        newParentCompId = parentEnt->getComponent(ParentChildType);
+        newParentCompId = parentEnt->getComponent(TransformType);
     }
     
-    _parentChildSystem->setParent(childCompId, child, oldParentCompId, newParentCompId, parent);
+    _parentChildSystem->setParent(childCompId, oldParentCompId, newParentCompId, parent);
 }
 
 EntityId EntityWorld::create()
@@ -113,3 +131,17 @@ void EntityWorld::remove(EntityId id)
 }
 
 void calculateGlobalPos();
+
+
+GameplaySystem::GameplaySystem(EntityWorld* world, ComponentTypeId type)
+    :_entityWorld(world)
+    ,_componentType(type)
+{
+    
+}
+
+void GameplaySystem::createAndAddComponent(EntityId entity)
+{
+    auto componentId = createComponent(entity);
+    _entityWorld->addComponent(entity, _componentType, componentId);
+}

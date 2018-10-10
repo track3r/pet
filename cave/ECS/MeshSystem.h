@@ -8,15 +8,16 @@ typedef ComponentId MeshId;
 class MeshSystem : public System
 {
 public:
+    static const int type = ComponentTypeId::MeshType;
+    
     Data<glm::mat4> _positions;
     Data<uint16_t> _vbs;
-    PackedArrayIndex<MeshId> _index;
     
     MeshSystem();
     
-    void update() override;
+    void update(float dt) override;
     void removeComponent(ComponentId id) override;
-    ComponentId createComponent() override;
+    ComponentId createComponent(EntityId entityId) override;
     
     /*void debugComponent(ComponentId id, Writer* out) override
      {

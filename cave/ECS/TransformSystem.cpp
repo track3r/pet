@@ -9,12 +9,10 @@
 
 
 TransformSystem::TransformSystem()
-:_index(1024)
-,_parents(1024)
+:_parents(1024)
 ,_heights(1024)
 ,_localPos(1024)
 ,_globalPos(1024)
-,_current(1024)
 ,_debugSort(1024)
 {
 }
@@ -57,11 +55,12 @@ TransformSystem::TransformSystem()
  
  }*/
 
-void TransformSystem::update()
+void TransformSystem::update(float dt)
 {
     if (_dirty)
     {
         sortByParentChild();
+        _dirty = false;
     }
 }
 
@@ -75,9 +74,9 @@ void TransformSystem::removeComponent(ComponentId id)
     _current.remove(dataId);
 }
 
-ComponentId TransformSystem::createComponent()
+ComponentId TransformSystem::createComponent(EntityId entityId)
 {
-    ComponentId ret = _index.create();
+    ComponentId ret = System::createComponent(entityId);
     
     glm::mat4 zero;
     _localPos.add(zero);
@@ -85,7 +84,6 @@ ComponentId TransformSystem::createComponent()
     
     _heights.add(0);
     _parents.add(EntityId(-1, -1));
-    _current.add(EntityId());
     _debugSort.add(ret.index);
     
     return ret;
@@ -112,19 +110,11 @@ void TransformSystem::modifyHeight(EntityId parentEnt, int amount)
     }
 }
 
-void TransformSystem::setParent(ComponentId childComp, EntityId childEnt, ComponentId oldParentCompId, ComponentId newParentCompId, EntityId parentEntity)
+void TransformSystem::setParent(ComponentId childComp, ComponentId oldParentCompId, ComponentId newParentCompId, EntityId parentEntity)
 {
     const int childPos = _index.lookup(childComp);
     
-    EntityId* currentPtr = _current.getPointer(childPos);
-    if (*currentPtr == invalid<EntityId>())
-    {
-        *currentPtr = childEnt;
-    }
-    else
-    {
-        assert(*currentPtr == childEnt);
-    }
+    EntityId childEnt = *_current.getPointer(childPos);
     
     int oldParentHeight = 0;
     if (oldParentCompId != invalid<ComponentId>())

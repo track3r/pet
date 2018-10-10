@@ -2,6 +2,7 @@
 #include "World.h"
 #include "EntityWorld.h"
 #include "RenderWorld.h"
+#include "AnimationSystem.h"
 
 World::World()
 :_entityWorld(new EntityWorld())
@@ -13,6 +14,8 @@ World::World()
 void World::initSystems()
 {
     _entityWorld->_systems[MeshType] = &_renderWorld->_meshSystem;
+    _entityWorld->_systems[AnimationType] = new AnimationSystem(_entityWorld);
+    
 }
 
 void World::testEntities()

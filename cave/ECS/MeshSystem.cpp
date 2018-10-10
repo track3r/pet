@@ -1,15 +1,15 @@
 #include "pch.h"
+#include "ComponentTypes.h"
 #include "MeshSystem.h"
 
 MeshSystem::MeshSystem()
-:_index(1024)
-,_positions(1024)
+:_positions(1024)
 ,_vbs(1024)
 {
     
 }
 
-void MeshSystem::update()
+void MeshSystem::update(float dt)
 {
     for(int i = 0; i < _index._size; i++)
     {
@@ -26,9 +26,9 @@ void MeshSystem::removeComponent(ComponentId id)
     _vbs.remove(dataId);
 }
 
-ComponentId MeshSystem::createComponent()
+ComponentId MeshSystem::createComponent(EntityId entityId)
 {
-    MeshId ret = _index.create();
+    MeshId ret = System::createComponent(entityId);
     
     glm::mat4 zero;
     _positions.add(zero);

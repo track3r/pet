@@ -10,5 +10,5 @@ public:
     MeshSystem _meshSystem;
     RenderWorld();
     DataWriter<glm::mat4, MeshId> getPositions();
-    void update();
+    void update(float dt);
 };

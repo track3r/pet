@@ -1,13 +1,11 @@
 #pragma once
 
-#include "../GlmIncludes.h"
-
 class TransformSystem : public System
 {
 public:
-    PackedArrayIndex<ComponentId> _index;
+    static const int type = ComponentTypeId::TransformType;
+    
     Data<EntityId> _parents;
-    Data<EntityId> _current;
     //Data<EntityId> _groups;
     Data<int> _heights;
     Data<int> _debugSort;
@@ -55,12 +53,12 @@ public:
      
      }*/
     
-    void update() override;
+    void update(float dt) override;
     void removeComponent(ComponentId id) override;
-    ComponentId createComponent() override;
+    ComponentId createComponent(EntityId enityId) override;
     
     void modifyHeight(EntityId parentEnt, int amount);
-    void setParent(ComponentId childComp, EntityId childEnt, ComponentId oldParentCompId, ComponentId newParentCompId, EntityId parentEntity);
+    void setParent(ComponentId childComp, ComponentId oldParentCompId, ComponentId newParentCompId, EntityId parentEntity);
     void sortByParentChild();
     void swapData(int a, int b);
 };

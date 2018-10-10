@@ -278,11 +278,14 @@ public:
     
     const T* getPointer(int i) const
     {
+        assert(i >= 0 && i < _size);
         return &_data[i];
     }
     
     void swap(int a, int b)
     {
+        assert(a >= 0 && a < _size);
+        assert(b >= 0 && b < _size);
         ::swap(_data[a], _data[b]);
     }
 };
@@ -316,6 +319,28 @@ DataWriter<T, Id> make_dataWriter(Data<T>& data, const PackedArrayIndex<Id>& ind
     return DataWriter<T, Id>(data, index);
 }
 
+template <class T, class Id>
+class DataReader
+{
+public:
+    const PackedArrayIndex<Id>& _index;
+    Data<T>& _data;
+    
+    DataReader(Data<T>& data, const PackedArrayIndex<Id>& index)
+        :_index(index)
+        ,_data(data)
+    {
+        
+    }
+public:
+    void read(Id destination, T& data)
+    {
+        assert(destination != invalid<Id>());
+        int idx = _index.lookup(destination);
+        assert(idx != -1);
+        memcpy(&data, _data.getPointer(idx), sizeof(T));
+    }
+};
 
 typedef Id<20, 12, 0> ComponentId;
 typedef Id<20, 12, -1> EntityId;
@@ -323,8 +348,15 @@ typedef Id<20, 12, -1> EntityId;
 class System
 {
 public:
-    virtual void update() = 0;
+    System();
+    virtual void update(float dt) = 0;
     virtual void removeComponent(ComponentId id) = 0;
-    virtual ComponentId createComponent() = 0;
+    virtual ComponentId createComponent(EntityId entity);
     //virtual void debugComponent(ComponentId id, Writer* out) = 0;
+    
+    Data<EntityId> _current;
+    PackedArrayIndex<ComponentId> _index;
 };
+
+
+//TODO planetary cubes
