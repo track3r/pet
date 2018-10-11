@@ -73,9 +73,9 @@ public:
     
     const Entity* get(EntityId id) const;
     Entity* get(EntityId id);
-
     void remove(EntityId id);
-    void calculateGlobalPos();
+    
+    void update(float dt);
     
     template <typename T>
     T* getSystem()

@@ -5,10 +5,10 @@
 #include "AnimationSystem.h"
 
 World::World()
-:_entityWorld(new EntityWorld())
-,_renderWorld(new RenderWorld())
+    :_entityWorld(new EntityWorld())
+    ,_renderWorld(new RenderWorld())
 {
-
+    initSystems();
 }
 
 void World::initSystems()
@@ -16,6 +16,24 @@ void World::initSystems()
     _entityWorld->_systems[MeshType] = &_renderWorld->_meshSystem;
     _entityWorld->_systems[AnimationType] = new AnimationSystem(_entityWorld);
     
+}
+
+void World::copyTransform()
+{
+    
+}
+
+void World::update(float dt)
+{
+    _entityWorld->update(dt);
+    _entityWorld->_systems[AnimationType]->update(dt);
+    copyTransform();
+    _renderWorld->update(dt);
+}
+
+void World::render()
+{
+    _renderWorld->render();
 }
 
 void World::testEntities()

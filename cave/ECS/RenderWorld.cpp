@@ -6,6 +6,9 @@
 
 #include "RenderWorld.h"
 
+#include "../Application.h"
+#include "../Renderer.h"
+
 RenderWorld::RenderWorld()
 {
     
@@ -19,4 +22,12 @@ DataWriter<glm::mat4, MeshId> RenderWorld::getPositions()
 void RenderWorld::update(float dt)
 {
     _meshSystem.update(dt);
+}
+
+void RenderWorld::render()
+{
+    auto renderer = Application::getRenderer();
+    glm::mat4 transform;
+    transform = glm::translate(transform, glm::vec3(0, 0, -1));
+    renderer->renderCube(transform);
 }

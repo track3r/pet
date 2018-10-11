@@ -28,4 +28,3 @@ private:
     RenderElement m_test;
     std::unique_ptr<ShaderProgram> m_program;
 };
-

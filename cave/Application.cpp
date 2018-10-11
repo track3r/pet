@@ -5,6 +5,9 @@
 #include "Utils.h"
 #include "Room.h"
 
+#include "ECS/Ecs.h"
+#include "ECS/World.h"
+
 #if defined(WINDOWS)
 void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const  void* userParam)
 {
@@ -48,12 +51,6 @@ void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severi
 }
 #endif
 
-Ecs ecs;
-RenderSystem* renderSys;
-
-Entity* root;
-Entity* child;
-
 bool Application::init(SDL_Window* window)
 {
     _app = this;
@@ -84,17 +81,8 @@ bool Application::init(SDL_Window* window)
 
     //SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_ShowCursor(0);
-
-    root = new Entity(&ecs, nullptr);
-    child = new Entity(&ecs, root);
     
-    child->_transform = glm::translate(root->_transform, glm::vec3(0, 0, 2));
-    child->updateTransform();
-
-    renderSys = new RenderSystem(&_renderer);
-    renderSys->init(&ecs);
-    renderSys->addComponent(root);
-    renderSys->addComponent(child);
+    _world = new World();
     
 	return true;
 }
@@ -103,13 +91,9 @@ void Application::render()
 {
 	//printf("Application::render\n");
 
-    root->_transform = glm::translate(root->_transform, glm::vec3(0, 0, -0.001));
-    root->updateTransform();
-
+ 
     _renderer.beginRender();
-    ecs.beforeUpdate();
-    ecs.update();
-    ecs.afterUpdate();
+    _world->render();
     _renderer.endRender();
 
 	SDL_GL_SwapWindow(m_win);
@@ -133,6 +117,7 @@ void Application::update(float dt)
 	const float move = m_dt * c_speed;
     _renderer.camera().moveForward(move * m_input.getControlls().forwad);
     _renderer.camera().strafe(move * m_input.getControlls().strafe);
+    _world->update(dt);
 	//printf(" forward = %f\n", m_input.getControlls().forwad);
 }
 

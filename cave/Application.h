@@ -11,11 +11,12 @@
 #include "UserInput.h"
 #include "ShaderProgram.h"
 #include "DebugDraw.h"
-#include "Ecs.h"
 
 
 const float c_speed = 3.0f;
 const float c_mouseSpeed = 0.005f;
+
+class World;
 
 class Application
 {
@@ -47,5 +48,6 @@ private:
 	UserInput m_input;
   
     Renderer _renderer;
+    World* _world;
 };
 

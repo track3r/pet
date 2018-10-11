@@ -154,7 +154,10 @@ void EntityWorld::remove(EntityId id)
     //_parents.remove(pos);
 }
 
-void calculateGlobalPos();
+void EntityWorld::update(float dt)
+{
+    _systems[TransformType]->update(dt);
+}
 
 
 GameplaySystem::GameplaySystem(EntityWorld* world, ComponentTypeId type)

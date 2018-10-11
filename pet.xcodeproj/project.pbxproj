@@ -20,7 +20,6 @@
 		F17C0E8121275E8B00CDB801 /* VertexFormat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E6221275E8B00CDB801 /* VertexFormat.cpp */; };
 		F17C0E8221275E8B00CDB801 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E6521275E8B00CDB801 /* Texture.cpp */; };
 		F17C0E8321275E8B00CDB801 /* Room.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E6821275E8B00CDB801 /* Room.cpp */; };
-		F17C0E8421275E8B00CDB801 /* Ecs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E6921275E8B00CDB801 /* Ecs.cpp */; };
 		F17C0E8521275E8B00CDB801 /* ShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E6B21275E8B00CDB801 /* ShaderProgram.cpp */; };
 		F17C0E8621275E8B00CDB801 /* UserInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E6D21275E8B00CDB801 /* UserInput.cpp */; };
 		F17C0E8721275E8B00CDB801 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E6F21275E8B00CDB801 /* Application.cpp */; };
@@ -79,10 +78,8 @@
 		F17C0E6321275E8B00CDB801 /* DebugDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DebugDraw.h; sourceTree = "<group>"; };
 		F17C0E6421275E8B00CDB801 /* Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Renderer.h; sourceTree = "<group>"; };
 		F17C0E6521275E8B00CDB801 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
-		F17C0E6621275E8B00CDB801 /* Ecs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ecs.h; sourceTree = "<group>"; };
 		F17C0E6721275E8B00CDB801 /* primitive_restart.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primitive_restart.vs.glsl; sourceTree = "<group>"; };
 		F17C0E6821275E8B00CDB801 /* Room.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Room.cpp; sourceTree = "<group>"; };
-		F17C0E6921275E8B00CDB801 /* Ecs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Ecs.cpp; sourceTree = "<group>"; };
 		F17C0E6A21275E8B00CDB801 /* VertexFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexFormat.h; sourceTree = "<group>"; };
 		F17C0E6B21275E8B00CDB801 /* ShaderProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderProgram.cpp; sourceTree = "<group>"; };
 		F17C0E6C21275E8B00CDB801 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
@@ -508,8 +505,6 @@
 				F17C0E7A21275E8B00CDB801 /* DebugDraw.cpp */,
 				F17C0E6321275E8B00CDB801 /* DebugDraw.h */,
 				F1011A2921276F54003546DD /* ECS */,
-				F17C0E6921275E8B00CDB801 /* Ecs.cpp */,
-				F17C0E6621275E8B00CDB801 /* Ecs.h */,
 				F17C0E7821275E8B00CDB801 /* GeometryBuilder.cpp */,
 				F17C0E5721275E8B00CDB801 /* GeometryBuilder.h */,
 				F17C0E6021275E8B00CDB801 /* GlHeaders.h */,
@@ -1040,7 +1035,6 @@
 				F17C0FFB21275EBD00CDB801 /* glm.cpp in Sources */,
 				F17C0E8521275E8B00CDB801 /* ShaderProgram.cpp in Sources */,
 				F17C0E8821275E8B00CDB801 /* GeometryBuilder.cpp in Sources */,
-				F17C0E8421275E8B00CDB801 /* Ecs.cpp in Sources */,
 				F17C0E8621275E8B00CDB801 /* UserInput.cpp in Sources */,
 				F17C0E7F21275E8B00CDB801 /* Utils.cpp in Sources */,
 				F17C0E8321275E8B00CDB801 /* Room.cpp in Sources */,

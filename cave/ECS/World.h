@@ -12,8 +12,10 @@ public:
     World();
     
     void testEntities();
-    void update();
+    void update(float dt);
+    void render();
     
 private:
     void initSystems();
+    void copyTransform();
 };
