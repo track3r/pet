@@ -57,8 +57,12 @@ public:
     void removeComponent(ComponentId id) override;
     ComponentId createComponent(EntityId enityId) override;
     
-    void modifyHeight(EntityId parentEnt, int amount);
+    
     void setParent(ComponentId childComp, ComponentId oldParentCompId, ComponentId newParentCompId, EntityId parentEntity);
+    
+private:
+    void updateTransforms();
     void sortByParentChild();
+    void modifyHeight(EntityId parentEnt, int amount);
     void swapData(int a, int b);
 };

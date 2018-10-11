@@ -238,6 +238,18 @@ void TransformSystem::sortByParentChild()
     _dirty = false;
 }
 
+void TransformSystem::updateTransforms()
+{
+    for (int i = 0; i < _index._size; i++)
+    {
+        const auto parent = *_parents.getPointer(i);
+        //const auto parentGlobalTransform = ..
+        //const auto childLocalTransform
+        //childGlobal = parentGlobalTransform * childLocalTransform;
+        //childGlobal = childLocalTransform
+    }
+}
+
 void TransformSystem::swapData(int a, int b)
 {
     if (a == b)
@@ -252,4 +264,4 @@ void TransformSystem::swapData(int a, int b)
     _current.swap(a, b);
     _debugSort.swap(a, b);
     //debug();
-    }
+}

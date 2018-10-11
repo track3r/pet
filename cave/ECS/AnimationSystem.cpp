@@ -48,6 +48,7 @@ void AnimationSystem::removeComponent(ComponentId id)
     const int pos = _index.remove(id);
     _current.remove(pos);
     _rotation.remove(pos);
+    _curRotation.remove(pos);
 }
 
 ComponentId AnimationSystem::createComponent(EntityId entity)
