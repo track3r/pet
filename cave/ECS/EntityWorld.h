@@ -53,7 +53,10 @@ public:
     const ComponentId addComponent(EntityId entityId, ComponentTypeId componentType);
     void addComponent(EntityId entityId, ComponentTypeId componentType, ComponentId componentId);
     void removeComponent(EntityId entityId, ComponentTypeId componentType);
-    const ComponentId getComponent(EntityId entityId, ComponentTypeId componentType);
+
+    const ComponentId getComponent(EntityId entityId, ComponentTypeId componentType) const;
+    const int getComponentPos(EntityId entityId, ComponentTypeId componentType) const;
+
     void setParent(EntityId child, EntityId parent);
     
     //Reader<T> r = getReader(ComponentTypeId, DataStreamId)
@@ -67,7 +70,10 @@ public:
     
     //job = Job(Read(CompA, StreamA), ReadLocal((CompA, StreamA)), Write(CompB, streamB))
     EntityId create();
+    
+    const Entity* get(EntityId id) const;
     Entity* get(EntityId id);
+
     void remove(EntityId id);
     void calculateGlobalPos();
     

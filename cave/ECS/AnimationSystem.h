@@ -17,5 +17,6 @@ public:
     
 private:
     Data<glm::quat> _rotation;
+    Data<glm::quat> _curRotation;
     TransformSystem* _transformSystem = nullptr;
 };

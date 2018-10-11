@@ -45,7 +45,7 @@ void EntityWorld::addComponent(EntityId entityId, ComponentTypeId componentType,
     entity->addComponent(componentId, componentType);
 }
 
-const ComponentId EntityWorld::getComponent(EntityId entityId, ComponentTypeId componentType)
+const ComponentId EntityWorld::getComponent(EntityId entityId, ComponentTypeId componentType) const
 {
     const Entity* entity = get(entityId);
     
@@ -56,6 +56,19 @@ const ComponentId EntityWorld::getComponent(EntityId entityId, ComponentTypeId c
     
     const ComponentId id = entity->getComponent(componentType);
     return id;
+}
+
+const int EntityWorld::getComponentPos(EntityId entityId, ComponentTypeId componentType) const
+{
+    const Entity* entity = get(entityId);
+
+    const ComponentId id = entity->getComponent(componentType);
+    if (id == invalid<ComponentId>())
+    {
+        return -1;
+    }
+
+    return _systems[componentType]->getIndex().lookup(id);
 }
 
 void EntityWorld::removeComponent(EntityId entityId, ComponentTypeId componentType)
@@ -112,13 +125,24 @@ EntityId EntityWorld::create()
     return id;
 }
 
-Entity* EntityWorld::get(EntityId id)
+const Entity* EntityWorld::get(EntityId id) const
 {
     if (id == invalid<EntityId>())
     {
         return nullptr;
     }
     
+    int pos = _index.lookup(id);
+    return _entities.getPointer(pos);
+}
+
+Entity* EntityWorld::get(EntityId id)
+{
+    if (id == invalid<EntityId>())
+    {
+        return nullptr;
+    }
+
     int pos = _index.lookup(id);
     return _entities.getPointer(pos);
 }

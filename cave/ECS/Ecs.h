@@ -163,7 +163,7 @@ public:
         return elem.dataIndex;
     }
     
-    Id reverseLookup(int pos)
+    Id reverseLookup(int pos) const
     {
         assert(pos >= 0 && pos <= _dataToIndex.size());
         const auto index = _dataToIndex[pos];
@@ -275,6 +275,12 @@ public:
         assert(i >= 0 && i < _size);
         return &_data[i];
     }
+
+    const T& get(int i) const
+    {
+        assert(i >= 0 && i < _size);
+        return _data[i];
+    }
     
     const T* getPointer(int i) const
     {
@@ -352,7 +358,13 @@ public:
     virtual void update(float dt) = 0;
     virtual void removeComponent(ComponentId id) = 0;
     virtual ComponentId createComponent(EntityId entity);
+
     //virtual void debugComponent(ComponentId id, Writer* out) = 0;
+
+    const PackedArrayIndex<ComponentId>& getIndex()
+    {
+        return _index;
+    }
     
     Data<EntityId> _current;
     PackedArrayIndex<ComponentId> _index;
