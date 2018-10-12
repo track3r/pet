@@ -82,7 +82,7 @@ bool Application::init(SDL_Window* window)
     //SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_ShowCursor(0);
     
-    _world = new World();
+    //_world = new World();
     
 	return true;
 }
@@ -93,7 +93,8 @@ void Application::render()
 
  
     _renderer.beginRender();
-    _world->render();
+    //_world->render();
+    _renderer.renderCube(glm::mat4());
     _renderer.endRender();
 
 	SDL_GL_SwapWindow(m_win);
@@ -117,7 +118,7 @@ void Application::update(float dt)
 	const float move = m_dt * c_speed;
     _renderer.camera().moveForward(move * m_input.getControlls().forwad);
     _renderer.camera().strafe(move * m_input.getControlls().strafe);
-    _world->update(dt);
+    //_world->update(dt);
 	//printf(" forward = %f\n", m_input.getControlls().forwad);
 }
 
