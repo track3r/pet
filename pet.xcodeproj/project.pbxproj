@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F1011A272127695D003546DD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1011A262127695D003546DD /* OpenGL.framework */; };
-		F1011A2821276A02003546DD /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F17C0E9121275EBD00CDB801 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F1011A3621276F54003546DD /* MeshSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A2D21276F54003546DD /* MeshSystem.cpp */; };
 		F1011A3721276F54003546DD /* RenderWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A3221276F54003546DD /* RenderWorld.cpp */; };
 		F1011A3821276F54003546DD /* EntityWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1011A3321276F54003546DD /* EntityWorld.cpp */; };
@@ -28,8 +26,10 @@
 		F17C0E8A21275E8B00CDB801 /* DebugDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E7A21275E8B00CDB801 /* DebugDraw.cpp */; };
 		F17C0E8B21275E8B00CDB801 /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E7B21275E8B00CDB801 /* Renderer.cpp */; };
 		F17C0E8C21275E8B00CDB801 /* RenderElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0E7C21275E8B00CDB801 /* RenderElement.cpp */; };
-		F17C0FF321275EBD00CDB801 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17C0E9121275EBD00CDB801 /* SDL2.framework */; };
 		F17C0FFB21275EBD00CDB801 /* glm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17C0F3F21275EBD00CDB801 /* glm.cpp */; };
+		F1877AD62171491700FB108B /* libSDL2-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F1877AD52171491700FB108B /* libSDL2-2.0.0.dylib */; };
+		F1877AD72171492600FB108B /* libSDL2-2.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F1877AD52171491700FB108B /* libSDL2-2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F1877AD82171496600FB108B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1011A262127695D003546DD /* OpenGL.framework */; };
 		F1B1BB582151C19B00B8B1CC /* Ecs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1B1BB562151C19B00B8B1CC /* Ecs.cpp */; };
 /* End PBXBuildFile section */
 
@@ -40,7 +40,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F1011A2821276A02003546DD /* SDL2.framework in CopyFiles */,
+				F1877AD72171492600FB108B /* libSDL2-2.0.0.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,7 +96,6 @@
 		F17C0E7A21275E8B00CDB801 /* DebugDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DebugDraw.cpp; sourceTree = "<group>"; };
 		F17C0E7B21275E8B00CDB801 /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Renderer.cpp; sourceTree = "<group>"; };
 		F17C0E7C21275E8B00CDB801 /* RenderElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderElement.cpp; sourceTree = "<group>"; };
-		F17C0E9121275EBD00CDB801 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 		F17C0E9321275EBD00CDB801 /* SDL_test_random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_test_random.h; sourceTree = "<group>"; };
 		F17C0E9421275EBD00CDB801 /* SDL_power.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_power.h; sourceTree = "<group>"; };
 		F17C0E9521275EBD00CDB801 /* SDL_revision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_revision.h; sourceTree = "<group>"; };
@@ -429,6 +428,7 @@
 		F17C0FF121275EBD00CDB801 /* multiple.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = multiple.inl; sourceTree = "<group>"; };
 		F17C0FF221275EBD00CDB801 /* type_aligned.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = type_aligned.hpp; sourceTree = "<group>"; };
 		F17C0FFC212762B800CDB801 /* GlmIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlmIncludes.h; sourceTree = "<group>"; };
+		F1877AD52171491700FB108B /* libSDL2-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libSDL2-2.0.0.dylib"; sourceTree = "<group>"; };
 		F1B1BB562151C19B00B8B1CC /* Ecs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Ecs.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -437,8 +437,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1011A272127695D003546DD /* OpenGL.framework in Frameworks */,
-				F17C0FF321275EBD00CDB801 /* SDL2.framework in Frameworks */,
+				F1877AD82171496600FB108B /* OpenGL.framework in Frameworks */,
+				F1877AD62171491700FB108B /* libSDL2-2.0.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -579,7 +579,7 @@
 		F17C0E9021275EBD00CDB801 /* sdl */ = {
 			isa = PBXGroup;
 			children = (
-				F17C0E9121275EBD00CDB801 /* SDL2.framework */,
+				F1877AD52171491700FB108B /* libSDL2-2.0.0.dylib */,
 				F17C0E9221275EBD00CDB801 /* SDL2 */,
 			);
 			path = sdl;
@@ -1175,6 +1175,7 @@
 					"$(PROJECT_DIR)/libs/sdl/win64_release",
 					"$(PROJECT_DIR)/libs/sdl/win64_dbg",
 					"$(PROJECT_DIR)/libs/glew",
+					"$(PROJECT_DIR)/libs/sdl",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
@@ -1205,6 +1206,7 @@
 					"$(PROJECT_DIR)/libs/sdl/win64_release",
 					"$(PROJECT_DIR)/libs/sdl/win64_dbg",
 					"$(PROJECT_DIR)/libs/glew",
+					"$(PROJECT_DIR)/libs/sdl",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
