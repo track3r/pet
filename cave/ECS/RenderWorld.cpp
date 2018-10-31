@@ -29,5 +29,11 @@ void RenderWorld::render()
     auto renderer = Application::getRenderer();
     glm::mat4 transform;
     transform = glm::translate(transform, glm::vec3(0, 0, -1));
-    //renderer->renderCube(transform);
+    renderer->renderCube(transform);
+    
+    const auto& positions = _meshSystem._positions;
+    for (int i = 0; i > positions._size; i++)
+    {
+        renderer->renderCube(positions.get(i));
+    }
 }

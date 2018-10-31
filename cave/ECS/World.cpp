@@ -4,11 +4,17 @@
 #include "RenderWorld.h"
 #include "AnimationSystem.h"
 
+//TODO
+//random flat entities
+//+children
+//+animation
+
 World::World()
     :_entityWorld(new EntityWorld())
     ,_renderWorld(new RenderWorld())
 {
     initSystems();
+    testEntities();
 }
 
 void World::initSystems()
