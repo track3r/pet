@@ -18,4 +18,6 @@ public:
 private:
     void initSystems();
     void copyTransform();
+    
+    EntityId createTestEntity(glm::vec3 pos);
 };

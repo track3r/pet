@@ -3,11 +3,13 @@
 #include "EntityWorld.h"
 #include "RenderWorld.h"
 #include "AnimationSystem.h"
+#include "TransformSystem.h"
 
 //TODO
 //random flat entities
 //+children
 //+animation
+//planetary cubes
 
 World::World()
     :_entityWorld(new EntityWorld())
@@ -26,12 +28,41 @@ void World::initSystems()
 
 void World::copyTransform()
 {
+    return;
+    const TransformSystem* transform = _entityWorld->getSystem<TransformSystem>();
     
+    if (transform->_index._size == 0)
+    {
+        return;
+    }
+    
+    const glm::mat4* globalPos = transform->_globalPos.getPointer(0);
+    
+    const auto meshSystem = _entityWorld->getSystem<MeshSystem>();
+    if (meshSystem->_index._size == 0)
+    {
+        return;
+    }
+    
+    Data<glm::mat4>& meshTransforms = meshSystem->_positions;
+    
+    for(int i = 0; i < transform->_index._size; i++)
+    {
+        const EntityId curEntId = *transform->_current.getPointer(i);
+        const int meshPos = _entityWorld->getComponentPos(curEntId, MeshType);
+        if (meshPos == -1)
+        {
+            continue;
+        }
+        
+        *meshTransforms.getPointer(meshPos) = globalPos[i];
+    }
 }
 
 void World::update(float dt)
 {
     _entityWorld->update(dt);
+    
     _entityWorld->_systems[AnimationType]->update(dt);
     copyTransform();
     _renderWorld->update(dt);
@@ -44,8 +75,24 @@ void World::render()
 
 void World::testEntities()
 {
-    
+    for (int i = 0; i < 10; i++)
+    {
+        createTestEntity(glm::vec3((float)i, 0, 0));
+    }
 }
+
+EntityId World::createTestEntity(glm::vec3 pos)
+{
+    auto entId = _entityWorld->create();
+    _entityWorld->addComponent(entId, TransformType);
+    auto renderCompId = _entityWorld->addComponent(entId, MeshType);
+    
+    glm::mat4 mat;
+    mat = glm::translate(glm::mat4(), pos);
+    _renderWorld->getPositions().write(renderCompId, mat);
+    return entId;
+}
+
 
 /*
 EntityId createTestEntity(float posC, int idx)

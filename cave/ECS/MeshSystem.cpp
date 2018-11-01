@@ -13,8 +13,8 @@ void MeshSystem::update(float dt)
 {
     for(int i = 0; i < _index._size; i++)
     {
-        glm::mat4* pos = _positions.getPointer(i);
-        int vb = *_vbs.getPointer(i);
+        //glm::mat4* pos = _positions.getPointer(i);
+        //int vb = *_vbs.getPointer(i);
         //render(pos, vb)
     }
 }

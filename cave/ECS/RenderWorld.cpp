@@ -24,16 +24,22 @@ void RenderWorld::update(float dt)
     _meshSystem.update(dt);
 }
 
+
 void RenderWorld::render()
 {
     auto renderer = Application::getRenderer();
     glm::mat4 transform;
-    transform = glm::translate(transform, glm::vec3(0, 0, -1));
-    renderer->renderCube(transform);
+    transform = glm::translate(transform, glm::vec3(10, 0, 0));
+    //renderer->renderCube(transform);
     
     const auto& positions = _meshSystem._positions;
-    for (int i = 0; i > positions._size; i++)
+    for (int i = 0; i < positions._size; i++)
     {
-        renderer->renderCube(positions.get(i));
+        auto mat1 = positions.get(i);
+        auto mat2 = glm::translate(glm::mat4(), glm::vec3((float)i, 0, 0));
+        assert(mat1[3].x == mat2[3].x);
+        renderer->renderCube(mat1);
+        //transform = glm::translate(glm::mat4(), glm::vec3((float)i, 0, 0));
+        //renderer->renderCube(transform);
     }
 }

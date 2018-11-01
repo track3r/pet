@@ -369,6 +369,3 @@ public:
     Data<EntityId> _current;
     PackedArrayIndex<ComponentId> _index;
 };
-
-
-//TODO planetary cubes
