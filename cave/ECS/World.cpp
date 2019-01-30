@@ -5,6 +5,8 @@
 #include "AnimationSystem.h"
 #include "TransformSystem.h"
 
+#include "glm/gtc/constants.hpp"
+
 //TODO
 //random flat entities
 //+children
@@ -90,6 +92,12 @@ EntityId World::createTestEntity(glm::vec3 pos)
     glm::mat4 mat;
     mat = glm::translate(glm::mat4(), pos);
     _renderWorld->getPositions().write(renderCompId, mat);
+
+    auto animComp = _entityWorld->addComponent(entId, AnimationType);
+    AnimationSystem* anim = _entityWorld->getSystem<AnimationSystem>();
+    glm::vec3 euler(2 * glm::pi<float>() / 180, 0, 0);
+
+    anim->getRotations().write(animComp, glm::quat(euler));
     return entId;
 }
 

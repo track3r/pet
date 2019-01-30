@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
 	maincontext = SDL_GL_CreateContext(mainwindow);
 
-#if defined(_MSC_VER)
+#if defined(_WIN32)
 	GLenum rev;
 	glewExperimental = GL_TRUE;
 	rev = glewInit();

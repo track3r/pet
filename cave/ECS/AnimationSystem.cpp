@@ -17,6 +17,11 @@ AnimationSystem::AnimationSystem(EntityWorld* world)
     
 }
 
+DataWriter<glm::quat, ComponentId> AnimationSystem::getRotations()
+{
+    return make_dataWriter(_rotation, _index);
+}
+
 void AnimationSystem::update(float dt)
 {
     if (_transformSystem == nullptr)
@@ -55,7 +60,7 @@ ComponentId AnimationSystem::createComponent(EntityId entity)
 {
     auto ret = System::createComponent(entity);
     _rotation.add(glm::quat());
-    
+    _curRotation.add(glm::quat());
     return ret;
 }
 
@@ -63,6 +68,7 @@ ComponentId AnimationSystem::createComponent(EntityId entity, glm::quat rotation
 {
     auto ret = System::createComponent(entity);
     _rotation.add(rotation);
+    _curRotation.add(glm::quat());
     
     return ret;
 }

@@ -14,6 +14,8 @@ public:
     ComponentId createComponent(EntityId entity) override;
     
     ComponentId createComponent(EntityId entity, glm::quat rotation);
+
+    DataWriter<glm::quat, ComponentId> getRotations();
     
 private:
     Data<glm::quat> _rotation;
