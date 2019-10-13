@@ -159,6 +159,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
+    <ClCompile Include="ecs3\ecs3.cpp" />
     <ClCompile Include="ECS\AnimationSystem.cpp" />
     <ClCompile Include="ECS\Ecs.cpp" />
     <ClCompile Include="ECS\EntityWorld.cpp" />
@@ -186,6 +187,8 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="Ecs.h" />
+    <ClInclude Include="ecs3\ecs3.h" />
+    <ClInclude Include="ecs3\pch.h" />
     <ClInclude Include="ECS\AnimationSystem.h" />
     <ClInclude Include="ECS\ComponentTypes.h" />
     <ClInclude Include="ECS\Ecs.h" />
