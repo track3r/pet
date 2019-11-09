@@ -6,10 +6,11 @@ namespace ecs3
 {
     class System;
 
-   
-
     struct ComponentInfo
     {
+        ComponentInfo(int id, size_t size)
+            : id(id)
+            , size(size) {}
         int id;
         size_t size;
     };
@@ -17,60 +18,11 @@ namespace ecs3
     class RegisterContext
     {
     public:
-
-    };
-
-    class Data
-    {
-    public:
-        void* _data = nullptr;
-        int _size = 0;
-
-    public:
-        Data()
+        std::vector<ComponentInfo> _components;
+        template<class C>
+        void addComponent()
         {
-        }
-
-        void remove(int i)
-        {
-            assert(i > 0 && i < _data.size());
-            if (i < _size - 1)
-            {
-                ::swap(_data[i], _data[_size - 1]);
-            }
-
-            _size--;
-        }
-
-        void add(const T& t)
-        {
-            _data[_size++] = t;
-            //_data.push_back(t);
-        }
-
-        T* getPointer(int i)
-        {
-            assert(i >= 0 && i < _size);
-            return &_data[i];
-        }
-
-        const T& get(int i) const
-        {
-            assert(i >= 0 && i < _size);
-            return _data[i];
-        }
-
-        const T* getPointer(int i) const
-        {
-            assert(i >= 0 && i < _size);
-            return &_data[i];
-        }
-
-        void swap(int a, int b)
-        {
-            assert(a >= 0 && a < _size);
-            assert(b >= 0 && b < _size);
-            ::swap(_data[a], _data[b]);
+            _components.(ComponentInfo(C::ID, sizeof(C)));
         }
     };
 
@@ -87,7 +39,7 @@ namespace ecs3
         {
             _components[i].id = id;
             _components[i].size = size;
-            _data[i].init(size, 1024);
+            _data[i].init(size);
         }
 
         void *getData(int id, int pos)

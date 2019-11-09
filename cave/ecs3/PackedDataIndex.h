@@ -246,7 +246,36 @@ namespace ecs3
 
         void init(int elementSize)
         {
+            _elementSize = elementSize;
+            _elements = 0;
+            _size = elementSize * 1024;
+            _data = (uint8_t*)malloc(_size);
+        }
 
+        void remove(int i)
+        {
+            assert(i > 0 && i < _elements);
+            if (i < _elements - 1)
+            {
+                swap(i, _elements - 1);
+            }
+
+            _elements--;
+        }
+
+        void add(uint8_t* data)
+        {
+            assert((_elements + 1) * _elementSize < _size);
+            
+            uint8_t* p = _data + _elementSize * _elements;
+            memcpy(p, data, _elementSize);
+            _elements++;
+        }
+
+        uint8_t* getPointer(int i)
+        {
+            assert(i >= 0 && i < _elements);
+            return _data + _elementSize * i;
         }
 
         void swap(uint8_t* a, uint8_t* b)
@@ -257,46 +286,13 @@ namespace ecs3
             memcpy(b, a, _elementSize);
         }
 
-        void remove(int i)
-        {
-            assert(i > 0 && i < _data.size());
-            if (i < _size - 1)
-            {
-                ::swap(_data[i], _data[_size - 1]);
-            }
-
-            _size--;
-        }
-
-        void add(const T& t)
-        {
-            _data[_size++] = t;
-            //_data.push_back(t);
-        }
-
-        T* getPointer(int i)
-        {
-            assert(i >= 0 && i < _size);
-            return &_data[i];
-        }
-
-        const T& get(int i) const
-        {
-            assert(i >= 0 && i < _size);
-            return _data[i];
-        }
-
-        const T* getPointer(int i) const
-        {
-            assert(i >= 0 && i < _size);
-            return &_data[i];
-        }
-
         void swap(int a, int b)
         {
-            assert(a >= 0 && a < _size);
-            assert(b >= 0 && b < _size);
-            ::swap(_data[a], _data[b]);
+            assert(a >= 0 && a < _elements);
+            assert(b >= 0 && b < _elements);
+            uint8_t* pa = _data + a * _elementSize;
+            uint8_t* pb = _data + b * _elementSize;
+            swap(pa, pb);
         }
     };
 }

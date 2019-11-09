@@ -188,6 +188,7 @@
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="Ecs.h" />
     <ClInclude Include="ecs3\ecs3.h" />
+    <ClInclude Include="ecs3\PackedDataIndex.h" />
     <ClInclude Include="ecs3\pch.h" />
     <ClInclude Include="ECS\AnimationSystem.h" />
     <ClInclude Include="ECS\ComponentTypes.h" />
