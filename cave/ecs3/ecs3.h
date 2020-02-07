@@ -22,6 +22,17 @@ namespace ecs3
         size_t size;
     };
 
+    enum class ComponentType
+    {
+        Sample = 0,
+        Max = 1,
+    };
+
+    struct ComponentFactory
+    {
+
+    };
+
     class Configuration
     {
     public:
@@ -99,9 +110,15 @@ namespace ecs3
         {
 
         }
-        void addEntity(int id)
+        Id addEntity(int id)
         {
             //TODO implement
+            Id localId = _index.create();
+            _ids.add(id);
+            for (int i = 0; i < _configuration._components.size(); i++)
+            {
+                _data[i].add
+            }
         }
         void *getData(int id, int pos)
         {
@@ -110,16 +127,14 @@ namespace ecs3
         Configuration           _configuration;
         std::vector<Data>       _data;
         PackedArrayIndex<Id>    _index;
+        TypedData<int>          _ids;
     };
 
     class Entity
     {
     public:
-        Entity(Configuration configuration)
-            :_configuration(configuration)
-        {}
-        Configuration   _configuration;
-        int             _family;
+        Id          _localId;
+        uint8_t     _family;
     };
 
     class World
@@ -134,7 +149,7 @@ namespace ecs3
 
         int createEntity(const Configuration& configuration)
         {
-            _entities.emplace_back(configuration);
+            _entities.emplace_back();
             int id = (int)_entities.size() - 1;
             for (int i = 0; i < _families.size(); i++)
             {
@@ -191,6 +206,7 @@ namespace ecs3
     {
     public:
         virtual ~Component() {}
+        virtual void createComponent(uint8_t* memory) {}
     };
 
     class SampleComponent : public Component

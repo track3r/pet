@@ -52,13 +52,14 @@ namespace ecs3
             return !(*this == other);
         }
 
-        int index : 32;
+        int index : 24;
         int check : 8;
     };
 
-    const Id& invalid()
+    template< class Tid>
+    const Tid& invalid()
     {
-        static const Id nullId(-1, -1);
+        static const Tid nullId(-1, -1);
         return nullId;
     }
 
@@ -70,7 +71,7 @@ namespace ecs3
     //_positions.remove(dataId);
     //_vbs.remove(dataId);
 
-    template <class Id>
+    template <class Tid>
     class PackedArrayIndex
     {
     public:
@@ -96,7 +97,7 @@ namespace ecs3
             , _size(0)
             , _capacity(n)
         {
-            static int nextInitCheck = 0;
+            static uint8_t nextInitCheck = 0;
             for (int i = 0; i < n; i++)
             {
                 _index[i].check = nextInitCheck++;
@@ -145,7 +146,7 @@ namespace ecs3
             _lastFree = index;
         }
 
-        int lookup(Id id) const
+        int lookup(Tid id) const
         {
             if (id.index >= _index.size())
             {
@@ -164,7 +165,7 @@ namespace ecs3
             return elem.dataIndex;
         }
 
-        Id reverseLookup(int pos) const
+        Tid reverseLookup(int pos) const
         {
             assert(pos >= 0 && pos <= _dataToIndex.size());
             const auto index = _dataToIndex[pos];
@@ -177,14 +178,14 @@ namespace ecs3
             return Id(index, elem.check);
         }
 
-        const Id create()
+        const Tid create()
         {
             const int dataIndex = (int)_size;
 
             const int elem = getFreeElement();
             if (elem == -1)
             {
-                return invalid<Id>();
+                return invalid<Tid>();
             }
 
             _index[elem].dataIndex = dataIndex;
@@ -194,7 +195,7 @@ namespace ecs3
             return Id(elem, _index[elem].check);
         }
 
-        int remove(Id id)
+        int remove(Tid id)
         {
             assert(_index[id.index].check == id.check);
 
@@ -280,6 +281,15 @@ namespace ecs3
             _elements++;
         }
 
+        uint8_t* add()
+        {
+            assert((_elements + 1) * _elementSize < _size);
+
+            _elements++;
+            uint8_t* p = _data + _elementSize * _elements;
+            return p;
+        }
+
         uint8_t* getPointer(int i)
         {
             assert(i >= 0 && i < _elements);
@@ -301,6 +311,41 @@ namespace ecs3
             uint8_t* pa = _data + a * _elementSize;
             uint8_t* pb = _data + b * _elementSize;
             swap(pa, pb);
+        }
+    };
+
+    template<class T>
+    class TypedData :public Data
+    {
+    public:
+        TypedData()
+        {
+            init(sizeof(T));
+        }
+
+        T* getPtr(int i)
+        {
+            return (T*)getPointer(i);
+        }
+
+        const T* getPtr(int i) const
+        {
+            return (T*)getPointer(i);
+        }
+
+        T& get(int i)
+        {
+            return *((T*)getPointer(i));
+        }
+
+        T& get(int i) const
+        {
+            return *((T*)getPointer(i));
+        }
+
+        void add(const T& value)
+        {
+            *add() = value;
         }
     };
 }
