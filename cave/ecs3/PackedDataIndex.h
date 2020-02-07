@@ -235,16 +235,16 @@ namespace ecs3
     {
     public:
         uint8_t* _data;
-        int _size = 0;
+        size_t _size = 0;
         int _elements = 0;
-        int _elementSize = 0;
+        size_t _elementSize = 0;
 
     public:
         Data()
         {
         }
 
-        void init(int elementSize)
+        void init(size_t elementSize)
         {
             _elementSize = elementSize;
             _elements = 0;

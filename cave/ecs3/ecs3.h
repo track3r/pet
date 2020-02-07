@@ -8,6 +8,11 @@ namespace ecs3
 
     struct ComponentInfo
     {
+        ComponentInfo()
+            :id(-1)
+            , size(0) 
+        {}
+
         ComponentInfo(int id, size_t size)
             : id(id)
             , size(size) {}
@@ -22,7 +27,7 @@ namespace ecs3
         template<class C>
         void addComponent()
         {
-            _components.(ComponentInfo(C::ID, sizeof(C)));
+            _components.emplace_back(ComponentInfo(C::ID, sizeof(C)));
         }
     };
 
@@ -70,7 +75,7 @@ namespace ecs3
         {
             for (int i = 0; i < _systems.size(); i++)
             {
-                delete _systems[i];
+                //delete _systems[i];
             }
         }
 
