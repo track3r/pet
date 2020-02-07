@@ -179,7 +179,6 @@
     <ClCompile Include="VertexFormat.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\libs\sdl\win64_dbg\SDL2.dll" />
     <None Include="primitive_restart.fs.glsl" />
     <None Include="primitive_restart.vs.glsl" />
   </ItemGroup>
@@ -190,7 +189,7 @@
     <ClInclude Include="Ecs.h" />
     <ClInclude Include="ecs3\ecs3.h" />
     <ClInclude Include="ecs3\PackedDataIndex.h" />
-    <ClInclude Include="ecs3\pch.h" />
+    <ClInclude Include="ecs3\ecs3pch.h" />
     <ClInclude Include="ECS\AnimationSystem.h" />
     <ClInclude Include="ECS\ComponentTypes.h" />
     <ClInclude Include="ECS\Ecs.h" />

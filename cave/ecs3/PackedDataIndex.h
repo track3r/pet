@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch.h"
+#include "ecs3pch.h"
 
 namespace ecs3
 {
@@ -61,6 +61,14 @@ namespace ecs3
         static const Id nullId(-1, -1);
         return nullId;
     }
+
+ //add:
+    //_current.add(enitity);
+    //return _index.create();
+//remove:
+    //int dataId = _index.swapToEndAndRemove(id);
+    //_positions.remove(dataId);
+    //_vbs.remove(dataId);
 
     template <class Id>
     class PackedArrayIndex
