@@ -281,7 +281,7 @@ namespace ecs3
             _elements++;
         }
 
-        uint8_t* add()
+        uint8_t* addPtr()
         {
             assert((_elements + 1) * _elementSize < _size);
 
@@ -345,7 +345,7 @@ namespace ecs3
 
         void add(const T& value)
         {
-            *add() = value;
+            *addPtr() = value;
         }
     };
 }
