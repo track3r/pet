@@ -28,9 +28,30 @@ namespace ecs3
         Max = 1,
     };
 
-    struct ComponentFactory
+    class ComponentFactory
     {
+    public:
+        typedef std::function<void(uint8_t*)> CreateComponentFn;
+        static void createComponent(int id, uint8_t* memory)
+        {
+            assert(_functions[id] != false);
+            _functions[id](memory);
+        }
 
+        static void registerComponent(int id, CreateComponentFn function)
+        {
+            assert(_functions[id] == false);
+            _functions[id] = function;
+        }
+
+        template<class T>
+        static int registerComponent()
+        {
+            registerComponent(T::ID, [](uint8_t* memory) {new (memory) T(); });
+            return T::ID;
+        }
+    private:
+        static CreateComponentFn _functions[];
     };
 
     class Configuration
@@ -108,18 +129,25 @@ namespace ecs3
             ,_data((int)configuration._components.size())
             ,_index((int)configuration._components.size())
         {
-
+            for (int i = 0; i < configuration._components.size(); i++)
+            {
+                _data[i].init(configuration._components[i].size);
+            }
         }
+
         Id addEntity(int id)
         {
-            //TODO implement
             Id localId = _index.create();
             _ids.add(id);
             for (int i = 0; i < _configuration._components.size(); i++)
             {
-                _data[i].add
+                uint8_t* dataPtr = _data[i].addPtr();
+                ComponentFactory::createComponent(_configuration._components[i].id, dataPtr);
             }
+
+            return localId;
         }
+
         void *getData(int id, int pos)
         {
 
@@ -206,7 +234,6 @@ namespace ecs3
     {
     public:
         virtual ~Component() {}
-        virtual void createComponent(uint8_t* memory) {}
     };
 
     class SampleComponent : public Component
@@ -219,7 +246,7 @@ namespace ecs3
             test = *ptr2;
         }
         int test;
-        const static int ID = 0;
+        const static int ID = (int)ComponentType::Sample;
     };
     
     class SampleSystem : public System

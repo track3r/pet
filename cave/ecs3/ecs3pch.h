@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <array>
 #include <vector>
+#include <functional>
 #include <assert.h>
 
 #include "../GlmIncludes.h"
