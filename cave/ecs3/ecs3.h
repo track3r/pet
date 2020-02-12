@@ -148,14 +148,70 @@ namespace ecs3
             return localId;
         }
 
-        void *getData(int id, int pos)
+        void *getData(int id)
         {
+            for (int i = 0; i < _configuration._components.size(); i++)
+            {
+                if (_configuration._components[i].id == id)
+                {
+                    return _data[i].getPointer(0);
+                }
+            }
 
+            assert(false && "invalid id");
+            return nullptr;
         }
+
+        template<class T>
+        T* getComponents()
+        {
+            return (T*) getData(T::ID);
+        }
+
+        int* getEntities()
+        {
+            return _ids.getPtr(0);
+        }
+
+        size_t size()
+        {
+            return _index.size();
+        }
+
         Configuration           _configuration;
         std::vector<Data>       _data;
         PackedArrayIndex<Id>    _index;
         TypedData<int>          _ids;
+    };
+
+    //to be extended to handle non consecutive data blocks too
+    struct BlockIterator
+    {
+        BlockIterator()
+            :_family(nullptr)
+            , _familyId(0)
+        {
+
+        }
+
+        Family* _family;
+        int _familyId;
+
+        int* getEntities()
+        {
+            return _family->getEntities();
+        }
+
+        template<class T>
+        T* getComponents()
+        {
+            return _family->getComponents<T>();
+        }
+
+        size_t size()
+        {
+            return _family->size();
+        }
     };
 
     class Entity
@@ -197,6 +253,22 @@ namespace ecs3
             return id;
         }
 
+        bool getBlock(const Configuration& configuration, BlockIterator& out)
+        {
+            const int begin = out._family ? out._familyId + 1 : 0;
+            for (int i = begin; i < _families.size(); i++)
+            {
+                if (_families[i]._configuration.matches(configuration))
+                {
+                    out._family = &_families[i];
+                    out._familyId = i;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         World()
         {
 
@@ -213,21 +285,6 @@ namespace ecs3
         std::vector<System*>    _systems;
         std::vector<Family>     _families;
         std::vector<Entity>     _entities;
-    };
-
-    class System
-    {
-    public:
-        System(World* world)
-            :_world(world)
-        {}
-        virtual ~System() {}
-        virtual void update() {}
-        virtual void onRegister() {}
-
-    protected:
-        World*          _world;
-        Configuration   _configuration;
     };
 
     class Component
@@ -249,13 +306,51 @@ namespace ecs3
         const static int ID = (int)ComponentType::Sample;
     };
     
-    class SampleSystem : public System
+    class System
     {
-        virtual void onRegister()
+    public:
+        System(World* world)
+            :_world(world)
+        {}
+
+        template<class T>
+        Configuration& addComponent()
         {
-            _configuration.addComponent<SampleComponent>();
+            _configuration.addComponent<T>();
         }
 
-        virtual void update() {}
+        bool update()
+        {
+            BlockIterator iterator;
+            while (_world->getBlock(_configuration, iterator))
+            {
+                onUpdate(iterator);
+            }
+        }
+
+        virtual ~System() {}
+        virtual void onUpdate(BlockIterator& iterator) {}
+        virtual void onRegister() {}
+
+        int priority = 0;
+    protected:
+        World* _world;
+
+    private:
+        Configuration   _configuration;
+    };
+
+    class SampleSystem : public System
+    {
+        virtual void onRegister() override
+        {
+            addComponent<SampleComponent>();
+            priority = 10000;
+        }
+
+        virtual void onUpdate(BlockIterator& iterator) override
+        {
+            
+        }
     };
 }

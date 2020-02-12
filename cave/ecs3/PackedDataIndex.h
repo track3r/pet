@@ -113,6 +113,10 @@ namespace ecs3
             _lastFree = n - 1;
         }
 
+        size_t size()
+        {
+            return _size;
+        }
         int getFreeElement()
         {
             if (_firstFree == -1)
