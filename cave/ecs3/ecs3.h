@@ -11,10 +11,16 @@
 //singletons
 //player controller, camera
 //sorta mesh component
+//mesh loader
 //lighting system
 //shadows
 //textures
 //voxel chunk component
+
+//landscape or dungeon gen
+//collision
+//ai agents
+//weapons
 
 namespace ecs3
 {
