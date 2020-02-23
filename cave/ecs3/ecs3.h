@@ -2,6 +2,20 @@
 
 #include "ecs3pch.h"
 
+//TODO:
+//remove entity
+//sample system
+//entity ids
+//transform component
+//cube component
+//singletons
+//player controller, camera
+//sorta mesh component
+//lighting system
+//shadows
+//textures
+//voxel chunk component
+
 namespace ecs3
 {
     class System;
