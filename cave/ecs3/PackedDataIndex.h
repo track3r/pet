@@ -288,9 +288,9 @@ namespace ecs3
         uint8_t* addPtr()
         {
             assert((_elements + 1) * _elementSize < _size);
-
-            _elements++;
             uint8_t* p = _data + _elementSize * _elements;
+            _elements++;
+            
             return p;
         }
 

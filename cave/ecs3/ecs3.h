@@ -4,8 +4,8 @@
 
 //TODO:
 //+entity ids
-//world update
-//sample system test
+//+world update
+//+sample system test
 //remove entity
 //transform component
 //cube component
@@ -148,7 +148,7 @@ namespace ecs3
         Family(Configuration configuration)
             :_configuration(configuration)
             ,_data((int)configuration._components.size())
-            ,_index((int)configuration._components.size())
+            ,_index(1024)
         {
             for (int i = 0; i < configuration._components.size(); i++)
             {
@@ -159,11 +159,13 @@ namespace ecs3
         Id addEntity(Id id)
         {
             Id localId = _index.create();
+            assert(localId.isValid());
             _externalIds.add(id);
             for (int i = 0; i < _configuration._components.size(); i++)
             {
                 uint8_t* dataPtr = _data[i].addPtr();
                 ComponentFactory::createComponent(_configuration._components[i].id, dataPtr);
+                printf("%p\n", dataPtr);
             }
 
             return localId;
@@ -252,60 +254,11 @@ namespace ecs3
             _systems.back()->onRegister();
         }
 
-        Id createEntity(const Configuration& configuration)
-        {
-            Id id = _index.create();
-            
-            Entity entity = Entity();
-            for (int i = 0; i < _families.size(); i++)
-            {
-                if (_families[i]._configuration == configuration)
-                {
-                    _families[i].addEntity(id);
-                    //_entities[id]._family = i;
-                    entity._family = i;
-                    _data.add(entity);
-                    return id;
-                }
-            }
-
-            _families.emplace_back(configuration);
-            int familyId = (int)_families.size() - 1;
-            _families[familyId].addEntity(id);
-            entity._family = familyId;
-            _data.add(entity);
-            return id;
-        }
-
-        bool getBlock(const Configuration& configuration, BlockIterator& out)
-        {
-            const int begin = out._family ? out._familyId + 1 : 0;
-            for (int i = begin; i < _families.size(); i++)
-            {
-                if (_families[i]._configuration.matches(configuration))
-                {
-                    out._family = &_families[i];
-                    out._familyId = i;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        World()
-            :_index(1024)
-        {
-
-        }
-
-        virtual ~World()
-        {
-            for (int i = 0; i < _systems.size(); i++)
-            {
-                //delete _systems[i];
-            }
-        }
+        Id createEntity(const Configuration& configuration);
+        bool getBlock(const Configuration& configuration, BlockIterator& out);
+        World();
+        void update();
+        virtual ~World();
 
         std::vector<System*>    _systems;
         std::vector<Family>     _families;
@@ -323,12 +276,14 @@ namespace ecs3
     {
     public:
         SampleComponent()
+            :test2(0)
         {
             void* ptr = this;
             int* ptr2 = (int*)&ptr;
             test = *ptr2;
         }
         int test;
+        int test2;
         const static int ID = (int)ComponentType::Sample;
     };
     
@@ -353,6 +308,8 @@ namespace ecs3
             {
                 onUpdate(iterator);
             }
+
+            return true;
         }
 
         virtual ~System() {}
@@ -383,23 +340,20 @@ namespace ecs3
 
         virtual void onUpdate(BlockIterator& iterator) override
         {
-            printf("\n");
+            printf("Sample system update, size: %i\n", (int) iterator.size());
+            Id* ids = iterator.getEntities();
+            SampleComponent* components = iterator.getComponents<SampleComponent>();
+
+            for (int i = 0; i < iterator.size(); i++)
+            {
+                Id id = ids[i];
+                SampleComponent* comp = components + i;
+                printf("\tent: %u, test: %i, test2: %i\n", (unsigned int)id.index, comp->test, comp->test2);
+                comp->test2++;
+            }
         }
     };
 
-    static void Test0()
-    {
-        World world;
-        world.registerSystem<SampleSystem>();
-
-        Configuration entConf;
-        entConf.addComponent<SampleComponent>();
-        Id ent = world.createEntity(entConf);
-
-    }
-
-    static void Tests()
-    {
-        Test0();
-    }
+    void Test0();
+    void Tests();
 }
