@@ -349,7 +349,7 @@ namespace ecs3
 
         void add(const T& value)
         {
-            *addPtr() = value;
+            *((T*)addPtr()) = value;
         }
     };
 }

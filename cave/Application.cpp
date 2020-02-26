@@ -8,6 +8,8 @@
 #include "ECS/Ecs.h"
 #include "ECS/World.h"
 
+#include "ecs3/ecs3.h"
+
 #if defined(WINDOWS)
 void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const  void* userParam)
 {
@@ -53,6 +55,7 @@ void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severi
 
 bool Application::init(SDL_Window* window)
 {
+	ecs3::Tests();
     _app = this;
 	m_win = window;
     while (glGetError() != GL_NO_ERROR){}

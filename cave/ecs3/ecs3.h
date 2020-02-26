@@ -3,9 +3,10 @@
 #include "ecs3pch.h"
 
 //TODO:
+//+entity ids
+//world update
+//sample system test
 //remove entity
-//sample system
-//entity ids
 //transform component
 //cube component
 //singletons
@@ -155,10 +156,10 @@ namespace ecs3
             }
         }
 
-        Id addEntity(int id)
+        Id addEntity(Id id)
         {
             Id localId = _index.create();
-            _ids.add(id);
+            _externalIds.add(id);
             for (int i = 0; i < _configuration._components.size(); i++)
             {
                 uint8_t* dataPtr = _data[i].addPtr();
@@ -188,9 +189,9 @@ namespace ecs3
             return (T*) getData(T::ID);
         }
 
-        int* getEntities()
+        Id* getEntities()
         {
-            return _ids.getPtr(0);
+            return _externalIds.getPtr(0);
         }
 
         size_t size()
@@ -201,7 +202,7 @@ namespace ecs3
         Configuration           _configuration;
         std::vector<Data>       _data;
         PackedArrayIndex<Id>    _index;
-        TypedData<int>          _ids;
+        TypedData<Id>          _externalIds;
     };
 
     //to be extended to handle non consecutive data blocks too
@@ -217,7 +218,7 @@ namespace ecs3
         Family* _family;
         int _familyId;
 
-        int* getEntities()
+        Id* getEntities()
         {
             return _family->getEntities();
         }
@@ -251,16 +252,19 @@ namespace ecs3
             _systems.back()->onRegister();
         }
 
-        int createEntity(const Configuration& configuration)
+        Id createEntity(const Configuration& configuration)
         {
-            _entities.emplace_back();
-            int id = (int)_entities.size() - 1;
+            Id id = _index.create();
+            
+            Entity entity = Entity();
             for (int i = 0; i < _families.size(); i++)
             {
                 if (_families[i]._configuration == configuration)
                 {
                     _families[i].addEntity(id);
-                    _entities[id]._family = i;
+                    //_entities[id]._family = i;
+                    entity._family = i;
+                    _data.add(entity);
                     return id;
                 }
             }
@@ -268,8 +272,8 @@ namespace ecs3
             _families.emplace_back(configuration);
             int familyId = (int)_families.size() - 1;
             _families[familyId].addEntity(id);
-            _entities[id]._family = familyId;
-
+            entity._family = familyId;
+            _data.add(entity);
             return id;
         }
 
@@ -290,6 +294,7 @@ namespace ecs3
         }
 
         World()
+            :_index(1024)
         {
 
         }
@@ -304,7 +309,8 @@ namespace ecs3
 
         std::vector<System*>    _systems;
         std::vector<Family>     _families;
-        std::vector<Entity>     _entities;
+        PackedArrayIndex<Id> _index;
+        TypedData<Entity> _data;
     };
 
     class Component
@@ -337,6 +343,7 @@ namespace ecs3
         Configuration& addComponent()
         {
             _configuration.addComponent<T>();
+            return _configuration;
         }
 
         bool update()
@@ -362,6 +369,12 @@ namespace ecs3
 
     class SampleSystem : public System
     {
+    public:
+        SampleSystem(World* world)
+            :System(world)
+        {
+
+        }
         virtual void onRegister() override
         {
             addComponent<SampleComponent>();
@@ -370,7 +383,23 @@ namespace ecs3
 
         virtual void onUpdate(BlockIterator& iterator) override
         {
-            
+            printf("\n");
         }
     };
+
+    static void Test0()
+    {
+        World world;
+        world.registerSystem<SampleSystem>();
+
+        Configuration entConf;
+        entConf.addComponent<SampleComponent>();
+        Id ent = world.createEntity(entConf);
+
+    }
+
+    static void Tests()
+    {
+        Test0();
+    }
 }

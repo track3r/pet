@@ -5,6 +5,7 @@
 #include <vector>
 #include <functional>
 #include <assert.h>
+#include <stdio.h>
 
 #include "../GlmIncludes.h"
 #include "PackedDataindex.h"
