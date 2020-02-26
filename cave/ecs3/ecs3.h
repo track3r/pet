@@ -6,9 +6,11 @@
 //+entity ids
 //+world update
 //+sample system test
+//+transform component
+//+cube component + system
+//+integrtate
+//test multi family
 //remove entity
-//transform component
-//cube component
 //singletons
 //player controller, camera
 //sorta mesh component
@@ -46,7 +48,8 @@ namespace ecs3
     enum class ComponentType
     {
         Sample = 0,
-        Max = 1,
+        Transform = 1,
+        Max = 2,
     };
 
     class ComponentFactory
@@ -285,6 +288,19 @@ namespace ecs3
         int test;
         int test2;
         const static int ID = (int)ComponentType::Sample;
+    };
+
+    class TransformComponent : public Component
+    {
+    public:
+        TransformComponent()
+            :matrix()
+        {
+        }
+
+
+        glm::mat4 matrix;
+        const static int ID = (int)ComponentType::Transform;
     };
     
     class System

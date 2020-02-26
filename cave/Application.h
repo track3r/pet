@@ -16,7 +16,10 @@
 const float c_speed = 3.0f;
 const float c_mouseSpeed = 0.005f;
 
-class World;
+namespace ecs3
+{
+	class World;
+};
 
 class Application
 {
@@ -48,6 +51,6 @@ private:
 	UserInput m_input;
   
     Renderer _renderer;
-    World* _world;
+	ecs3::World* _world;
 };
 

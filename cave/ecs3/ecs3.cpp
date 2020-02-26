@@ -8,6 +8,8 @@ namespace ecs3
     ComponentFactory::CreateComponentFn ComponentFactory::_functions[(size_t)ComponentType::Max];
 
     static const int __sample = ComponentFactory::registerComponent<SampleComponent>();
+    static const int __trans = ComponentFactory::registerComponent<TransformComponent>();
+
     Id World::createEntity(const Configuration& configuration)
     {
         Id id = _index.create();
