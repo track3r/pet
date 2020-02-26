@@ -9,7 +9,7 @@
 //+transform component
 //+cube component + system
 //+integrtate
-//test multi family
+//+test multi family
 //remove entity
 //singletons
 //player controller, camera
@@ -111,38 +111,7 @@ namespace ecs3
             return true;
         }
 
-        bool matches(const Configuration& other)
-        {
-            int i = 0;
-            int j = 0;
-            
-            while (i < other._components.size())
-            {
-                if (j >= _components.size())
-                {
-                    return false;
-                }
-
-                int a = other._components[i].id;
-                int b = _components[j].id;
-
-                if (a == b)
-                {
-                    i++;
-                    j++;
-                }
-                else if (a < b)
-                {
-                    i++;
-                }
-                else
-                {
-                    j++;
-                }
-            }
-
-            return true;
-        }
+        bool matches(const Configuration& other);
     };
 
     class Family
@@ -269,13 +238,7 @@ namespace ecs3
         TypedData<Entity> _data;
     };
 
-    class Component
-    {
-    public:
-        virtual ~Component() {}
-    };
-
-    class SampleComponent : public Component
+    class SampleComponent
     {
     public:
         SampleComponent()
@@ -290,7 +253,7 @@ namespace ecs3
         const static int ID = (int)ComponentType::Sample;
     };
 
-    class TransformComponent : public Component
+    class TransformComponent
     {
     public:
         TransformComponent()

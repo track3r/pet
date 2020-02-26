@@ -51,9 +51,23 @@ void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severi
 }
 #endif
 
+void CreateTestComponents(ecs3::World* _world)
+{
+	ecs3::Configuration configuration;
+	configuration.addComponent<ecs3::TransformComponent>();
+	_world->createEntity(configuration);
+
+	ecs3::Configuration configuration2;
+	configuration2.addComponent<ecs3::SampleComponent>();
+	_world->createEntity(configuration2);
+
+	configuration.addComponent<ecs3::SampleComponent>();
+	_world->createEntity(configuration);
+}
+
 bool Application::init(SDL_Window* window)
 {
-	ecs3::Tests();
+	//ecs3::Tests();
     _app = this;
 	m_win = window;
     while (glGetError() != GL_NO_ERROR){}
@@ -87,11 +101,7 @@ bool Application::init(SDL_Window* window)
 	_world->registerSystem<ecs3::SampleSystem>();
 	_world->registerSystem<ecs3::SampleRenderSystem>();
 
-	ecs3::Configuration configuration;
-	configuration.addComponent<ecs3::TransformComponent>();
-	configuration.addComponent<ecs3::SampleComponent>();
-
-	_world->createEntity(configuration);
+	CreateTestComponents(_world);
     
 	return true;
 }

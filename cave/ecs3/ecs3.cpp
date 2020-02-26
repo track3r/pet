@@ -111,4 +111,36 @@ namespace ecs3
         TestIndex();
         Test0();
     }
+    bool Configuration::matches(const Configuration& other)
+    {
+        int i = 0;
+        int j = 0;
+
+        while (i < other._components.size())
+        {
+            if (j >= _components.size())
+            {
+                return false;
+            }
+
+            int a = other._components[i].id;
+            int b = _components[j].id;
+
+            if (a == b)
+            {
+                i++;
+                j++;
+            }
+            else if (a < b)
+            {
+                j++;
+            }
+            else
+            {
+                i++;
+            }
+        }
+
+        return true;
+    }
 }
