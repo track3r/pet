@@ -6,6 +6,7 @@ namespace ecs3
     //int SampleComponent::ID = nextId++;
 
     ComponentFactory::CreateComponentFn ComponentFactory::_functions[(size_t)ComponentType::Max] = { 0 };
+    uint16_t ComponentFactory::_sizes[(int)ComponentType::Max] = { 0 };
 
     static const int __sample = ComponentFactory::registerComponent<SampleComponent>();
     static const int __trans = ComponentFactory::registerComponent<TransformComponent>();
@@ -123,8 +124,8 @@ namespace ecs3
                 return false;
             }
 
-            int a = other._components[i].id;
-            int b = _components[j].id;
+            int a = other._components[i];
+            int b = _components[j];
 
             if (a == b)
             {

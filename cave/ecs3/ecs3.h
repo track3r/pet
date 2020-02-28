@@ -30,22 +30,6 @@ namespace ecs3
 {
     class System;
 
-    struct ComponentInfo
-    {
-        ComponentInfo()
-            :id(-1)
-            , size(0) 
-        {}
-
-        ComponentInfo(int id, size_t size)
-            : id(id)
-            , size(size) 
-        {}
-
-        int id;
-        size_t size;
-    };
-
     enum class ComponentType
     {
         Sample = 0,
@@ -85,17 +69,23 @@ namespace ecs3
             _functions[id](memory, nullptr, nullptr, Operation::Delete);
         }
 
-        static void registerComponent(int id, CreateComponentFn function)
+        static void registerComponent(int id, CreateComponentFn function, uint16_t size)
         {
             assert(_functions[id] == nullptr);
             _functions[id] = function;
+            _sizes[id] = size;
+        }
+
+        static uint16_t getComponentSize(int id)
+        {
+            return _sizes[id];
         }
 
         template<class T>
         static int registerComponent()
         {
             CreateComponentFn funcP = &componentNew<T>;
-            registerComponent(T::ID, funcP);
+            registerComponent(T::ID, funcP, (uint16_t) sizeof(T));
             return T::ID;
         }
 
@@ -123,21 +113,20 @@ namespace ecs3
             }
         }
         static CreateComponentFn _functions[];
+        static uint16_t _sizes[];
     };
 
     
     class Configuration
     {
     public:
-        std::vector<ComponentInfo> _components;
+        std::vector<int> _components;
 
         template<class C>
         Configuration& addComponent()
         {
-            _components.emplace_back(ComponentInfo(C::ID, sizeof(C)));
-            std::sort(begin(_components), end(_components), [](const ComponentInfo& a, const ComponentInfo b) {
-                return a.id < b.id;
-            });
+            _components.emplace_back(C::ID);
+            std::sort(begin(_components), end(_components));
 
             return *this;
         }
@@ -151,7 +140,7 @@ namespace ecs3
 
             for (int i = 0; i < _components.size(); i++)
             {
-                if (_components[i].id != other._components[i].id)
+                if (_components[i] != other._components[i])
                 {
                     return false;
                 }
@@ -162,11 +151,29 @@ namespace ecs3
         bool matches(const Configuration& other);
     };
 
-    class EntitityConfiguration
+    class EntitityPrefab
     {
     public:
-
+        //Conf conf;
+        //conf.AddComponent(Sample(123));
+        //Id ent = world.create(conf);
         Configuration _configuration;
+
+
+        template<class T>
+        void addComponent(T component)
+        {
+            _configuration.addComponent<T>();
+        }
+
+        uint8_t getData(int id)
+        {
+            //int size = _configuration.
+        }
+
+        uint16_t _offsets[(int)ComponentType::Max] = { 0 };
+        uint8_t _scratchMem[1024];
+        int _curOffset = 0;
     };
 
     class Family
@@ -179,7 +186,7 @@ namespace ecs3
         {
             for (int i = 0; i < configuration._components.size(); i++)
             {
-                _data[i].init(configuration._components[i].size);
+                _data[i].init( ComponentFactory::getComponentSize(configuration._components[i]));
             }
         }
 
@@ -191,7 +198,7 @@ namespace ecs3
             for (int i = 0; i < _configuration._components.size(); i++)
             {
                 uint8_t* dataPtr = _data[i].addPtr();
-                ComponentFactory::createComponent(_configuration._components[i].id, dataPtr);
+                ComponentFactory::createComponent(_configuration._components[i], dataPtr);
                 printf("%p\n", dataPtr);
             }
 
@@ -202,7 +209,7 @@ namespace ecs3
         {
             for (int i = 0; i < _configuration._components.size(); i++)
             {
-                if (_configuration._components[i].id == id)
+                if (_configuration._components[i] == id)
                 {
                     return _data[i].getPointer(0);
                 }
