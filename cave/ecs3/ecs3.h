@@ -168,7 +168,7 @@ namespace ecs3
             _offsets[T::ID] = _curOffset;
         }
 
-        uint8_t* getData(int id)
+        const uint8_t* getData(int id)
         {
             assert(_offsets[id] != 0);
             const uint16_t size = ComponentFactory::getComponentSize(id);
@@ -329,6 +329,11 @@ namespace ecs3
         {
         }
 
+        TransformComponent(glm::vec3 origin)
+            :matrix(glm::translate(glm::mat4(), origin))
+        {
+
+        }
 
         glm::mat4 matrix;
         const static int ID = (int)ComponentType::Transform;

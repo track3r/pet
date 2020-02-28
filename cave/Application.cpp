@@ -63,6 +63,9 @@ void CreateTestComponents(ecs3::World* _world)
 
 	configuration.addComponent<ecs3::SampleComponent>();
 	_world->createEntity(configuration);
+
+	ecs3::EntitityPrefab prefab;
+	prefab.addComponent(ecs3::TransformComponent(glm::vec3(1.0f, 1.0f, 1.0f)));
 }
 
 bool Application::init(SDL_Window* window)
