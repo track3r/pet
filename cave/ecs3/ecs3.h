@@ -10,6 +10,7 @@
 //+cube component + system
 //+integrtate
 //+test multi family
+//create component params
 //remove entity
 //singletons
 //player controller, camera
@@ -55,29 +56,37 @@ namespace ecs3
     class ComponentFactory
     {
     public:
-        typedef std::function<void(uint8_t*)> CreateComponentFn;
+        typedef void(*CreateComponentFn)(uint8_t*);
         static void createComponent(int id, uint8_t* memory)
         {
-            assert(_functions[id] != false);
+            assert(_functions[id] != nullptr);
             _functions[id](memory);
         }
 
         static void registerComponent(int id, CreateComponentFn function)
         {
-            assert(_functions[id] == false);
+            assert(_functions[id] == nullptr);
             _functions[id] = function;
         }
 
         template<class T>
         static int registerComponent()
         {
-            registerComponent(T::ID, [](uint8_t* memory) {new (memory) T(); });
+            CreateComponentFn funcP = &componentNew<T>;
+            registerComponent(T::ID, funcP);
             return T::ID;
         }
+
     private:
+        template<class T>
+        static void componentNew(uint8_t* memory)
+        {
+            new (memory) T();
+        }
         static CreateComponentFn _functions[];
     };
 
+    
     class Configuration
     {
     public:
