@@ -56,11 +56,33 @@ namespace ecs3
     class ComponentFactory
     {
     public:
-        typedef void(*CreateComponentFn)(uint8_t*);
+        enum class Operation
+        {
+            New, Move, Copy, Delete
+        };
+        typedef void(*CreateComponentFn)(uint8_t*, void* param, const void* constParam, Operation op);
         static void createComponent(int id, uint8_t* memory)
         {
             assert(_functions[id] != nullptr);
-            _functions[id](memory);
+            _functions[id](memory, nullptr, nullptr, Operation::New);
+        }
+        
+        static void moveComponent(int id, uint8_t* memory, void* existing)
+        {
+            assert(_functions[id] != nullptr);
+            _functions[id](memory, existing, nullptr, Operation::Move);
+        }
+
+        static void copyComponent(int id, uint8_t* memory, const void* existing)
+        {
+            assert(_functions[id] != nullptr);
+            _functions[id](memory, nullptr, existing, Operation::Copy);
+        }
+
+        static void deleteComponent(int id, uint8_t* memory)
+        {
+            assert(_functions[id] != nullptr);
+            _functions[id](memory, nullptr, nullptr, Operation::Delete);
         }
 
         static void registerComponent(int id, CreateComponentFn function)
@@ -79,9 +101,26 @@ namespace ecs3
 
     private:
         template<class T>
-        static void componentNew(uint8_t* memory)
+        static void componentNew(uint8_t* memory, void* param, const void* constParam, Operation op)
         {
-            new (memory) T();
+            T* prev = (T*)param;
+            const T* prevConst = (T*)constParam;
+            switch (op)
+            {
+            case ecs3::ComponentFactory::Operation::New:
+                new (memory) T();
+                break;
+            case ecs3::ComponentFactory::Operation::Move:
+                new (memory) T(std::move(*prev));
+                break;
+            case ecs3::ComponentFactory::Operation::Copy:
+                new (memory) T((*prevConst));
+                break;
+            case ecs3::ComponentFactory::Operation::Delete:
+                T* obj = (T*)memory;
+                obj->~T();
+                break;
+            }
         }
         static CreateComponentFn _functions[];
     };
@@ -121,6 +160,13 @@ namespace ecs3
         }
 
         bool matches(const Configuration& other);
+    };
+
+    class EntitityConfiguration
+    {
+    public:
+
+        Configuration _configuration;
     };
 
     class Family
