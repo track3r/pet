@@ -154,21 +154,27 @@ namespace ecs3
     class EntitityPrefab
     {
     public:
-        //Conf conf;
-        //conf.AddComponent(Sample(123));
-        //Id ent = world.create(conf);
         Configuration _configuration;
-
 
         template<class T>
         void addComponent(T component)
         {
+            const uint16_t size = ComponentFactory::getComponentSize(T::ID);
+            assert(_curOffset + size < 1024);
             _configuration.addComponent<T>();
+            uint8_t* ptr = &_scratchMem[0] + _curOffset;
+            ComponentFactory::copyComponent(T::ID, ptr, &component);
+            _curOffset += size;
+            _offsets[T::ID] = _curOffset;
         }
 
-        uint8_t getData(int id)
+        uint8_t* getData(int id)
         {
-            //int size = _configuration.
+            assert(_offsets[id] != 0);
+            const uint16_t size = ComponentFactory::getComponentSize(id);
+            const int beginOffset = _offsets[id] - size;
+            uint8_t* ptr = &_scratchMem[0] + beginOffset;
+            return ptr;
         }
 
         uint16_t _offsets[(int)ComponentType::Max] = { 0 };
