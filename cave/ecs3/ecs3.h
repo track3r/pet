@@ -9,15 +9,16 @@
 //+integrtate
 //+test multi family
 //+create component params(prefab)
-//singletons
-//player controller, camera
-//remove entity
+//+singletons
+//+(sorta)player controller, camera
+
 //sorta mesh component
 //mesh loader
 //lighting system
 //shadows
 //textures
 //voxel chunk component
+//remove entity
 
 //landscape or dungeon gen
 //collision
