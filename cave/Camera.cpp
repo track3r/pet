@@ -10,7 +10,15 @@ glm::mat4 Camera::getVpMatrix() const
 	//glm::lookAt(glm::vec3(4, 3, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0))
 	//auto temp = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 	//return m_projection * temp;
-	return m_projection * m_view;
+	if (_debug)
+	{
+		return m_projection * _debugView;
+	}
+	else
+	{
+		return m_projection * m_view;
+	}
+	
 	//return m_projection * glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 }
 
@@ -29,7 +37,7 @@ void Camera::computeView()
 		);
 
 	m_up = glm::cross(m_right, m_direction);
-	m_view = glm::lookAt(m_position, m_position + m_direction, m_up);
+	_debugView = glm::lookAt(m_position, m_position + m_direction, m_up);
 }
 
 void Camera::rotateBy(float horizontal, float vertical)
@@ -55,5 +63,5 @@ void Camera::strafe(float distance)
 
 void Camera::setProjection(glm::vec2 view, float fov)
 {
-	m_projection = glm::perspective(fov, view.x / view.y, 0.1f, 100.f);
+	m_projection = glm::perspective(fov, view.x / view.y, 0.1f, 1000.f);
 }

@@ -163,31 +163,31 @@ namespace ecs3
 
     bool Configuration::matches(const Configuration& other)
     {
-        int i = 0;
-        int j = 0;
+        int otherIndex = 0;
+        int myIndex = 0;
 
-        while (i < other._components.size())
+        while (otherIndex < other._components.size())
         {
-            if (j >= _components.size())
+            if (myIndex >= _components.size())
             {
                 return false;
             }
 
-            int a = other._components[i];
-            int b = _components[j];
+            int ot = other._components[otherIndex];
+            int my = _components[myIndex];
 
-            if (a == b)
+            if (ot == my)
             {
-                i++;
-                j++;
+                myIndex++;
+                otherIndex++;
             }
-            else if (a < b)
+            else if (ot < my)
             {
-                j++;
+                return false;
             }
-            else
+            else //other > my
             {
-                i++;
+                myIndex++;
             }
         }
 

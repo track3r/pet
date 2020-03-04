@@ -27,7 +27,7 @@ namespace ecs3
 
     void SampleSystem::onUpdate(BlockIterator& iterator)
     {
-        printf("Sample system update, size: %i\n", (int)iterator.size());
+        //printf("Sample system update, size: %i\n", (int)iterator.size());
         Id* ids = iterator.getEntities();
         SampleComponent* components = iterator.getComponents<SampleComponent>();
 
@@ -35,7 +35,7 @@ namespace ecs3
         {
             Id id = ids[i];
             SampleComponent* comp = components + i;
-            printf("\tent: %u, test: %i, test2: %i\n", (unsigned int)id.index, comp->test, comp->test2);
+            //printf("\tent: %u, test: %i, test2: %i\n", (unsigned int)id.index, comp->test, comp->test2);
             comp->test2++;
         }
     }
@@ -74,6 +74,9 @@ namespace ecs3
             input.strafe = 0;
 
         input.cameraMove = input.mouse * input.mouseSpeed * frame.dt * 100.f;
+        input.forward *= frame.dt;
+        input.strafe *= frame.dt;
+        input.mouse = glm::vec2(0.f, 0.f);
     }
 
     void InputSystem::onUpdate(BlockIterator& iterator)

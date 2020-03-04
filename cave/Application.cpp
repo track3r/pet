@@ -54,6 +54,10 @@ void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severi
 
 void CreateTestComponents(ecs3::World* _world)
 {
+	ecs3::Configuration singleConf;
+	singleConf.addComponent<ecs3::TransformComponent>();
+	_world->createEntity(singleConf);
+
 	ecs3::Configuration configuration;
 	configuration.addComponent<ecs3::TransformComponent>();
 	configuration.addComponent<ecs3::SampleComponent>();
@@ -62,10 +66,10 @@ void CreateTestComponents(ecs3::World* _world)
 	ecs3::EntitityPrefab prefab;
 	prefab.addComponent(ecs3::TransformComponent(glm::vec3(1.0f, 1.0f, 1.0f)));
 	prefab.addComponent(ecs3::SampleComponent());
-	//_world->createEntity(prefab);
+	_world->createEntity(prefab);
 
 	ecs3::EntitityPrefab playerConf;
-	playerConf.addComponent(ecs3::TransformComponent(glm::vec3(-10.f, 0.f, 0.f)));
+	playerConf.addComponent(ecs3::TransformComponent(glm::vec3(10.f, 0.f, 0.f)));
 	playerConf.addComponent(ecs3::SampleComponent());
 	playerConf.addComponent(PlayerComponent());
 	_world->createEntity(playerConf);
@@ -105,9 +109,9 @@ bool Application::init(SDL_Window* window)
     
 	_world = new ecs3::World();
 	_world->registerSystem<ecs3::InputSystem>();
-	_world->registerSystem<PlayerSysten>();
-	//_world->registerSystem<ecs3::SampleSystem>();
-	//_world->registerSystem<ecs3::SampleRenderSystem>();
+	_world->registerSystem<PlayerSystem>();
+	_world->registerSystem<ecs3::SampleSystem>();
+	_world->registerSystem<ecs3::SampleRenderSystem>();
 
 	_world->get<ecs3::InputSingleton>().mouseSpeed = c_mouseSpeed;
 	CreateTestComponents(_world);
@@ -127,11 +131,19 @@ void Application::render()
 	SDL_GL_SwapWindow(m_win);
 }
 
+static int firstUpdates = 10;
 void Application::updateMouseView(int x, int y)
 {
 	//printf("Application::updateMouseView\n");
-	const auto mid = m_windowSize * .5f;
-	const auto move = (mid - glm::vec2(x, y)) * c_mouseSpeed * m_dt * 100.f;
+	glm::vec2 mid = m_windowSize * .5f;
+	glm::vec2 move = (mid - glm::vec2(x, y)) * c_mouseSpeed * m_dt * 100.f;
+	if (firstUpdates > 0)
+	{
+		firstUpdates--;
+		SDL_WarpMouseInWindow(m_win, (int)mid.x, (int)mid.y);
+	}
+	printf("x: %i, y: %i\n", x, y);
+	
 	_world->get<ecs3::InputSingleton>().mouse = mid - glm::vec2(x, y);
 	_renderer.camera().rotateBy(move.x, move.y);
 	
@@ -172,6 +184,10 @@ void Application::keyEvent(SDL_Keycode key, bool pressed)
 	}
 	else
 	{
+		if (key == SDLK_F1)
+		{
+			_renderer.camera().toggleDebug();
+		}
 		m_input.keyUp(key);
 		_world->get<ecs3::InputSingleton>().keyUp(key);
 	}
