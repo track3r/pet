@@ -1,3 +1,5 @@
+#pragma once
+
 namespace ecs3
 {
     class SampleComponent

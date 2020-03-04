@@ -7,6 +7,7 @@
 
 #include "ecs3/ecs3pch.h"
 #include "ecs3/SampleRenderSystem.h"
+#include "ecs3/PlayerSystem.h"
 
 #if defined(_MSC_VER) 
 void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const  void* userParam)
@@ -55,19 +56,19 @@ void CreateTestComponents(ecs3::World* _world)
 {
 	ecs3::Configuration configuration;
 	configuration.addComponent<ecs3::TransformComponent>();
-	//_world->createEntity(configuration);
-
-	ecs3::Configuration configuration2;
-	configuration2.addComponent<ecs3::SampleComponent>();
-	//_world->createEntity(configuration2);
-
 	configuration.addComponent<ecs3::SampleComponent>();
 	_world->createEntity(configuration);
 
 	ecs3::EntitityPrefab prefab;
 	prefab.addComponent(ecs3::TransformComponent(glm::vec3(1.0f, 1.0f, 1.0f)));
 	prefab.addComponent(ecs3::SampleComponent());
-	_world->createEntity(prefab);
+	//_world->createEntity(prefab);
+
+	ecs3::EntitityPrefab playerConf;
+	playerConf.addComponent(ecs3::TransformComponent(glm::vec3(-10.f, 0.f, 0.f)));
+	playerConf.addComponent(ecs3::SampleComponent());
+	playerConf.addComponent(PlayerComponent());
+	_world->createEntity(playerConf);
 }
 
 bool Application::init(SDL_Window* window)
@@ -104,8 +105,9 @@ bool Application::init(SDL_Window* window)
     
 	_world = new ecs3::World();
 	_world->registerSystem<ecs3::InputSystem>();
-	_world->registerSystem<ecs3::SampleSystem>();
-	_world->registerSystem<ecs3::SampleRenderSystem>();
+	_world->registerSystem<PlayerSysten>();
+	//_world->registerSystem<ecs3::SampleSystem>();
+	//_world->registerSystem<ecs3::SampleRenderSystem>();
 
 	_world->get<ecs3::InputSingleton>().mouseSpeed = c_mouseSpeed;
 	CreateTestComponents(_world);

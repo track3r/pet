@@ -36,7 +36,7 @@ namespace ecs3
 
             Application::getRenderer()->renderCube(trans->matrix);
 
-            trans->matrix = glm::translate(trans->matrix, glm::vec3(0.001, 0.0f, 0.0f));
+            //trans->matrix = glm::translate(trans->matrix, glm::vec3(0.001, 0.0f, 0.0f));
             
         }
     }

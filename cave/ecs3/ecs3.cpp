@@ -116,6 +116,11 @@ namespace ecs3
 
     bool World::getBlock(const Configuration& configuration, BlockIterator& out)
     {
+        if (configuration._components.empty())
+        {
+            return false;
+        }
+
         const int begin = out._family ? out._familyId + 1 : 0;
         for (int i = begin; i < _families.size(); i++)
         {

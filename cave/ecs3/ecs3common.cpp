@@ -73,7 +73,7 @@ namespace ecs3
         else
             input.strafe = 0;
 
-        const auto move = input.mouse * input.mouseSpeed * frame.dt * 100.f;
+        input.cameraMove = input.mouse * input.mouseSpeed * frame.dt * 100.f;
     }
 
     void InputSystem::onUpdate(BlockIterator& iterator)

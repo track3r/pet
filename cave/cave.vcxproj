@@ -161,6 +161,7 @@
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="ecs3\ecs3.cpp" />
     <ClCompile Include="ecs3\ecs3common.cpp" />
+    <ClCompile Include="ecs3\PlayerSystem.cpp" />
     <ClCompile Include="GeometryBuilder.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RenderElement.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="ecs3\ecs3common.h" />
     <ClInclude Include="ecs3\PackedDataIndex.h" />
     <ClInclude Include="ecs3\ecs3pch.h" />
+    <ClInclude Include="ecs3\PlayerSystem.h" />
     <ClInclude Include="GeometryBuilder.h" />
     <ClInclude Include="GlHeaders.h" />
     <ClInclude Include="GlmIncludes.h" />

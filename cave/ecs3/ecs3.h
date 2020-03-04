@@ -32,7 +32,8 @@ namespace ecs3
     {
         Sample = 0,
         Transform = 1,
-        Max = 2,
+        Player = 2,
+        Max,
     };
 
     enum class SingleComponentType
