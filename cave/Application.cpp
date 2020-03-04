@@ -5,7 +5,7 @@
 #include "Utils.h"
 #include "Room.h"
 
-#include "ecs3/ecs3.h"
+#include "ecs3/ecs3pch.h"
 #include "ecs3/SampleRenderSystem.h"
 
 #if defined(_MSC_VER) 

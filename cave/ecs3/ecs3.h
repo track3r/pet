@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ecs3pch.h"
-
 //TODO:
 //+entity ids
 //+world update
@@ -30,11 +28,18 @@ namespace ecs3
 {
     class System;
 
-    enum class ComponentType
+    enum class ComponentType : int
     {
         Sample = 0,
         Transform = 1,
         Max = 2,
+    };
+
+    enum class SingleComponentType
+    {
+        Input,
+        Camera,
+        Max,
     };
 
     class ComponentFactory
@@ -197,76 +202,18 @@ namespace ecs3
     class Family
     {
     public:
-        Family(Configuration configuration)
-            :_configuration(configuration)
-            ,_data((int)configuration._components.size())
-            ,_index(1024)
-        {
-            for (int i = 0; i < configuration._components.size(); i++)
-            {
-                _data[i].init( ComponentFactory::getComponentSize(configuration._components[i]));
-            }
-        }
+        Family(Configuration configuration);
 
-        Id addEntity(Id id)
-        {
-            Id localId = _index.create();
-            assert(localId.isValid());
-            _externalIds.add(id);
-            for (int i = 0; i < _configuration._components.size(); i++)
-            {
-                uint8_t* dataPtr = _data[i].addPtr();
-                ComponentFactory::createComponent(_configuration._components[i], dataPtr);
-                printf("%p\n", dataPtr);
-            }
-
-            return localId;
-        }
-
-        Id addEntity(Id id, const PrefabData& data)
-        {
-            Id localId = _index.create();
-            assert(localId.isValid());
-            _externalIds.add(id);
-            for (int i = 0; i < _configuration._components.size(); i++)
-            {
-                uint8_t* dataPtr = _data[i].addPtr();
-                const int id = _configuration._components[i];
-                ComponentFactory::copyComponent(id, dataPtr, data.getData(id));
-                printf("%p\n", dataPtr);
-            }
-
-            return localId;
-        }
-
-        void *getData(int id)
-        {
-            for (int i = 0; i < _configuration._components.size(); i++)
-            {
-                if (_configuration._components[i] == id)
-                {
-                    return _data[i].getPointer(0);
-                }
-            }
-
-            assert(false && "invalid id");
-            return nullptr;
-        }
+        Id addEntity(Id id);
+        Id addEntity(Id id, const PrefabData& data);
+        void* getData(int id);
+        Id* getEntities();
+        size_t size();
 
         template<class T>
         T* getComponents()
         {
             return (T*) getData(T::ID);
-        }
-
-        Id* getEntities()
-        {
-            return _externalIds.getPtr(0);
-        }
-
-        size_t size()
-        {
-            return _index.size();
         }
 
         Configuration           _configuration;
@@ -278,20 +225,10 @@ namespace ecs3
     //to be extended to handle non consecutive data blocks too
     struct BlockIterator
     {
-        BlockIterator()
-            :_family(nullptr)
-            , _familyId(0)
-        {
+        BlockIterator();
 
-        }
-
-        Family* _family;
-        int _familyId;
-
-        Id* getEntities()
-        {
-            return _family->getEntities();
-        }
+        Id* getEntities();
+        size_t size();
 
         template<class T>
         T* getComponents()
@@ -299,10 +236,8 @@ namespace ecs3
             return _family->getComponents<T>();
         }
 
-        size_t size()
-        {
-            return _family->size();
-        }
+        Family* _family;
+        int _familyId;
     };
 
     class Entity
@@ -331,44 +266,23 @@ namespace ecs3
             _systems.push_back(new T(this));
             _systems.back()->onRegister();
         }
+
+        template<typename T>
+        T& getSingleton()
+        {
+            if (_singletons[T::ID] == nullptr)
+            {
+                _singletons[T::ID] = new T();
+            }
+
+            return *((T*)_singletons[T::ID]);
+        }
         
         std::vector<System*>    _systems;
+        uint8_t*                _singletons[(int)SingleComponentType::Max] = { 0 };
         std::vector<Family>     _families;
-        PackedArrayIndex<Id> _index;
-        TypedData<Entity> _data;
-    };
-
-    class SampleComponent
-    {
-    public:
-        SampleComponent()
-            :test2(0)
-        {
-            void* ptr = this;
-            int* ptr2 = (int*)&ptr;
-            test = *ptr2;
-        }
-        int test;
-        int test2;
-        const static int ID = (int)ComponentType::Sample;
-    };
-
-    class TransformComponent
-    {
-    public:
-        TransformComponent()
-            :matrix()
-        {
-        }
-
-        TransformComponent(glm::vec3 origin)
-            :matrix(glm::translate(glm::mat4(), origin))
-        {
-
-        }
-
-        glm::mat4 matrix;
-        const static int ID = (int)ComponentType::Transform;
+        PackedArrayIndex<Id>    _index;
+        TypedData<Entity>       _data;
     };
     
     class System
@@ -384,7 +298,10 @@ namespace ecs3
             _configuration.addComponent<T>();
             return _configuration;
         }
-
+        void beforeUpdate()
+        {
+            onBeforeUpdate();
+        }
         bool update()
         {
             BlockIterator iterator;
@@ -398,42 +315,11 @@ namespace ecs3
 
         virtual ~System() {}
         virtual void onUpdate(BlockIterator& iterator) {}
+        virtual void onBeforeUpdate() {}
         virtual void onRegister() {}
 
     protected:
         World* _world;
         Configuration   _configuration;
     };
-
-    class SampleSystem : public System
-    {
-    public:
-        SampleSystem(World* world)
-            :System(world)
-        {
-
-        }
-        virtual void onRegister() override
-        {
-            addComponent<SampleComponent>();
-        }
-
-        virtual void onUpdate(BlockIterator& iterator) override
-        {
-            printf("Sample system update, size: %i\n", (int) iterator.size());
-            Id* ids = iterator.getEntities();
-            SampleComponent* components = iterator.getComponents<SampleComponent>();
-
-            for (int i = 0; i < iterator.size(); i++)
-            {
-                Id id = ids[i];
-                SampleComponent* comp = components + i;
-                printf("\tent: %u, test: %i, test2: %i\n", (unsigned int)id.index, comp->test, comp->test2);
-                comp->test2++;
-            }
-        }
-    };
-
-    void Test0();
-    void Tests();
 }

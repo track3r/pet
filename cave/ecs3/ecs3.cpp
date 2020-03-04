@@ -1,4 +1,4 @@
-#include "ecs3.h"
+#include "ecs3pch.h"
 
 namespace ecs3
 {
@@ -8,8 +8,71 @@ namespace ecs3
     ComponentFactory::CreateComponentFn ComponentFactory::_functions[(size_t)ComponentType::Max] = { 0 };
     uint16_t ComponentFactory::_sizes[(int)ComponentType::Max] = { 0 };
 
-    static const int __sample = ComponentFactory::registerComponent<SampleComponent>();
-    static const int __trans = ComponentFactory::registerComponent<TransformComponent>();
+    Family::Family(Configuration configuration)
+        :_configuration(configuration)
+        , _data((int)configuration._components.size())
+        , _index(1024)
+    {
+        for (int i = 0; i < configuration._components.size(); i++)
+        {
+            _data[i].init(ComponentFactory::getComponentSize(configuration._components[i]));
+        }
+    }
+
+    Id Family::addEntity(Id id)
+    {
+        Id localId = _index.create();
+        assert(localId.isValid());
+        _externalIds.add(id);
+        for (int i = 0; i < _configuration._components.size(); i++)
+        {
+            uint8_t* dataPtr = _data[i].addPtr();
+            ComponentFactory::createComponent(_configuration._components[i], dataPtr);
+            printf("%p\n", dataPtr);
+        }
+
+        return localId;
+    }
+
+    Id Family::addEntity(Id id, const PrefabData& data)
+    {
+        Id localId = _index.create();
+        assert(localId.isValid());
+        _externalIds.add(id);
+        for (int i = 0; i < _configuration._components.size(); i++)
+        {
+            uint8_t* dataPtr = _data[i].addPtr();
+            const int id = _configuration._components[i];
+            ComponentFactory::copyComponent(id, dataPtr, data.getData(id));
+            printf("%p\n", dataPtr);
+        }
+
+        return localId;
+    }
+
+    void* Family::getData(int id)
+    {
+        for (int i = 0; i < _configuration._components.size(); i++)
+        {
+            if (_configuration._components[i] == id)
+            {
+                return _data[i].getPointer(0);
+            }
+        }
+
+        assert(false && "invalid id");
+        return nullptr;
+    }
+
+    Id* Family::getEntities()
+    {
+        return _externalIds.getPtr(0);
+    }
+
+    size_t Family::size()
+    {
+        return _index.size();
+    }
 
     Id World::createEntity(const Configuration& configuration, const PrefabData* data)
     {
@@ -76,6 +139,11 @@ namespace ecs3
     {
         for (System* sys : _systems)
         {
+            sys->onBeforeUpdate();
+        }
+
+        for (System* sys : _systems)
+        {
             sys->update();
         }
     }
@@ -87,46 +155,7 @@ namespace ecs3
             //delete _systems[i];
         }
     }
-    void TestIndex()
-    {
-        PackedArrayIndex<Id> index(10);
-        for (int i = 0; i < 10; i++)
-        {
-            assert(index.create().isValid());
-        }
-    }
-    void Test0()
-    {
-        World world;
-        world.registerSystem<SampleSystem>();
 
-        Configuration entConf;
-        entConf.addComponent<SampleComponent>();
-        Id ent = world.createEntity(entConf);
-        printf("Created entity: %i\n", (int)ent.index);
-        world.update();
-        world.createEntity(entConf);
-        world.update();
-        world.createEntity(entConf);
-        world.update();
-        world.createEntity(entConf);
-        world.update();
-        world.createEntity(entConf);
-        world.update();
-        world.createEntity(entConf);
-        world.update();
-        world.createEntity(entConf);
-
-        world.update();
-        world.update();
-        world.update();
-
-    }
-    void Tests()
-    {
-        TestIndex();
-        Test0();
-    }
     bool Configuration::matches(const Configuration& other)
     {
         int i = 0;
@@ -158,5 +187,22 @@ namespace ecs3
         }
 
         return true;
+    }
+    
+    BlockIterator::BlockIterator()
+        :_family(nullptr)
+        , _familyId(0)
+    {
+
+    }
+    
+    Id* BlockIterator::getEntities()
+    {
+        return _family->getEntities();
+    }
+    
+    size_t BlockIterator::size()
+    {
+        return _family->size();
     }
 }
