@@ -10,10 +10,10 @@
 //+cube component + system
 //+integrtate
 //+test multi family
-//create component params
-//remove entity
+//+create component params(prefab)
 //singletons
 //player controller, camera
+//remove entity
 //sorta mesh component
 //mesh loader
 //lighting system
@@ -151,35 +151,47 @@ namespace ecs3
         bool matches(const Configuration& other);
     };
 
-    class EntitityPrefab
+    class PrefabData
     {
     public:
-        Configuration _configuration;
 
         template<class T>
-        void addComponent(T component)
+        void addComponent(const T& component)
         {
             const uint16_t size = ComponentFactory::getComponentSize(T::ID);
             assert(_curOffset + size < 1024);
-            _configuration.addComponent<T>();
             uint8_t* ptr = &_scratchMem[0] + _curOffset;
             ComponentFactory::copyComponent(T::ID, ptr, &component);
             _curOffset += size;
             _offsets[T::ID] = _curOffset;
         }
 
-        const uint8_t* getData(int id)
+        const uint8_t* const getData(int id) const
         {
             assert(_offsets[id] != 0);
             const uint16_t size = ComponentFactory::getComponentSize(id);
             const int beginOffset = _offsets[id] - size;
-            uint8_t* ptr = &_scratchMem[0] + beginOffset;
+            const uint8_t * const ptr = &_scratchMem[0] + beginOffset;
             return ptr;
         }
 
         uint16_t _offsets[(int)ComponentType::Max] = { 0 };
         uint8_t _scratchMem[1024];
         int _curOffset = 0;
+    };
+
+    class EntitityPrefab
+    {
+    public:
+        Configuration _configuration;
+        PrefabData _data;
+
+        template<class T>
+        void addComponent(const T& component)
+        {
+            _configuration.addComponent<T>();
+            _data.addComponent(component);
+        }
     };
 
     class Family
@@ -205,6 +217,22 @@ namespace ecs3
             {
                 uint8_t* dataPtr = _data[i].addPtr();
                 ComponentFactory::createComponent(_configuration._components[i], dataPtr);
+                printf("%p\n", dataPtr);
+            }
+
+            return localId;
+        }
+
+        Id addEntity(Id id, const PrefabData& data)
+        {
+            Id localId = _index.create();
+            assert(localId.isValid());
+            _externalIds.add(id);
+            for (int i = 0; i < _configuration._components.size(); i++)
+            {
+                uint8_t* dataPtr = _data[i].addPtr();
+                const int id = _configuration._components[i];
+                ComponentFactory::copyComponent(id, dataPtr, data.getData(id));
                 printf("%p\n", dataPtr);
             }
 
@@ -287,19 +315,23 @@ namespace ecs3
     class World
     {
     public:
+        World();
+        ~World();
+
+        bool getBlock(const Configuration& configuration, BlockIterator& out);
+        void update();
+        Id createEntity(const Configuration& configuration, const PrefabData* data = nullptr);
+        Id createEntity(const EntitityPrefab& prefab)
+        {
+            return createEntity(prefab._configuration, &prefab._data);
+        }
         template<typename T>
-        void registerSystem() 
+        void registerSystem()
         {
             _systems.push_back(new T(this));
             _systems.back()->onRegister();
         }
-
-        Id createEntity(const Configuration& configuration);
-        bool getBlock(const Configuration& configuration, BlockIterator& out);
-        World();
-        void update();
-        virtual ~World();
-
+        
         std::vector<System*>    _systems;
         std::vector<Family>     _families;
         PackedArrayIndex<Id> _index;
@@ -368,11 +400,8 @@ namespace ecs3
         virtual void onUpdate(BlockIterator& iterator) {}
         virtual void onRegister() {}
 
-        int priority = 0;
     protected:
         World* _world;
-
-    private:
         Configuration   _configuration;
     };
 
@@ -387,7 +416,6 @@ namespace ecs3
         virtual void onRegister() override
         {
             addComponent<SampleComponent>();
-            priority = 10000;
         }
 
         virtual void onUpdate(BlockIterator& iterator) override

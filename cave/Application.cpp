@@ -55,17 +55,19 @@ void CreateTestComponents(ecs3::World* _world)
 {
 	ecs3::Configuration configuration;
 	configuration.addComponent<ecs3::TransformComponent>();
-	_world->createEntity(configuration);
+	//_world->createEntity(configuration);
 
 	ecs3::Configuration configuration2;
 	configuration2.addComponent<ecs3::SampleComponent>();
-	_world->createEntity(configuration2);
+	//_world->createEntity(configuration2);
 
 	configuration.addComponent<ecs3::SampleComponent>();
 	_world->createEntity(configuration);
 
 	ecs3::EntitityPrefab prefab;
 	prefab.addComponent(ecs3::TransformComponent(glm::vec3(1.0f, 1.0f, 1.0f)));
+	prefab.addComponent(ecs3::SampleComponent());
+	_world->createEntity(prefab);
 }
 
 bool Application::init(SDL_Window* window)
@@ -75,7 +77,7 @@ bool Application::init(SDL_Window* window)
 	m_win = window;
     while (glGetError() != GL_NO_ERROR){}
 
-#if defined(_DEBUG) && defined(WINDOWS)
+#if defined(_DEBUG) && defined(_MSC_VER)
 	if (glDebugMessageCallback)
 	{
 		printf("Register OpenGL debug callback\n");

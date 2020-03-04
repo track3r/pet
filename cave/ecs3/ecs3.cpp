@@ -11,7 +11,7 @@ namespace ecs3
     static const int __sample = ComponentFactory::registerComponent<SampleComponent>();
     static const int __trans = ComponentFactory::registerComponent<TransformComponent>();
 
-    Id World::createEntity(const Configuration& configuration)
+    Id World::createEntity(const Configuration& configuration, const PrefabData* data)
     {
         Id id = _index.create();
 
@@ -20,7 +20,15 @@ namespace ecs3
         {
             if (_families[i]._configuration == configuration)
             {
-                _families[i].addEntity(id);
+                if (data == nullptr)
+                {
+                    _families[i].addEntity(id);
+                }
+                else
+                {
+                    _families[i].addEntity(id, *data);
+                }
+                
                 //_entities[id]._family = i;
                 entity._family = i;
                 _data.add(entity);
@@ -30,7 +38,14 @@ namespace ecs3
 
         _families.emplace_back(configuration);
         int familyId = (int)_families.size() - 1;
-        _families[familyId].addEntity(id);
+        if (data == nullptr)
+        {
+            _families[familyId].addEntity(id);
+        }
+        else
+        {
+            _families[familyId].addEntity(id, *data);
+        }
         entity._family = familyId;
         _data.add(entity);
         return id;
