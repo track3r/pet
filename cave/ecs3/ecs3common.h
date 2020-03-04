@@ -33,39 +33,54 @@ namespace ecs3
         const static int ID = (int)ComponentType::Transform;
     };
 
+    struct FrameSingleton
+    {
+        float dt = 0;
+        uint64_t number = 0;
+
+        static const int ID = (int)SingleComponentType::Frame;
+    };
+
+    struct InputSingleton
+    {
+        void keyDown(uint32_t key)
+        {
+            keyStates[key] = 1;
+        }
+
+        void keyUp(uint32_t key)
+        {
+            keyStates[key] = 0;
+        }
+
+        float forward = 0;
+        float strafe = 0;
+
+        float mouseSpeed;
+        glm::vec2 mouse;
+        glm::vec2 cameraMove;
+        std::unordered_map<uint32_t, char>  keyStates;
+
+        static const int ID = (int)SingleComponentType::Input;
+    };
+
+
     class SampleSystem final : public System
     {
     public:
-        SampleSystem(World* world)
-            :System(world)
-        {
+        SampleSystem(World* world);
+        virtual void onRegister() override;
+        virtual void onBeforeUpdate() override;
+        virtual void onUpdate(BlockIterator& iterator) override;
+    };
 
-        }
-
-        virtual void onRegister() override
-        {
-            addComponent<SampleComponent>();
-        }
-
-        virtual void onBeforeUpdate() override
-        {
-
-        }
-
-        virtual void onUpdate(BlockIterator& iterator) override
-        {
-            printf("Sample system update, size: %i\n", (int)iterator.size());
-            Id* ids = iterator.getEntities();
-            SampleComponent* components = iterator.getComponents<SampleComponent>();
-
-            for (int i = 0; i < iterator.size(); i++)
-            {
-                Id id = ids[i];
-                SampleComponent* comp = components + i;
-                printf("\tent: %u, test: %i, test2: %i\n", (unsigned int)id.index, comp->test, comp->test2);
-                comp->test2++;
-            }
-        }
+    class InputSystem final : public System
+    {
+    public:
+        InputSystem(World* world);
+        virtual void onRegister() override;
+        virtual void onBeforeUpdate() override;
+        virtual void onUpdate(BlockIterator& iterator) override;
     };
 
     void Test0();

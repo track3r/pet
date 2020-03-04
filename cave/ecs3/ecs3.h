@@ -37,6 +37,7 @@ namespace ecs3
 
     enum class SingleComponentType
     {
+        Frame,
         Input,
         Camera,
         Max,
@@ -268,11 +269,11 @@ namespace ecs3
         }
 
         template<typename T>
-        T& getSingleton()
+        T& get()
         {
             if (_singletons[T::ID] == nullptr)
             {
-                _singletons[T::ID] = new T();
+                _singletons[T::ID] = (uint8_t*)new T();
             }
 
             return *((T*)_singletons[T::ID]);

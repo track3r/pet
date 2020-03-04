@@ -103,9 +103,11 @@ bool Application::init(SDL_Window* window)
     SDL_ShowCursor(0);
     
 	_world = new ecs3::World();
+	_world->registerSystem<ecs3::InputSystem>();
 	_world->registerSystem<ecs3::SampleSystem>();
 	_world->registerSystem<ecs3::SampleRenderSystem>();
 
+	_world->get<ecs3::InputSingleton>().mouseSpeed = c_mouseSpeed;
 	CreateTestComponents(_world);
     
 	return true;
@@ -128,6 +130,7 @@ void Application::updateMouseView(int x, int y)
 	//printf("Application::updateMouseView\n");
 	const auto mid = m_windowSize * .5f;
 	const auto move = (mid - glm::vec2(x, y)) * c_mouseSpeed * m_dt * 100.f;
+	_world->get<ecs3::InputSingleton>().mouse = mid - glm::vec2(x, y);
 	_renderer.camera().rotateBy(move.x, move.y);
 	
 	SDL_WarpMouseInWindow(m_win, (int)mid.x, (int)mid.y);
@@ -138,6 +141,9 @@ void Application::update(float dt)
 	//printf("Application::update");
 	m_dt = dt;
 	m_input.UpdateControlls();
+	_world->get<ecs3::FrameSingleton>().dt = dt;
+	_world->get<ecs3::FrameSingleton>().number++;
+
 	const float move = m_dt * c_speed;
     _renderer.camera().moveForward(move * m_input.getControlls().forwad);
     _renderer.camera().strafe(move * m_input.getControlls().strafe);
@@ -158,9 +164,15 @@ void Application::keyEvent(SDL_Keycode key, bool pressed)
 {
 	//printf("Application::keyEvent\n");
 	if (pressed)
+	{
 		m_input.keyDown(key);
+		_world->get<ecs3::InputSingleton>().keyDown(key);
+	}
 	else
+	{
 		m_input.keyUp(key);
+		_world->get<ecs3::InputSingleton>().keyUp(key);
+	}
 }
 
 void Application::finish()

@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <array>
 #include <vector>
+#include <unordered_map>
 #include <functional>
 #include <assert.h>
 #include <stdio.h>
