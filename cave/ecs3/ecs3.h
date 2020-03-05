@@ -11,7 +11,7 @@
 //+create component params(prefab)
 //+singletons
 //+(sorta)player controller, camera
-
+//render debug grid
 //sorta mesh component
 //mesh loader
 //lighting system
