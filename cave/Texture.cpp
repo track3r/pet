@@ -35,7 +35,7 @@ Texture::Texture(Texture&& other)
 void Texture::init(const char* filename)
 {
 	int channels = 4;
-	unsigned char* data = stbi_load(filename, &m_size.x, &m_size.y, &channels, 4);
+	unsigned char* data = stbi_load(filename, &m_size.x, &m_size.y, &channels, 0);
 	glGenTextures(1, &m_texture);
 	CheckGlError();
 	glBindTexture(GL_TEXTURE_2D, m_texture);

@@ -11,9 +11,10 @@ TODO:
 - [x] (sorta)player controller, camera
 - [x] render debug grid
 - [x] dynamic debug render
-- [ ] textured cube
-- [ ] sorta mesh component
+- [x] textured cube
+- [ ] sorta mesh component?
 - [ ] mesh loader
+- [ ] vulkan tutorial?
 - [ ] lighting system
 - [ ] shadows
 - [ ] textures
