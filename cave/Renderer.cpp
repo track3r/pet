@@ -115,8 +115,8 @@ void Renderer::init()
         //m_debugDraw.addVec(pos, pos);
     }
 
-    m_test.setupVbo();
-    m_debugDraw.m_element.setupVbo();
+    m_test.setupVbo(false);
+    m_debugDraw.m_element.setupVbo(true);
 
     //glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
@@ -134,11 +134,14 @@ void Renderer::beginRender()
 
     //mat = glm::translate(mat, glm::vec3(0, 0, 2));
     //renderCube(mat);
+    m_debugDraw.reset();
+    m_debugDraw.drawGrid();
 }
 
 void Renderer::endRender()
 {
     glDisable(GL_DEPTH_TEST);
+    m_debugDraw.m_element.updateVbo();
     renderElement(m_debugDraw.m_program, m_debugDraw.m_element);
     glEnable(GL_DEPTH_TEST);
 }
@@ -155,6 +158,7 @@ void Renderer::renderElement(const ShaderProgram& program, const RenderElement& 
 
 void Renderer::renderCube(const glm::mat4& transform)
 {
+    m_debugDraw.drawCube(glm::vec3(transform[3]));
     renderElement(*m_program, m_test, transform);
 }
 

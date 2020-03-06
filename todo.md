@@ -1,0 +1,26 @@
+TODO:
+- [x] entity ids
+- [x] world update
+- [x] sample system test
+- [x] transform component
+- [x] cube component + system
+- [x] integrtate
+- [x] test multi family
+- [x] create component params(prefab)
+- [x] singletons
+- [x] (sorta)player controller, camera
+- [x] render debug grid
+- [x] dynamic debug render
+- [ ] textured cube
+- [ ] sorta mesh component
+- [ ] mesh loader
+- [ ] lighting system
+- [ ] shadows
+- [ ] textures
+- [ ] voxel chunk component
+- [ ] remove entity
+
+- [ ] landscape or dungeon gen
+- [ ] collision
+- [ ] ai agents
+- [ ] weapons

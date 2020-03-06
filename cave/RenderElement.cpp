@@ -34,16 +34,36 @@ RenderElement::~RenderElement()
 	glDeleteBuffers(2, m_objects);
 }
 
-void RenderElement::setupVbo() const
+void RenderElement::setupVbo(bool isStream)
 {
+	_isStream = isStream;
+	GLenum type = isStream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
 	glBindBuffer(GL_ARRAY_BUFFER, m_objects[0]);
 	CheckGlError();
-	glBufferData(GL_ARRAY_BUFFER, m_vertices->memorySize(), m_vertices->pointer(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_vertices->memorySize(), m_vertices->pointer(), type);
 	CheckGlError();
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objects[1]);
 	CheckGlError();
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices->memorySize(), m_indices->pointer(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices->memorySize(), m_indices->pointer(), type);
+	CheckGlError();
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void RenderElement::updateVbo()
+{
+	assert(_isStream);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_objects[0]);
+	CheckGlError();
+	glBufferData(GL_ARRAY_BUFFER, m_vertices->memorySize(), m_vertices->pointer(), GL_STREAM_DRAW);
+	CheckGlError();
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objects[1]);
+	CheckGlError();
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices->memorySize(), m_indices->pointer(), GL_STREAM_DRAW);
 	CheckGlError();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

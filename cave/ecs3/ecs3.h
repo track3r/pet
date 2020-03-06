@@ -1,30 +1,5 @@
 #pragma once
 
-//TODO:
-//+entity ids
-//+world update
-//+sample system test
-//+transform component
-//+cube component + system
-//+integrtate
-//+test multi family
-//+create component params(prefab)
-//+singletons
-//+(sorta)player controller, camera
-//render debug grid
-//sorta mesh component
-//mesh loader
-//lighting system
-//shadows
-//textures
-//voxel chunk component
-//remove entity
-
-//landscape or dungeon gen
-//collision
-//ai agents
-//weapons
-
 namespace ecs3
 {
     class System;

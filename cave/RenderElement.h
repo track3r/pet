@@ -81,18 +81,20 @@ public:
 	RenderElement(GLenum primitive = GL_TRIANGLES);
 	~RenderElement();
 
-	void setupVbo() const;
+	void setupVbo(bool isStream);
+	void updateVbo();
 	void render() const;
 
-	IndexBuffer* m_indices;
-	VertexBuffer* m_vertices;
-	Texture* textures[2];
+	IndexBuffer*	m_indices;
+	VertexBuffer*	m_vertices;
+	Texture*		textures[2];
 
-    int _offset = 0;
-    int _count = -1;
+    int				_offset = 0;
+    int				_count = -1;
 	
 private:
-	GLuint m_objects[2];
-	const GLenum m_mode;
+	GLuint			m_objects[2];
+	bool			_isStream = false;
+	const GLenum	m_mode;
 };
 
