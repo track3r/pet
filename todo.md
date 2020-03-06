@@ -15,6 +15,7 @@ TODO:
 - [ ] sorta mesh component?
 - [ ] mesh loader
 - [ ] vulkan tutorial?
+- [ ] Rendering back/front end with sorting and commmand gen
 - [ ] lighting system
 - [ ] shadows
 - [ ] textures
