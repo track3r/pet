@@ -6,6 +6,7 @@
 #include "RenderElement.h"
 #include "ShaderProgram.h"
 #include "DebugDraw.h"
+#include "Texture.h"
 
 class Renderer
 {
@@ -26,5 +27,6 @@ private:
     Camera m_camera;
     DebugDraw m_debugDraw;
     RenderElement m_test;
+    Texture m_texture;
     std::unique_ptr<ShaderProgram> m_program;
 };

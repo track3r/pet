@@ -31,7 +31,7 @@ void PlayerSystem::onUpdate(ecs3::BlockIterator& iterator)
     transform.matrix = glm::rotate(transform.matrix, input.cameraMove.x, glm::vec3(0.f, 1.f, 0.f));
     transform.matrix = glm::rotate(transform.matrix, input.cameraMove.y, glm::vec3(1.f, 0.f, 0.f));
 
-    printf("%f\n", input.forward);
+    //printf("%f\n", input.forward);
     transform.matrix = glm::translate(transform.matrix, glm::vec3(input.strafe * 10, 0.f, -input.forward * 10));
 
     

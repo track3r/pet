@@ -15,3 +15,5 @@
 #ifdef __APPLE__
 #pragma clang diagnostic pop
 #endif
+
+void CheckGlError();

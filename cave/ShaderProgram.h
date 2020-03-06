@@ -11,6 +11,7 @@ public:
 
 	void bind() const;
 	void setVpMatrix(const glm::mat4& matrix) const;
+	void setTexture(int texture) const;
 	void bindAttributes() const
 	{
 		bindAttributes(m_program);
@@ -23,5 +24,6 @@ private:
 private:
 	GLuint m_program;
 	GLuint m_vpMatrixLoc;
+	GLuint m_Texture0Loc;
 };
 

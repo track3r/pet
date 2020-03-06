@@ -175,6 +175,7 @@
     <ClCompile Include="VertexFormat.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\todo.md" />
     <None Include="primitive_restart.fs.glsl" />
     <None Include="primitive_restart.vs.glsl" />
   </ItemGroup>

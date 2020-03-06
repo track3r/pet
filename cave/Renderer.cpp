@@ -1,5 +1,10 @@
 #include "Renderer.h"
 
+void CheckGlError()
+{
+    int err = glGetError();
+    assert(err == GL_NO_ERROR);
+}
 
 
 Renderer::Renderer()
@@ -15,21 +20,27 @@ void Renderer::init()
 {
     const char vShaderStr[] =
         "attribute vec4 v_position; \n"
+        "attribute vec3 v_uv; \n"
         "uniform mat4 vp_matrix; \n"
-        "varying vec3 pos;"
+        "varying vec3 pos;\n"
+        "varying vec2 f_texcoord0;\n"
         "void main() \n"
         "{ \n"
         " pos = (vp_matrix * v_position).xyz;"
+        " f_texcoord0 = v_uv;\n"
         " gl_Position = vp_matrix * v_position; \n"
         "} \n";
 
     const char fShaderStr[] =
         "//precision mediump float; \n"
-        "varying vec3 pos;"
+        "varying vec3 pos;\n"
+        "varying vec2 f_texcoord0;\n"
+        "uniform sampler2D texture0;\n"
         "void main() \n"
         "{ \n"
         //" gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0); \n"
-        " gl_FragColor = vec4(pos, 1.0); \n"
+        
+        " gl_FragColor = vec4(texture(texture0, f_texcoord0).xyz, 1.0); \n"
         "} \n";
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -101,6 +112,13 @@ void Renderer::init()
     m_test.m_indices = &ib;
 
     glm::vec3 base;
+    glm::vec2 uv[] =
+    {
+        glm::vec2(0.f, 0.f),
+        glm::vec2(1.f, 0.f),
+        glm::vec2(1.f, 1.f),
+        glm::vec2(0.f, 1.f),
+    };
 
     for (int i = 0; i < 36; i++)
     {
@@ -109,6 +127,7 @@ void Renderer::init()
         glm::vec3 pos(tri[0], tri[1], tri[2]);
         //printf("{%f,%f,%f}\n", pos.x, pos.y, pos.z);
         vb.value<glm::vec3, VertexAttributeIndex::Pos>(i) = pos;
+        vb.value<glm::vec2, VertexAttributeIndex::Uv>(i) = uv[i % 4];
         ib.intPointer()[i] = i;
 
         m_debugDraw.addVec(pos, glm::normalize(pos));
@@ -120,6 +139,12 @@ void Renderer::init()
 
     //glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+
+    
+    m_texture.init("..\\assets\\sponza\\textures\\spnza_bricks_a_diff.png");
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_texture.getTexture());
+    CheckGlError();
 }
 
 void Renderer::beginRender()
@@ -152,6 +177,7 @@ void Renderer::renderElement(const ShaderProgram& program, const RenderElement& 
         return;
 
     program.bind();
+    program.setTexture(0);
     program.setVpMatrix(m_camera.getVpMatrix() * transform);
     element.render();
 }

@@ -6,16 +6,14 @@
 class Texture
 {
 public:
-	Texture(const char* filename);
-
+	Texture();
+	Texture(Texture&& other);
 	~Texture();
 
+	void init(const char* filename);
+
 	Texture& operator=(Texture&& other);
-
-	Texture(Texture&& other);
-
 	GLuint getTexture();
-
 	const glm::vec2 size();
 
 private:

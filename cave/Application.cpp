@@ -142,7 +142,7 @@ void Application::updateMouseView(int x, int y)
 		firstUpdates--;
 		SDL_WarpMouseInWindow(m_win, (int)mid.x, (int)mid.y);
 	}
-	printf("x: %i, y: %i\n", x, y);
+	//printf("x: %i, y: %i\n", x, y);
 	
 	_world->get<ecs3::InputSingleton>().mouse = mid - glm::vec2(x, y);
 	_renderer.camera().rotateBy(move.x, move.y);

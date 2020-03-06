@@ -19,10 +19,6 @@ void ShaderProgram::bind() const
 	glUseProgram(m_program);
 }
 
-void ShaderProgram::setVpMatrix(const glm::mat4& matrix) const
-{
-	glUniformMatrix4fv(m_vpMatrixLoc, 1, GL_FALSE, glm::value_ptr(matrix));
-}
 
 void ShaderProgram::bindAttributes(GLuint program)
 {
@@ -106,6 +102,16 @@ bool ShaderProgram::init(const char* vertex, const char* fragment)
 
 	m_program = programObject;
 	m_vpMatrixLoc = glGetUniformLocation(m_program, "vp_matrix");
-
+	m_Texture0Loc = glGetUniformLocation(m_program, "texture0");
 	return true;
+}
+
+void ShaderProgram::setVpMatrix(const glm::mat4& matrix) const
+{
+	glUniformMatrix4fv(m_vpMatrixLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void ShaderProgram::setTexture(int texture) const
+{
+	glUniform1i(m_Texture0Loc, texture);
 }

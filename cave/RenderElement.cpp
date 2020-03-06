@@ -1,10 +1,6 @@
 #include "RenderElement.h"
 
-void CheckGlError()
-{
-	int err = glGetError();
-	assert(err == GL_NO_ERROR);
-}
+
 
 const void* Buffer::pointer()
 {
