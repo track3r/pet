@@ -1,4 +1,3 @@
-TODO:
 - [x] entity ids
 - [x] world update
 - [x] sample system test
@@ -12,13 +11,13 @@ TODO:
 - [x] render debug grid
 - [x] dynamic debug render
 - [x] textured cube
+- [ ] obj parser/loader
 - [ ] sorta mesh component?
-- [ ] mesh loader
+- [ ] sample lighting
 - [ ] vulkan tutorial?
 - [ ] Rendering back/front end with sorting and commmand gen
 - [ ] lighting system
 - [ ] shadows
-- [ ] textures
 - [ ] voxel chunk component
 - [ ] remove entity
 later

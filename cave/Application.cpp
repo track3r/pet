@@ -9,6 +9,8 @@
 #include "ecs3/SampleRenderSystem.h"
 #include "ecs3/PlayerSystem.h"
 
+#include "ObjReader.h"
+
 #if defined(_MSC_VER) 
 void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const  void* userParam)
 {
@@ -101,6 +103,9 @@ bool Application::init(SDL_Window* window)
 
     
 #endif
+
+	ObjReader reader;
+	reader.parse("..\\assets\\sponza\\sponza.obj");
 
     _renderer.init();
 
