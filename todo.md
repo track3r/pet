@@ -11,8 +11,10 @@
 - [x] render debug grid
 - [x] dynamic debug render
 - [x] textured cube
-- [ ] obj parser/loader
-- [ ] sorta mesh component?
+- [x] obj parser/loader
+- [x] sorta mesh component?
+- [ ] mesh bugs
+- [ ] mesh resource ownership
 - [ ] sample lighting
 - [ ] vulkan tutorial?
 - [ ] Rendering back/front end with sorting and commmand gen

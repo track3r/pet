@@ -63,5 +63,5 @@ void Camera::strafe(float distance)
 
 void Camera::setProjection(glm::vec2 view, float fov)
 {
-	m_projection = glm::perspective(fov, view.x / view.y, 0.1f, 1000.f);
+	m_projection = glm::perspective(fov, view.x / view.y, 0.1f, 100000.f);
 }

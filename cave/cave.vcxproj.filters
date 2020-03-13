@@ -39,6 +39,9 @@
       <Filter>ecs3</Filter>
     </ClCompile>
     <ClCompile Include="ObjReader.cpp" />
+    <ClCompile Include="ecs3\MeshRenderSystem.cpp">
+      <Filter>ecs3</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -86,6 +89,9 @@
       <Filter>ecs3</Filter>
     </ClInclude>
     <ClInclude Include="ObjReader.h" />
+    <ClInclude Include="ecs3\MeshRenderSystem.h">
+      <Filter>ecs3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="primitive_restart.fs.glsl" />

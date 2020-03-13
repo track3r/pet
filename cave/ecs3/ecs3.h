@@ -9,6 +9,7 @@ namespace ecs3
         Sample = 0,
         Transform = 1,
         Player = 2,
+        Mesh = 3,
         Max,
     };
 
@@ -108,6 +109,7 @@ namespace ecs3
         template<class C>
         Configuration& addComponent()
         {
+            assert(std::binary_search(_components.begin(), _components.end(), C::ID) == false);
             _components.emplace_back(C::ID);
             std::sort(begin(_components), end(_components));
 
@@ -143,10 +145,18 @@ namespace ecs3
         {
             const uint16_t size = ComponentFactory::getComponentSize(T::ID);
             assert(_curOffset + size < 1024);
-            uint8_t* ptr = &_scratchMem[0] + _curOffset;
-            ComponentFactory::copyComponent(T::ID, ptr, &component);
-            _curOffset += size;
-            _offsets[T::ID] = _curOffset;
+            if (_offsets[T::ID] == 0)
+            {
+                uint8_t* ptr = &_scratchMem[0] + _curOffset;
+                ComponentFactory::copyComponent(T::ID, ptr, &component);
+                _curOffset += size;
+                _offsets[T::ID] = _curOffset;
+            }
+            else
+            {
+                uint8_t* ptr = &_scratchMem[0] + _offsets[T::ID] - size;
+                ComponentFactory::copyComponent(T::ID, ptr, &component);
+            }
         }
 
         const uint8_t* const getData(int id) const

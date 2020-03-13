@@ -13,7 +13,7 @@
 #include "DebugDraw.h"
 
 
-const float c_speed = 3.0f;
+const float c_speed = 300.0f;
 const float c_mouseSpeed = 0.005f;
 
 namespace ecs3

@@ -21,7 +21,7 @@ public:
     void renderElement(const ShaderProgram& program, const RenderElement& element, const glm::mat4& transform = glm::mat4());
 
     void renderCube(const glm::mat4& transform);
-    
+    ShaderProgram* getDefaultProgram() { return m_program.get(); }
     Camera& camera();
 private:
     Camera m_camera;

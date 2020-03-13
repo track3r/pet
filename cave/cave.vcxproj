@@ -57,6 +57,7 @@
       <AdditionalIncludeDirectories>..\libs\glm;..\libs\glew;..\libs\sdl;..\libs\stb</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -76,6 +77,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\libs\glm;..\libs\glew;..\libs\sdl;..\libs\stb</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -92,6 +94,7 @@
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="ecs3\ecs3.cpp" />
     <ClCompile Include="ecs3\ecs3common.cpp" />
+    <ClCompile Include="ecs3\MeshRenderSystem.cpp" />
     <ClCompile Include="ecs3\PlayerSystem.cpp" />
     <ClCompile Include="GeometryBuilder.cpp" />
     <ClCompile Include="main.cpp" />
@@ -117,6 +120,7 @@
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="ecs3\ecs3.h" />
     <ClInclude Include="ecs3\ecs3common.h" />
+    <ClInclude Include="ecs3\MeshRenderSystem.h" />
     <ClInclude Include="ecs3\PackedDataIndex.h" />
     <ClInclude Include="ecs3\ecs3pch.h" />
     <ClInclude Include="ecs3\PlayerSystem.h" />

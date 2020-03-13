@@ -44,7 +44,7 @@ namespace ecs3
             uint8_t* dataPtr = _data[i].addPtr();
             const int id = _configuration._components[i];
             ComponentFactory::copyComponent(id, dataPtr, data.getData(id));
-            printf("%p\n", dataPtr);
+            //printf("%p\n", dataPtr);
         }
 
         return localId;

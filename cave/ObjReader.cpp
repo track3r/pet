@@ -47,7 +47,7 @@ bool ObjReader::parse(const char* filename)
             nextGroup.startFace = (uint32_t)faces.size();
             if (!groups.empty())
             {
-                groups.back().endFace = (uint32_t)faces.size() - 1;
+                groups.back().endFace = (uint32_t)faces.size();
             }
             groups.push_back(nextGroup);
             continue;
@@ -63,7 +63,7 @@ bool ObjReader::parse(const char* filename)
 
             strcpy(nextGroup.name, groups.back().name);
             nextGroup.startFace = (uint32_t)faces.size();
-            groups.back().endFace = (uint32_t)faces.size() - 1;
+            groups.back().endFace = (uint32_t)faces.size();
             groups.push_back(nextGroup);
             continue;
         }
@@ -72,7 +72,7 @@ bool ObjReader::parse(const char* filename)
 
     if (!groups.empty())
     {
-        groups.back().endFace = (uint32_t)faces.size() - 1;
+        groups.back().endFace = (uint32_t)faces.size();
     }
 
     return true;

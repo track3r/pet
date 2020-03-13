@@ -8,6 +8,7 @@
 #include "ecs3/ecs3pch.h"
 #include "ecs3/SampleRenderSystem.h"
 #include "ecs3/PlayerSystem.h"
+#include "ecs3/MeshRenderSystem.h"
 
 #include "ObjReader.h"
 
@@ -60,7 +61,7 @@ void CreateTestComponents(ecs3::World* _world)
 	singleConf.addComponent<ecs3::TransformComponent>();
 	_world->createEntity(singleConf);
 
-	ecs3::Configuration configuration;
+	/*ecs3::Configuration configuration;
 	configuration.addComponent<ecs3::TransformComponent>();
 	configuration.addComponent<ecs3::SampleComponent>();
 	_world->createEntity(configuration);
@@ -68,13 +69,56 @@ void CreateTestComponents(ecs3::World* _world)
 	ecs3::EntitityPrefab prefab;
 	prefab.addComponent(ecs3::TransformComponent(glm::vec3(1.0f, 1.0f, 1.0f)));
 	prefab.addComponent(ecs3::SampleComponent());
-	_world->createEntity(prefab);
+	_world->createEntity(prefab);*/
 
 	ecs3::EntitityPrefab playerConf;
 	playerConf.addComponent(ecs3::TransformComponent(glm::vec3(10.f, 0.f, 0.f)));
 	playerConf.addComponent(ecs3::SampleComponent());
 	playerConf.addComponent(PlayerComponent());
 	_world->createEntity(playerConf);
+}
+
+void LoadTestScene(ecs3::World* _world)
+{
+	ObjReader reader;
+	const char* sponza = "..\\assets\\sponza\\sponza.obj";
+	const char* cube = "..\\assets\\cube.obj";
+	if (!reader.parse(cube))
+	{
+		return;
+	}
+	MeshComponent meshComp;
+	ecs3::EntitityPrefab meshConf;
+	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, 0.f, 0.f)));
+	meshConf.addComponent(meshComp);
+
+	for (const ObjReader::group_t& group : reader.groups)
+	{
+		int faces = group.endFace - group.startFace;
+		
+		VertexBuffer* vb = new VertexBuffer(faces * 3, c_defaultVf);
+		IndexBuffer* ib = new IndexBuffer(faces * 3);
+		uint32_t index = 0;
+		for (uint32_t f = group.startFace; f < group.endFace; f++)
+		{
+			const ObjReader::face_t& face = reader.faces[f];
+			for (int v = 0; v < 3; v++)
+			{
+				vb->value<glm::vec3, VertexAttributeIndex::Pos>(index) = reader.positions[face.vertices[v] - 1];
+				vb->value<glm::vec2, VertexAttributeIndex::Uv>(index) = reader.texcoords[face.texcoords[v] - 1];
+				ib->intPointer()[index] = index;
+				index++;
+			}
+		}
+
+		RenderElement* element = new RenderElement();
+		element->m_indices = ib;
+		element->m_vertices = vb;
+		element->setupVbo(false);
+		meshComp.mesh = element;
+		meshConf._data.addComponent(meshComp);
+		_world->createEntity(meshConf);
+	}
 }
 
 bool Application::init(SDL_Window* window)
@@ -104,8 +148,7 @@ bool Application::init(SDL_Window* window)
     
 #endif
 
-	ObjReader reader;
-	reader.parse("..\\assets\\sponza\\sponza.obj");
+	
 
     _renderer.init();
 
@@ -117,10 +160,11 @@ bool Application::init(SDL_Window* window)
 	_world->registerSystem<PlayerSystem>();
 	_world->registerSystem<ecs3::SampleSystem>();
 	_world->registerSystem<ecs3::SampleRenderSystem>();
+	_world->registerSystem<MeshRenderSystem>();
 
 	_world->get<ecs3::InputSingleton>().mouseSpeed = c_mouseSpeed;
 	CreateTestComponents(_world);
-    
+	LoadTestScene(_world);
 	return true;
 }
 
