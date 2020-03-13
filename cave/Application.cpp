@@ -83,7 +83,7 @@ void LoadTestScene(ecs3::World* _world)
 	ObjReader reader;
 	const char* sponza = "..\\assets\\sponza\\sponza.obj";
 	const char* cube = "..\\assets\\cube.obj";
-	if (!reader.parse(cube))
+	if (!reader.parse(sponza))
 	{
 		return;
 	}
