@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="GeometryBuilder.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="UserInput.cpp" />
+    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="ecs3\ecs3.cpp">
+      <Filter>ecs3</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs3\ecs3common.cpp">
+      <Filter>ecs3</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderElement.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs3\SampleRenderSystem.cpp">
+      <Filter>ecs3</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDraw.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderProgram.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexFormat.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs3\PlayerSystem.cpp">
+      <Filter>ecs3</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjReader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="GeometryBuilder.h" />
+    <ClInclude Include="GlHeaders.h" />
+    <ClInclude Include="GlmIncludes.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="UserInput.h" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="ecs3\ecs3.h">
+      <Filter>ecs3</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs3\PackedDataIndex.h">
+      <Filter>ecs3</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs3\ecs3pch.h">
+      <Filter>ecs3</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs3\ecs3common.h">
+      <Filter>ecs3</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderElement.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs3\SampleRenderSystem.h">
+      <Filter>ecs3</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDraw.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderProgram.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexFormat.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs3\PlayerSystem.h">
+      <Filter>ecs3</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjReader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="primitive_restart.fs.glsl" />
+    <None Include="primitive_restart.vs.glsl" />
+    <None Include="..\todo.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ecs3">
+      <UniqueIdentifier>{841a221c-b963-42b7-8b13-7df5ee469da3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ecs2">
+      <UniqueIdentifier>{8035fa06-4c34-4258-841b-850c9d2fdf77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{6f0e3deb-43cf-43d0-9338-87c5fc2aeae9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
