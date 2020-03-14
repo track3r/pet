@@ -1,5 +1,5 @@
+#include "pch.h"
 #include "UserInput.h"
-#include <stdlib.h>
 
 void UserInput::keyDown(SDL_Keycode key)
 {

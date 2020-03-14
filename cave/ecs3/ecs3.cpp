@@ -1,4 +1,4 @@
-#include "ecs3pch.h"
+#include "pch.h"
 
 namespace ecs3
 {
@@ -159,6 +159,11 @@ namespace ecs3
         {
             //delete _systems[i];
         }
+    }
+
+    bool Configuration::haveComponent(int id)
+    {
+        return std::binary_search(_components.begin(), _components.end(), id);
     }
 
     bool Configuration::matches(const Configuration& other)

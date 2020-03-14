@@ -1,4 +1,4 @@
-#include "ecs3pch.h"
+#include "pch.h"
 #include <SDL2/SDL.h>
 
 namespace ecs3

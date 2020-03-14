@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include <algorithm>
 #include <assert.h>
 #include <stdio.h>
 

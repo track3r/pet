@@ -43,6 +43,10 @@
       <Filter>ecs3</Filter>
     </ClCompile>
     <ClCompile Include="Log.cpp" />
+    <ClCompile Include="RenderWorld.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -94,6 +98,10 @@
       <Filter>ecs3</Filter>
     </ClInclude>
     <ClInclude Include="Log.h" />
+    <ClInclude Include="RenderWorld.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="primitive_restart.fs.glsl" />

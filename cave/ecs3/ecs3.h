@@ -106,15 +106,9 @@ namespace ecs3
     public:
         std::vector<int> _components;
 
-        template<class C>
-        Configuration& addComponent()
-        {
-            assert(std::binary_search(_components.begin(), _components.end(), C::ID) == false);
-            _components.emplace_back(C::ID);
-            std::sort(begin(_components), end(_components));
+       
 
-            return *this;
-        }
+        bool haveComponent(int id);
 
         bool operator==(const Configuration& other) const 
         {
@@ -134,6 +128,19 @@ namespace ecs3
         }
 
         bool matches(const Configuration& other);
+        template<class C>
+        Configuration& addComponent()
+        {
+            if (haveComponent(C::ID))
+            {
+                return *this;
+            }
+            int id = C::ID;
+            _components.push_back(id);
+            std::sort(begin(_components), end(_components));
+
+            return *this;
+        }
     };
 
     class PrefabData

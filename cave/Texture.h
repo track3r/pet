@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GlHeaders.h"
-#include "GlmIncludes.h"
 
 class Texture
 {

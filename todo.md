@@ -15,6 +15,7 @@
 - [x] sorta mesh component?
 - [x] mesh bugs
 - [ ] mesh resource ownership - RenderWorld
+- [ ] cleanup + premake
 - [ ] sample lighting
 - [ ] vulkan tutorial?
 - [ ] Rendering back/front end with sorting and commmand gen

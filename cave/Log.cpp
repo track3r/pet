@@ -1,10 +1,62 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdint.h>
-#include <Windows.h>
+#include "pch.h"
+
 #include "Log.h"
 
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#ifndef WIN32_EXTRA_LEAN
+#define WIN32_EXTRA_LEAN
+#endif
+
+#define NOIME
+#define NOWINRES
+#define NOGDICAPMASKS
+#define NOVIRTUALKEYCODES
+#define NOWINMESSAGES
+#define NOWINSTYLES
+#define NOSYSMETRICS
+#define NOMENUS
+#define NOICONS
+#define NOKEYSTATES
+#define NOSYSCOMMANDS
+#define NORASTEROPS
+#define NOSHOWWINDOW
+#define OEMRESOURCE
+#define NOATOM
+#define NOCLIPBOARD
+#define NOCOLOR
+#define NOCTLMGR
+#define NODRAWTEXT
+#define NOGDI
+#define NOUSER
+#define NOMB
+#define NOMEMMGR
+#define NOMETAFILE
+#define NOMINMAX
+#define NOMSG
+#define NOOPENFILE
+#define NOSCROLL
+#define NOSERVICE
+#define NOSOUND
+#define NOTEXTMETRIC
+#define NOWH
+#define NOWINOFFSETS
+#define NOCOMM
+#define NOKANJI
+#define NOHELP
+#define NOPROFILER
+#define NODEFERWINDOWPOS
+#define NOMCX
+#define NOIME
+#define NOPROXYSTUB
+#define NOIMAGE
+#define NO
+#define NOTAPE
+#define ANSI_ONLY
+
+#include <Windows.h>
 //int64_t GetTickCount64();
 //__declspec(dllimport) unsigned __int64 __stdcall GetTickCount64();
 //__declspec(dllimport) uint32_t __stdcall GetCurrentThreadId();
@@ -21,7 +73,15 @@ void dbg_printf(const char* file, long line, const char* function, const char* f
 
 	int64_t ticks = GetTickCount64() - g_startTick;
 	//snprintf(szBuffer, 512, "%s( %li ): [%s][%d-%d]%llu %llu\t",file, line, function, GetCurrentThreadId(), GetCurrentProcessorNumber(), ticks / 1000, ticks % 1000);
-    snprintf(szBuffer, 512, "%s( %li ): %s ", file, line, function);
+	if (line != 0)
+	{
+		snprintf(szBuffer, 512, "%s( %li ): %s ", file, line, function);
+	}
+	else
+	{
+		snprintf(szBuffer, 512, "%s ", function);
+	}
+    
 	::OutputDebugStringA(szBuffer);
     printf("%s", (szBuffer));
 	//log(szBuffer);

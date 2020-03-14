@@ -1,7 +1,7 @@
+#include "pch.h"
 #include "ShaderProgram.h"
 #include "VertexFormat.h"
-#include <stdlib.h>
-#include <stdio.h>
+
 
 ShaderProgram::ShaderProgram(const char* vertex, const char* fragment)
 {

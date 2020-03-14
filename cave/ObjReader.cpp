@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "ObjReader.h"
 
 bool ObjReader::parse(const char* filename)

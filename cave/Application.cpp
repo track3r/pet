@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Application.h"
 
 #include <SDL2/SDL.h>
@@ -6,7 +7,6 @@
 #include "Utils.h"
 #include "Room.h"
 
-#include "ecs3/ecs3pch.h"
 #include "ecs3/SampleRenderSystem.h"
 #include "ecs3/PlayerSystem.h"
 #include "ecs3/MeshRenderSystem.h"
@@ -16,7 +16,7 @@
 #if defined(_MSC_VER) 
 void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const  void* userParam)
 {
-	printf("%i - %s\n", severity, message);
+	LOG_NOFILELINE("%i - %s", severity, message);
 	/*std::cout << "message: " << message << " ";
 	std::cout << "type: ";
 	switch (type) {

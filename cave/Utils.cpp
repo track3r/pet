@@ -1,5 +1,5 @@
+#include "pch.h"
 #include "Utils.h"
-#include <stdlib.h>
 
 float randf()
 {

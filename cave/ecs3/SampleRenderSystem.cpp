@@ -1,4 +1,4 @@
-#include "ecs3pch.h"
+#include "pch.h"
 #include "../Application.h"
 #include "SampleRenderSystem.h"
 

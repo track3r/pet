@@ -1,6 +1,5 @@
+#include "pch.h"
 #include "RenderElement.h"
-
-
 
 const void* Buffer::pointer()
 {
