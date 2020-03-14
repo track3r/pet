@@ -22,9 +22,10 @@
 
 int main(int argc, char *argv[])
 {
-    LOG("test %i", 1);
 	SDL_Window *mainwindow; /* Our window handle */
 	SDL_GLContext maincontext; /* Our opengl context handle */
+	int width = 1024;
+	int height = 758;
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) 
 	{
@@ -43,7 +44,7 @@ int main(int argc, char *argv[])
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	mainwindow = SDL_CreateWindow(PROGRAM_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		512, 512, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+		width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
 	if (!mainwindow)
 	{ 
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
 
 	Application app;
 	app.init(mainwindow);
-	app.reshape(512, 512);
+	app.reshape(width, height);
 
 	SDL_Event event;
 

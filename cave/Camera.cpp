@@ -45,9 +45,18 @@ void Camera::rotateBy(float horizontal, float vertical)
 {
 	if (fabs(horizontal) <= FLT_EPSILON && fabs(vertical) <= FLT_EPSILON)
 		return;
-
+	
 	m_horizontalAngle += horizontal;
 	m_verticalAngle += vertical;
+	m_verticalAngle = glm::clamp(m_verticalAngle, -3.14f / 2.f, 3.14f / 2);
+	if (m_horizontalAngle > 3.14f * 2)
+	{
+		m_horizontalAngle -= 3.14f * 2;
+	}
+	else if (m_horizontalAngle < -3.14f * 2)
+	{
+		m_horizontalAngle += 3.14f * 2;
+	}
 	computeView();
 }
 
