@@ -14,6 +14,8 @@
 - [x] obj parser/loader
 - [x] sorta mesh component?
 - [x] mesh bugs
+- [x] hacky textured sponza
+- [ ] alpha?
 - [ ] mesh resource ownership - RenderWorld
 - [ ] cleanup + premake
 - [ ] sample lighting

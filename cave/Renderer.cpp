@@ -142,9 +142,9 @@ void Renderer::init()
     glEnable(GL_DEPTH_TEST);
 
     
-    m_texture.init("..\\assets\\sponza\\textures\\spnza_bricks_a_diff.png");
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_texture.getTexture());
+    m_defaultTexture.init("..\\assets\\sponza\\textures\\spnza_bricks_a_diff.png");
+    //glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
     CheckGlError();
 }
 
@@ -180,6 +180,11 @@ void Renderer::renderElement(const ShaderProgram& program, const RenderElement& 
     program.bind();
     program.setTexture(0);
     program.setVpMatrix(m_camera.getVpMatrix() * transform);
+    if (element.textures[0] == nullptr)
+    {
+        glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
+    }
+
     element.render();
 }
 

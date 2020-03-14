@@ -92,7 +92,7 @@ void RenderElement::render() const
 			continue;
 		}
 
-		glActiveTexture(GL_TEXTURE0 + 1);
+		//glActiveTexture(GL_TEXTURE0 + 1);
 		CheckGlError();
 		glBindTexture(GL_TEXTURE_2D, textures[0]->getTexture());
 		CheckGlError();

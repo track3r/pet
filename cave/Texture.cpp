@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Texture.h"
+#include "Log.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_JPEG
@@ -35,19 +36,29 @@ Texture::Texture(Texture&& other)
 
 void Texture::init(const char* filename)
 {
-	int channels = 4;
+	stbi_set_flip_vertically_on_load(1);
+	int channels = 0;
 	unsigned char* data = stbi_load(filename, &m_size.x, &m_size.y, &channels, 0);
+	if (channels == 0)
+	{
+		LOG("Failed %s", filename);
+		return;
+	}
 	glGenTextures(1, &m_texture);
 	CheckGlError();
+
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 	CheckGlError();
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	CheckGlError();
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	CheckGlError();
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	CheckGlError();
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	CheckGlError();
 
@@ -67,6 +78,10 @@ void Texture::init(const char* filename)
 		mipLevel++;
 		mipDim = nextDim;
 	}
+
+	//GL_TEXTURE_MAX_LEVEL 
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, mipLevel);
+	//CheckGlError();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	CheckGlError();

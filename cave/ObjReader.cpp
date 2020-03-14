@@ -54,6 +54,7 @@ bool ObjReader::parse(const char* filename)
                 nextFace.texcoords[0] = qtexcoords[0];
                 nextFace.texcoords[1] = qtexcoords[1];
                 nextFace.texcoords[2] = qtexcoords[2];
+
                 faces.push_back(nextFace);
                 nextFace.vertices[0] = qvertices[2];
                 nextFace.vertices[1] = qvertices[3];
@@ -78,10 +79,6 @@ bool ObjReader::parse(const char* filename)
             }
             break;
         }
-        
-
-        
-       
 
         if (line[0] == '#' || isspace(line[0]))
         {
@@ -120,6 +117,42 @@ bool ObjReader::parse(const char* filename)
     {
         groups.back().endFace = (uint32_t)faces.size();
     }
+    fclose(f);
+    return true;
+}
 
+bool ObjMtlreader::parse(const char* filename)
+{
+    FILE* f = fopen(filename, "r");
+    if (!f)
+    {
+        return false;
+    }
+    char line[513];
+    while (fgets(line, 512, f) != NULL)
+    {
+        material_t nextMaterial;
+        if (line[0] == '#')
+        {
+            continue;
+        }
+
+        if (sscanf(line, "newmtl %s", nextMaterial.name) == 1)
+        {
+            nextMaterial.texture[0] = 0;
+            materials.push_back(nextMaterial);
+            continue;
+        }
+
+        if (!materials.empty())
+        {
+            if (sscanf(line, " map_Ka %s", materials.back().texture) == 1)
+            {
+                continue;
+            }
+        }
+    }
+
+    fclose(f);
     return true;
 }

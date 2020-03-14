@@ -85,9 +85,9 @@ public:
 	void updateVbo();
 	void render() const;
 
-	IndexBuffer*	m_indices;
-	VertexBuffer*	m_vertices;
-	Texture*		textures[2];
+	IndexBuffer*	m_indices = nullptr;
+	VertexBuffer*	m_vertices = nullptr;
+	Texture*		textures[2] = { 0 };
 
     int				_offset = 0;
     int				_count = -1;

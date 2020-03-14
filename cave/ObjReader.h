@@ -28,3 +28,16 @@ public:
 
     bool parse(const char* filename);
 };
+
+class ObjMtlreader
+{
+public:
+    struct material_t
+    {
+        char name[32];
+        char texture[128];
+    };
+    std::vector<material_t> materials;
+
+    bool parse(const char* filename);
+};

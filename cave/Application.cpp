@@ -86,8 +86,34 @@ void LoadTestScene(ecs3::World* _world)
 	const char* cube = "..\\assets\\cube.obj";
 	if (!reader.parse(sponza))
 	{
+		LOG("Failed to read %s", sponza);
 		return;
 	}
+
+	ObjMtlreader mtlReader;
+	const char* sponzaMtl = "..\\assets\\sponza\\sponza.mtl";
+	if (!mtlReader.parse(sponzaMtl))
+	{
+		LOG("Failed to read %s", sponzaMtl);
+		return;
+	}
+
+	std::unordered_map<std::string, Texture*> textures;
+	for (const ObjMtlreader::material_t material : mtlReader.materials)
+	{
+		if (material.texture[0] == 0)
+		{
+			continue;
+		}
+		std::string filename = "..\\assets\\sponza\\";
+		filename += material.texture;
+		LOG(">>Texture %s", filename.c_str());
+		Texture* texture = new Texture();
+		texture->init(filename.c_str());
+		textures[material.name] = texture;
+		//break;
+	}
+
 	MeshComponent meshComp;
 	ecs3::EntitityPrefab meshConf;
 	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, 0.f, 0.f)));
@@ -96,7 +122,7 @@ void LoadTestScene(ecs3::World* _world)
 	for (const ObjReader::group_t& group : reader.groups)
 	{
 		int faces = group.endFace - group.startFace;
-		
+		LOG(">>Mesh %s", group.name);
 		VertexBuffer* vb = new VertexBuffer(faces * 3, c_defaultVf);
 		IndexBuffer* ib = new IndexBuffer(faces * 3);
 		uint32_t index = 0;
@@ -115,10 +141,12 @@ void LoadTestScene(ecs3::World* _world)
 		RenderElement* element = new RenderElement();
 		element->m_indices = ib;
 		element->m_vertices = vb;
+		element->textures[0] = textures[group.material];
 		element->setupVbo(false);
 		meshComp.mesh = element;
 		meshConf._data.addComponent(meshComp);
 		_world->createEntity(meshConf);
+		//break;
 	}
 }
 

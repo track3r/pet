@@ -134,7 +134,7 @@ void DebugDraw::drawCube(const glm::vec3& pos, const glm::vec4 color)
 void DebugDraw::drawGrid()
 {
 	const int n = 200;
-	for (int i = -n; i < n; i++)
+	/*for (int i = -n; i < n; i++)
 	{
 		addLine(glm::vec3(-n, 0, (float)i), glm::vec3(0, 0, (float)i), c_white, c_white);
 		addLine(glm::vec3(0, 0, (float)i), glm::vec3(n, 0, (float)i), c_white, c_white);
@@ -144,7 +144,7 @@ void DebugDraw::drawGrid()
 	{
 		addLine(glm::vec3((float)i, 0, -n), glm::vec3((float)i, 0, 0), c_white, c_white);
 		addLine(glm::vec3((float)i, 0, -0), glm::vec3((float)i, 0, n), c_white, c_white);
-	}
+	}*/
 
 	addLine(glm::vec3(0, 0, 0), glm::vec3(n, 0, 0), c_red, c_red);
 	addLine(glm::vec3(0, 0, 0), glm::vec3(0, n, 0), c_green, c_green);
