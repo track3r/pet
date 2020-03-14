@@ -13,8 +13,8 @@
 - [x] textured cube
 - [x] obj parser/loader
 - [x] sorta mesh component?
-- [ ] mesh bugs
-- [ ] mesh resource ownership
+- [x] mesh bugs
+- [ ] mesh resource ownership - RenderWorld
 - [ ] sample lighting
 - [ ] vulkan tutorial?
 - [ ] Rendering back/front end with sorting and commmand gen
