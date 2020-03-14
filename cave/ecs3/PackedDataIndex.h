@@ -4,6 +4,13 @@
 
 namespace ecs3
 {
+    template< class Tid>
+    const Tid& invalid()
+    {
+        static const Tid nullId(-1, -1);
+        return nullId;
+    }
+
     struct Id
     {
         Id(int index, int check)
@@ -33,7 +40,7 @@ namespace ecs3
 
         bool isValid() const
         {
-            return index != -1 && check != -1;
+            return *this != invalid<Id>();
         }
 
         bool operator==(const Id& other) const
@@ -56,12 +63,7 @@ namespace ecs3
         int check : 8;
     };
 
-    template< class Tid>
-    const Tid& invalid()
-    {
-        static const Tid nullId(-1, -1);
-        return nullId;
-    }
+    
 
  //add:
     //_current.add(enitity);

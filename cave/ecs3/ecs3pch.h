@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 #include "../GlmIncludes.h"
+#include "../Log.h"
 #include "PackedDataindex.h"
 #include "ecs3.h"
 #include "ecs3common.h"
