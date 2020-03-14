@@ -42,6 +42,7 @@
     <ClCompile Include="ecs3\MeshRenderSystem.cpp">
       <Filter>ecs3</Filter>
     </ClCompile>
+    <ClCompile Include="Log.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="ecs3\MeshRenderSystem.h">
       <Filter>ecs3</Filter>
     </ClInclude>
+    <ClInclude Include="Log.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="primitive_restart.fs.glsl" />

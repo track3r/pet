@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "Application.h"
+#include "Log.h"
 
 #if _DEBUG
 #pragma comment(linker, "/subsystem:\"console\" /entry:\"WinMainCRTStartup\"")
@@ -20,6 +21,7 @@
 
 int main(int argc, char *argv[])
 {
+    LOG("test %i", 1);
 	SDL_Window *mainwindow; /* Our window handle */
 	SDL_GLContext maincontext; /* Our opengl context handle */
 

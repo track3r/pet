@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include "Log.h"
 #include "Utils.h"
 #include "Room.h"
 
@@ -124,6 +125,7 @@ void LoadTestScene(ecs3::World* _world)
 bool Application::init(SDL_Window* window)
 {
 	//ecs3::Tests();
+    TRACE();
     _app = this;
 	m_win = window;
     while (glGetError() != GL_NO_ERROR){}

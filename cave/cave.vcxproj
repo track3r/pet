@@ -97,6 +97,7 @@
     <ClCompile Include="ecs3\MeshRenderSystem.cpp" />
     <ClCompile Include="ecs3\PlayerSystem.cpp" />
     <ClCompile Include="GeometryBuilder.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjReader.cpp" />
     <ClCompile Include="RenderElement.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="GeometryBuilder.h" />
     <ClInclude Include="GlHeaders.h" />
     <ClInclude Include="GlmIncludes.h" />
+    <ClInclude Include="Log.h" />
     <ClInclude Include="ObjReader.h" />
     <ClInclude Include="RenderElement.h" />
     <ClInclude Include="Renderer.h" />
