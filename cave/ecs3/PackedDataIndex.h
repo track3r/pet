@@ -119,38 +119,6 @@ namespace ecs3
         {
             return _size;
         }
-        int getFreeElement()
-        {
-            if (_firstFree == -1)
-            {
-                return -1;
-            }
-
-            IndexElement& elem = _index[_firstFree];
-            int ret = _firstFree;
-            if (_firstFree == _lastFree)
-            {
-                _lastFree = -1;
-            }
-            _firstFree = elem.nextFree;
-            return ret;
-        }
-
-        //TODO more clever arangement
-        void putFreeElement(int index)
-        {
-            _index[index].nextFree = -1;
-
-            if (_firstFree == -1)
-            {
-                _firstFree = index;
-                _lastFree = index;
-                return;
-            }
-
-            _index[_lastFree].nextFree = index;
-            _lastFree = index;
-        }
 
         int lookup(Tid id) const
         {
@@ -183,6 +151,13 @@ namespace ecs3
             const auto& elem = _index[index];
             return Id(index, elem.check);
         }
+
+        /*Tid getIdFromDataIndex(int dataIndex)
+        {
+            assert(dataIndex > 0 && dataIndex < _dataToIndex.size());
+            int index = _dataToIndex[dataIndex];
+            return Tid(index, _index[index].check);
+        }*/
 
         const Tid create()
         {
@@ -238,11 +213,39 @@ namespace ecs3
             return dataIndex;
         }
 
-        Id getIdFromDataIndex(int dataIndex)
+        
+    private:
+        int getFreeElement()
         {
-            assert(dataIndex > 0 && dataIndex < _dataToIndex.size());
-            int index = _dataToIndex[dataIndex];
-            return Id(index, _index[index].check);
+            if (_firstFree == -1)
+            {
+                return -1;
+            }
+
+            IndexElement& elem = _index[_firstFree];
+            int ret = _firstFree;
+            if (_firstFree == _lastFree)
+            {
+                _lastFree = -1;
+            }
+            _firstFree = elem.nextFree;
+            return ret;
+        }
+
+        //TODO more clever arangement
+        void putFreeElement(int index)
+        {
+            _index[index].nextFree = -1;
+
+            if (_firstFree == -1)
+            {
+                _firstFree = index;
+                _lastFree = index;
+                return;
+            }
+
+            _index[_lastFree].nextFree = index;
+            _lastFree = index;
         }
     };
 
