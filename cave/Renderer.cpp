@@ -41,7 +41,7 @@ void Renderer::init()
         "{ \n"
         //" gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0); \n"
         
-        " gl_FragColor = vec4(texture(texture0, f_texcoord0).xyz, 1.0); \n"
+        " gl_FragColor = texture(texture0, f_texcoord0); \n"
         "} \n";
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -138,9 +138,11 @@ void Renderer::init()
     m_test.setupVbo(false);
     m_debugDraw.m_element.setupVbo(true);
 
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     m_defaultTexture.init("..\\assets\\sponza\\textures\\spnza_bricks_a_diff.png");
     //glActiveTexture(GL_TEXTURE0);
