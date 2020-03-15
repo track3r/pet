@@ -70,21 +70,34 @@ void dbg_printf(const char* file, long line, const char* function, const char* f
 	va_start(args, format);
 	int nBuf;
 	char szBuffer[512];
-
+	szBuffer[0] = 0;
 	int64_t ticks = GetTickCount64() - g_startTick;
 	//snprintf(szBuffer, 512, "%s( %li ): [%s][%d-%d]%llu %llu\t",file, line, function, GetCurrentThreadId(), GetCurrentProcessorNumber(), ticks / 1000, ticks % 1000);
 	if (line != 0)
 	{
-		snprintf(szBuffer, 512, "%s( %li ): %s ", file, line, function);
+		if (function[0] == 0)
+		{
+			snprintf(szBuffer, 512, "%s( %li ): ", file, line);
+		}
+		else
+		{
+			snprintf(szBuffer, 512, "%s( %li ): %s() ", file, line, function);
+		}
 	}
 	else
 	{
-		snprintf(szBuffer, 512, "%s ", function);
+		if (function[0] != 0)
+		{
+			snprintf(szBuffer, 512, "%s ", function);
+		}		
 	}
     
-	::OutputDebugStringA(szBuffer);
-    printf("%s", (szBuffer));
-	//log(szBuffer);
+	if (szBuffer[0] != 0)
+	{
+		::OutputDebugStringA(szBuffer);
+		printf("%s", (szBuffer));
+		//log(szBuffer);
+	}
     
 	nBuf = _vsnprintf(szBuffer, 511, format, args);
 	::OutputDebugStringA(szBuffer);

@@ -103,7 +103,6 @@ void LoadTestScene(ecs3::World* _world)
 		LOG("Failed to read %s", sponzaMtl);
 		return;
 	}
-
 	
 	job_t job = { 0 };
 	job.granularity = 1;
