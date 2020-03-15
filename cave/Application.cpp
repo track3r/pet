@@ -108,9 +108,17 @@ void LoadTestScene(ecs3::World* _world)
 		std::string filename = "..\\assets\\sponza\\";
 		filename += material.texture;
 		LOG(">>Texture %s", filename.c_str());
+		textureData_t textureData = { 0 };
+		if (!loadTextureData(filename.c_str(), textureData))
+		{
+			continue;
+		}
+
 		Texture* texture = new Texture();
-		texture->init(filename.c_str());
+		
+		texture->init(textureData);
 		textures[material.name] = texture;
+		freeTextureData(textureData);
 		//break;
 	}
 

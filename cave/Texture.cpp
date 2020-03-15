@@ -55,8 +55,9 @@ bool loadTextureData(const char* filename, textureData_t& outData)
 	while (mipDim.x != 0 && mipDim.y != 0)
 	{
 		unsigned char* mipBuffer = (unsigned char*)outData.mipLevel[mipLevel].data;
-		unsigned char* nextBuffer = mipBuffers[mipLevel + 1];
+		
 		glm::ivec2 nextDim = mipDim / 2;
+		unsigned char* nextBuffer = (unsigned char*)malloc(outData.channels *nextDim.x * nextDim.y);
 		stbir_resize_uint8(mipBuffer, mipDim.x, mipDim.y, 0, nextBuffer, nextDim.x, nextDim.y, 0, outData.channels);
 		
 		mipLevel++;
@@ -64,8 +65,10 @@ bool loadTextureData(const char* filename, textureData_t& outData)
 
 		outData.mipLevel[mipLevel].width = mipDim.x;
 		outData.mipLevel[mipLevel].height = mipDim.y;
+		outData.mipLevel[mipLevel].data = nextBuffer;
+		
 	}
-	
+	outData.numMipLevels = mipLevel;
 	return true;
 }
 
@@ -129,6 +132,8 @@ void Texture::init(const char* filename)
 		mipDim = nextDim;
 		//break;
 	}
+
+	
 
 	//GL_TEXTURE_MAX_LEVEL 
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
