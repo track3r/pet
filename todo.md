@@ -15,6 +15,7 @@
 - [x] sorta mesh component?
 - [x] mesh bugs
 - [x] hacky textured sponza
+- [x] MT texture loading, mip calc jobs
 - [ ] alpha?
 - [ ] mesh resource ownership - RenderWorld
 - [ ] cleanup + premake
