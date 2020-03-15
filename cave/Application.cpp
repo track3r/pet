@@ -12,6 +12,12 @@
 #include "ecs3/MeshRenderSystem.h"
 
 #include "ObjReader.h"
+#include "Job.h"
+
+#define WIN32_EXTRALEAN
+#define VC_EXTRALEAN
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 
 #if defined(_MSC_VER) 
 void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const  void* userParam)
@@ -98,27 +104,57 @@ void LoadTestScene(ecs3::World* _world)
 		return;
 	}
 
-	std::unordered_map<std::string, Texture*> textures;
-	for (const ObjMtlreader::material_t material : mtlReader.materials)
+	
+	job_t job = { 0 };
+	job.granularity = 1;
+	job.numElements = (int)mtlReader.materials.size();
+	std::vector<textureData_t> textureDataArray(job.numElements);
+
+	auto func = [&](job_t& _job)
 	{
-		if (material.texture[0] == 0)
+		int index = InterlockedAdd(&_job.counter, _job.granularity) - _job.granularity;
+		while (index < (int)_job.numElements)
 		{
-			continue;
+			int bound = min(index + _job.granularity, (int)job.numElements);
+			int done = 0;
+			for (int i = index; i < bound; i++)
+			{
+				if (mtlReader.materials[i].texture[0] == 0)
+				{
+					continue;
+				}
+				std::string filename = "..\\assets\\sponza\\";
+				filename += mtlReader.materials[i].texture;
+
+				//LOG_LEAN("Texture %s", filename.c_str());
+
+				loadTextureData(filename.c_str(), textureDataArray[i]);
+				done++;
+			}
+			index = InterlockedAdd(&_job.counter, _job.granularity) - _job.granularity;
+			InterlockedAdd(&_job.done, _job.granularity);
 		}
-		std::string filename = "..\\assets\\sponza\\";
-		filename += material.texture;
-		LOG(">>Texture %s", filename.c_str());
-		textureData_t textureData = { 0 };
-		if (!loadTextureData(filename.c_str(), textureData))
+	};
+
+	LOG("Starting textures MT jobs...");
+	JobRunner jobs;
+	jobs.init(5);
+	jobs.startJob(job, func);
+	jobs.assist(job, func);
+	LOG("Textures MT jobs done");
+	std::unordered_map<std::string, Texture*> textures;
+	for (int i = 0; i < mtlReader.materials.size(); i++)
+	{
+		if (mtlReader.materials[i].texture[0] == 0)
 		{
 			continue;
 		}
 
 		Texture* texture = new Texture();
 		
-		texture->init(textureData);
-		textures[material.name] = texture;
-		freeTextureData(textureData);
+		texture->init(textureDataArray[i]);
+		textures[mtlReader.materials[i].name] = texture;
+		freeTextureData(textureDataArray[i]);
 		//break;
 	}
 
@@ -126,11 +162,11 @@ void LoadTestScene(ecs3::World* _world)
 	ecs3::EntitityPrefab meshConf;
 	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, 0.f, 0.f)));
 	meshConf.addComponent(meshComp);
-
+	LOG("Uploading meshes...");
 	for (const ObjReader::group_t& group : reader.groups)
 	{
 		int faces = group.endFace - group.startFace;
-		LOG(">>Mesh %s", group.name);
+		//LOG(">>Mesh %s", group.name);
 		VertexBuffer* vb = new VertexBuffer(faces * 3, c_defaultVf);
 		IndexBuffer* ib = new IndexBuffer(faces * 3);
 		uint32_t index = 0;
@@ -156,6 +192,7 @@ void LoadTestScene(ecs3::World* _world)
 		_world->createEntity(meshConf);
 		//break;
 	}
+	LOG("Uploading meshes complete");
 }
 
 bool Application::init(SDL_Window* window)
@@ -169,9 +206,8 @@ bool Application::init(SDL_Window* window)
 #if defined(_DEBUG) && defined(_MSC_VER)
 	if (glDebugMessageCallback)
 	{
-		printf("Register OpenGL debug callback\n");
-		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(openglCallbackFunction, nullptr);
+		//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		//glDebugMessageCallback(openglCallbackFunction, nullptr);
 		GLuint unusedIds = 0;
 		glDebugMessageControl(GL_DONT_CARE,
 			GL_DONT_CARE,
@@ -180,8 +216,6 @@ bool Application::init(SDL_Window* window)
 			&unusedIds,
 			true);
 	}
-	else
-		printf("glDebugMessageCallback not available\n");
 
     
 #endif

@@ -47,6 +47,7 @@
       <Filter>render</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Job.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -102,6 +103,7 @@
       <Filter>render</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Job.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="primitive_restart.fs.glsl" />

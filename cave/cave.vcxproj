@@ -76,7 +76,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\libs\glm;..\libs\glew;..\libs\sdl;..\libs\stb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libs\glm;..\libs\glew;..\libs\sdl;..\libs\stb;.</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -97,6 +97,7 @@
     <ClCompile Include="ecs3\MeshRenderSystem.cpp" />
     <ClCompile Include="ecs3\PlayerSystem.cpp" />
     <ClCompile Include="GeometryBuilder.cpp" />
+    <ClCompile Include="Job.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjReader.cpp" />
@@ -132,6 +133,7 @@
     <ClInclude Include="GeometryBuilder.h" />
     <ClInclude Include="GlHeaders.h" />
     <ClInclude Include="GlmIncludes.h" />
+    <ClInclude Include="Job.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="ObjReader.h" />
     <ClInclude Include="pch.h" />
