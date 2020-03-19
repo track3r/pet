@@ -2,6 +2,7 @@
 #include "MeshRenderSystem.h"
 
 #include "../Application.h"
+#include "../RenderWorld.h"
 
 static int __mesh = ecs3::ComponentFactory::registerComponent<MeshComponent>();
 
@@ -37,9 +38,10 @@ void MeshRenderSystem::onUpdate(ecs3::BlockIterator& iterator)
         ecs3::TransformComponent& transform = iterator.getComponents<ecs3::TransformComponent>()[i];
         MeshComponent& mesh = iterator.getComponents<MeshComponent>()[i];
         
-        if (mesh.mesh != nullptr)
+        if (mesh.mesh != ecs3::invalid<ecs3::Id>())
         {
-            renderer->renderElement(*renderer->getDefaultProgram(), *mesh.mesh, transform.matrix);
+            //renderer->renderElement(*renderer->getDefaultProgram(), *mesh.mesh, transform.matrix);
+            _world->get<RenderSingleton>().world->transform(mesh.mesh, transform.matrix);
         }
     }
 }

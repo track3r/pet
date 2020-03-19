@@ -178,6 +178,11 @@ void Texture::init(const textureData_t& data)
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 	//CheckGlError();
 
+	if (data.channels == 4)
+	{
+		hasAlpha = true;
+	}
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 	CheckGlError();
 }

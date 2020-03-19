@@ -16,9 +16,9 @@
 - [x] mesh bugs
 - [x] hacky textured sponza
 - [x] MT texture loading, mip calc jobs
-- [ ] alpha?
-- [ ] mesh resource ownership - RenderWorld
-- [ ] cleanup + premake
+- [x] mesh resource ownership - RenderWorld
+- [x] render alpha separate, no sorting yet
+- [ ] cleanup + premake?
 - [ ] sample lighting
 - [ ] vulkan tutorial?
 - [ ] Rendering back/front end with sorting and commmand gen
@@ -31,3 +31,7 @@ later
 - [ ] collision
 - [ ] ai agents
 - [ ] weapons
+
+
+even later:
+- [] cpu block allocator for ecs3 data strucures & more

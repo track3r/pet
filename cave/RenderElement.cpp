@@ -26,7 +26,8 @@ RenderElement::RenderElement(GLenum primitive)
 
 RenderElement::~RenderElement()
 {
-	glDeleteBuffers(2, m_objects);
+	//TODO: fixme
+	//glDeleteBuffers(2, m_objects);
 }
 
 void RenderElement::setupVbo(bool isStream)

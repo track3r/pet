@@ -89,12 +89,14 @@ public:
 	VertexBuffer*	m_vertices = nullptr;
 	Texture*		textures[2] = { 0 };
 
+	bool			_transparent = false;
+
     int				_offset = 0;
     int				_count = -1;
 	
 private:
 	GLuint			m_objects[2];
 	bool			_isStream = false;
-	const GLenum	m_mode;
+	GLenum			m_mode;
 };
 

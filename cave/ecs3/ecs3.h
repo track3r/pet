@@ -18,6 +18,7 @@ namespace ecs3
         Frame,
         Input,
         Camera,
+        Render,
         Max,
     };
 

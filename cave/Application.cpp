@@ -10,6 +10,7 @@
 #include "ecs3/SampleRenderSystem.h"
 #include "ecs3/PlayerSystem.h"
 #include "ecs3/MeshRenderSystem.h"
+#include "RenderWorld.h"
 
 #include "ObjReader.h"
 #include "Job.h"
@@ -153,8 +154,6 @@ void LoadTestScene(ecs3::World* _world)
 		
 		texture->init(textureDataArray[i]);
 		textures[mtlReader.materials[i].name] = texture;
-		freeTextureData(textureDataArray[i]);
-		//break;
 	}
 
 	MeshComponent meshComp;
@@ -185,13 +184,22 @@ void LoadTestScene(ecs3::World* _world)
 		element->m_indices = ib;
 		element->m_vertices = vb;
 		element->textures[0] = textures[group.material];
+		if (element->textures[0] != nullptr)
+		{
+			element->_transparent = element->textures[0]->hasAlpha;
+		}		
 		element->setupVbo(false);
-		meshComp.mesh = element;
+		meshComp.mesh = _world->get<RenderSingleton>().world->createMesh(*element);
 		meshConf._data.addComponent(meshComp);
 		_world->createEntity(meshConf);
 		//break;
 	}
 	LOG("Uploading meshes complete");
+	for (int i = 0; i < textureDataArray.size(); i++)
+	{
+		freeTextureData(textureDataArray[i]);
+	}
+	TRACE();
 }
 
 bool Application::init(SDL_Window* window)
@@ -234,6 +242,10 @@ bool Application::init(SDL_Window* window)
 	_world->registerSystem<MeshRenderSystem>();
 
 	_world->get<ecs3::InputSingleton>().mouseSpeed = c_mouseSpeed;
+
+	RenderWorld* renderWorld = new RenderWorld();
+	_world->get<RenderSingleton>().world = renderWorld;
+
 	CreateTestComponents(_world);
 	LoadTestScene(_world);
 	return true;
@@ -244,9 +256,11 @@ void Application::render()
 	//printf("Application::render\n");
 
  
-    //_renderer.beginRender();
+    _renderer.beginRender();
     //_renderer.renderCube(glm::mat4());
-    //_renderer.endRender();
+	_world->get<RenderSingleton>().world->RenderOpaque();
+	_world->get<RenderSingleton>().world->RenderTransparent();
+    _renderer.endRender();
 
 	SDL_GL_SwapWindow(m_win);
 }
@@ -281,9 +295,9 @@ void Application::update(float dt)
 	const float move = m_dt * c_speed;
     _renderer.camera().moveForward(move * m_input.getControlls().forwad);
     _renderer.camera().strafe(move * m_input.getControlls().strafe);
-	_renderer.beginRender();
-    _world->update();
-	_renderer.endRender();
+	//_renderer.beginRender();
+    //_world->update();
+	//_renderer.endRender();
 	//printf(" forward = %f\n", m_input.getControlls().forwad);
 }
 

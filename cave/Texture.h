@@ -34,6 +34,7 @@ public:
 	GLuint getTexture();
 	const glm::vec2 size();
 
+	bool hasAlpha = false;
 private:
 	Texture(const Texture& o) {}
 	Texture& operator=(const Texture& other)
