@@ -10,6 +10,18 @@ public:
 	void setProjection(glm::vec2 view, float fov = 45);
 	
 	glm::mat4 getVpMatrix() const;
+	glm::mat4 getProjection() const { return m_projection; }
+	glm::mat4 getView() const
+	{
+		if (_debug)
+		{
+			return _debugView;
+		}
+		else
+		{
+			return m_view;
+		}
+	}
 
 	void rotateBy(float horizontal, float vertical);
 	void moveForward(float distance);

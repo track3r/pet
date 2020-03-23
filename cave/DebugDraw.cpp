@@ -1,24 +1,29 @@
 #include "pch.h"
 #include "DebugDraw.h"
 
-const char c_vShaderStr[] =
-"attribute vec4 v_position; \n"
-"attribute vec4 v_color; \n"
-"uniform mat4 vp_matrix; \n"
-"varying vec4 var_color;\n"
-"void main() \n"
-"{ \n"
-" var_color = v_color;\n"
-" gl_Position = vp_matrix * v_position; \n"
-"} \n";
+const char c_vShaderStr[] = R"glsl(
+attribute vec4 v_position;
+attribute vec4 v_color;
+uniform mat4 v_mMatrix;
+uniform mat4 v_vMatrix;
+uniform mat4 v_pMatrix;
+varying vec4 var_color;
+void main()
+{
+	var_color = v_color;
+	mat4 mvp = v_pMatrix * v_vMatrix * v_mMatrix;
+	gl_Position = mvp * v_position;
+}
+)glsl";
 
-const char c_fShaderStr[] =
-"//precision mediump float; \n"
-"varying vec4 var_color;"
-"void main() \n"
-"{ \n"
-" gl_FragColor = var_color; \n"
-"} \n";
+const char c_fShaderStr[] = R"glsl(
+//precision mediump float;
+varying vec4 var_color;
+void main()
+{
+ gl_FragColor = var_color;
+}
+)glsl";
 
 DebugDraw::DebugDraw()
 	:m_element(GL_LINES)

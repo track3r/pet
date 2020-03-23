@@ -18,8 +18,9 @@
 - [x] MT texture loading, mip calc jobs
 - [x] mesh resource ownership - RenderWorld
 - [x] render alpha separate, no sorting yet
-- [ ] cleanup + premake?
 - [ ] sample lighting
+- [ ] cleanup + premake?
+- [ ] 2x2 mip bug
 - [ ] vulkan tutorial?
 - [ ] Rendering back/front end with sorting and commmand gen
 - [ ] lighting system

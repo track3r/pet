@@ -10,7 +10,9 @@ public:
 	~ShaderProgram();
 
 	void bind() const;
-	void setVpMatrix(const glm::mat4& matrix) const;
+	void setPMatrix(const glm::mat4& matrix) const;
+	void setMMatrix(const glm::mat4& matrix) const;
+	void setVMatrix(const glm::mat4& matrix) const;
 	void setTexture(int texture) const;
 	void bindAttributes() const
 	{
@@ -23,6 +25,8 @@ private:
 
 private:
 	GLuint m_program;
+	GLuint m_vmMatrixLoc;
+	GLuint m_vvMatrixLoc;
 	GLuint m_vpMatrixLoc;
 	GLuint m_Texture0Loc;
 };

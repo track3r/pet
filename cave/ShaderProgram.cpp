@@ -17,6 +17,7 @@ ShaderProgram::~ShaderProgram()
 void ShaderProgram::bind() const
 {
 	glUseProgram(m_program);
+	CheckGlError();
 }
 
 
@@ -101,17 +102,43 @@ bool ShaderProgram::init(const char* vertex, const char* fragment)
 	}
 
 	m_program = programObject;
-	m_vpMatrixLoc = glGetUniformLocation(m_program, "vp_matrix");
+	
+	m_vmMatrixLoc = glGetUniformLocation(m_program, "v_mMatrix");
+	assert(m_vmMatrixLoc != GL_INVALID_VALUE);
+
+	m_vvMatrixLoc = glGetUniformLocation(m_program, "v_vMatrix");
+	assert(m_vvMatrixLoc != GL_INVALID_VALUE);
+
+	m_vpMatrixLoc = glGetUniformLocation(m_program, "v_pMatrix");
+	assert(m_vpMatrixLoc != GL_INVALID_VALUE);
+
+
 	m_Texture0Loc = glGetUniformLocation(m_program, "texture0");
+	assert(m_Texture0Loc != GL_INVALID_VALUE);
+
 	return true;
 }
 
-void ShaderProgram::setVpMatrix(const glm::mat4& matrix) const
+void ShaderProgram::setPMatrix(const glm::mat4& matrix) const
 {
 	glUniformMatrix4fv(m_vpMatrixLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+	CheckGlError();
+}
+
+void ShaderProgram::setMMatrix(const glm::mat4& matrix) const
+{
+	glUniformMatrix4fv(m_vmMatrixLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+	CheckGlError();
+}
+
+void ShaderProgram::setVMatrix(const glm::mat4& matrix) const
+{
+	glUniformMatrix4fv(m_vvMatrixLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+	CheckGlError();
 }
 
 void ShaderProgram::setTexture(int texture) const
 {
 	glUniform1i(m_Texture0Loc, texture);
+	CheckGlError();
 }

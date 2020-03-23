@@ -19,30 +19,36 @@ Renderer::~Renderer()
 
 void Renderer::init()
 {
-    const char vShaderStr[] =
-        "attribute vec4 v_position; \n"
-        "attribute vec3 v_uv; \n"
-        "uniform mat4 vp_matrix; \n"
-        "varying vec3 pos;\n"
-        "varying vec2 f_texcoord0;\n"
-        "void main() \n"
-        "{ \n"
-        " pos = (vp_matrix * v_position).xyz;"
-        " f_texcoord0 = v_uv;\n"
-        " gl_Position = vp_matrix * v_position; \n"
-        "} \n";
-
-    const char fShaderStr[] =
-        "//precision mediump float; \n"
-        "varying vec3 pos;\n"
-        "varying vec2 f_texcoord0;\n"
-        "uniform sampler2D texture0;\n"
-        "void main() \n"
-        "{ \n"
-        //" gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0); \n"
+    const char vShaderStr[] = R"glsl(
+        attribute vec4 v_position;
+        attribute vec3 v_uv;
+        uniform mat4 v_mMatrix;
+        uniform mat4 v_vMatrix;
+        uniform mat4 v_pMatrix;
         
-        " gl_FragColor = texture(texture0, f_texcoord0); \n"
-        "} \n";
+        varying vec2 f_texcoord0;
+        varying vec3 f_lighPos;
+        varying vec3 f_toCamera;
+        void main()
+        {
+            vec3 testLightPosWorld = vec3(0, 30, 0);
+            f_texcoord0 = v_uv;
+            gl_Position = v_pMatrix * v_vMatrix * v_mMatrix * v_position;
+        }
+        )glsl";
+
+    const char fShaderStr[] = R"glsl(
+        //precision mediump float;
+        varying vec3 pos;
+        varying vec2 f_texcoord0;
+        uniform sampler2D texture0;
+        void main()
+        {
+        //gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+        
+         gl_FragColor = texture(texture0, f_texcoord0);
+        }
+        )glsl";
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
@@ -163,6 +169,16 @@ void Renderer::beginRender()
     //mat = glm::translate(mat, glm::vec3(0, 0, 2));
     //renderCube(mat);
     m_debugDraw.reset();
+    m_debugDraw.m_program.bind();
+    m_debugDraw.m_program.setPMatrix(camera().getProjection());
+    m_debugDraw.m_program.setVMatrix(camera().getView());
+    m_debugDraw.m_program.setMMatrix(glm::mat4( 1.0f ));
+
+    m_program->bind();
+    m_program->setPMatrix(camera().getProjection());
+    m_program->setVMatrix(camera().getView());
+    m_program->setMMatrix(glm::mat4(1.0f));
+    
     m_debugDraw.drawGrid();
 }
 
@@ -181,7 +197,7 @@ void Renderer::renderElement(const ShaderProgram& program, const RenderElement& 
 
     program.bind();
     program.setTexture(0);
-    program.setVpMatrix(m_camera.getVpMatrix() * transform);
+    program.setMMatrix(transform);
     if (element.textures[0] == nullptr)
     {
         glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
