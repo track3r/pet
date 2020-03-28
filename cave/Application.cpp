@@ -158,7 +158,7 @@ void LoadTestScene(ecs3::World* _world)
 
 	MeshComponent meshComp;
 	ecs3::EntitityPrefab meshConf;
-	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, 0.f, 0.f)));
+	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, -20.f, 0.f)));
 	meshConf.addComponent(meshComp);
 	LOG("Uploading meshes...");
 	for (const ObjReader::group_t& group : reader.groups)
