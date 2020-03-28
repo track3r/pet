@@ -20,8 +20,10 @@ Renderer::~Renderer()
 void Renderer::init()
 {
     const char vShaderStr[] = R"glsl(
-        attribute vec4 v_position;
-        attribute vec3 v_uv;
+        attribute vec3 v_position;
+        attribute vec2 v_uv;
+        attribute vec3 v_normal;
+
         uniform mat4 v_mMatrix;
         uniform mat4 v_vMatrix;
         uniform mat4 v_pMatrix;
@@ -29,24 +31,50 @@ void Renderer::init()
         varying vec2 f_texcoord0;
         varying vec3 f_lighPos;
         varying vec3 f_toCamera;
+        varying vec3 f_normal;
         void main()
         {
-            vec3 testLightPosWorld = vec3(0, 30, 0);
+            
             f_texcoord0 = v_uv;
-            gl_Position = v_pMatrix * v_vMatrix * v_mMatrix * v_position;
+            gl_Position = v_pMatrix * v_vMatrix * v_mMatrix * vec4(v_position, 1.0);
+            
+            //mat4 eyeMatrix = v_vMatrix * v_mMatrix;
+            mat4 eyeMatrix = v_mMatrix;
+
+            vec4 eyePos = eyeMatrix * vec4(v_position, 1.0);
+            f_toCamera = -eyePos.xyz;
+
+            f_normal = vec4(eyeMatrix * vec4(v_normal, 1.0)).xyz;
+
+            vec3 testLightPosWorld = vec3(0, 30, 0);
+            f_lighPos = vec4(eyeMatrix * vec4(testLightPosWorld, 1.0)).xyz - eyePos.xyz;
+            
         }
         )glsl";
 
     const char fShaderStr[] = R"glsl(
         //precision mediump float;
         varying vec3 pos;
-        varying vec2 f_texcoord0;
+        
+        uniform mat4 v_mMatrix;
+        uniform mat4 v_vMatrix;
+        uniform mat4 v_pMatrix;
         uniform sampler2D texture0;
+
+        varying vec2 f_texcoord0;
+        varying vec3 f_lighPos;
+        varying vec3 f_toCamera;
+        varying vec3 f_normal;
+
         void main()
         {
         //gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
         
-         gl_FragColor = texture(texture0, f_texcoord0);
+         //gl_FragColor = texture(texture0, f_texcoord0);
+          vec3 normal = normalize(f_normal);
+          float ndl = dot(f_normal,normalize(f_lighPos));
+           //gl_FragColor = vec4(ndl, ndl, ndl, 1.0);
+        gl_FragColor = texture(texture0, f_texcoord0) * vec4(ndl,ndl,ndl,1.0);
         }
         )glsl";
 

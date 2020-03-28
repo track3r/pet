@@ -175,6 +175,7 @@ void LoadTestScene(ecs3::World* _world)
 			{
 				vb->value<glm::vec3, VertexAttributeIndex::Pos>(index) = reader.positions[face.vertices[v] - 1];
 				vb->value<glm::vec2, VertexAttributeIndex::Uv>(index) = reader.texcoords[face.texcoords[v] - 1];
+				vb->value<glm::vec3, VertexAttributeIndex::Normal>(index) = reader.normals[face.normals[v] - 1];
 				ib->intPointer()[index] = index;
 				index++;
 			}
@@ -296,7 +297,7 @@ void Application::update(float dt)
     _renderer.camera().moveForward(move * m_input.getControlls().forwad);
     _renderer.camera().strafe(move * m_input.getControlls().strafe);
 	//_renderer.beginRender();
-    //_world->update();
+    _world->update();
 	//_renderer.endRender();
 	//printf(" forward = %f\n", m_input.getControlls().forwad);
 }

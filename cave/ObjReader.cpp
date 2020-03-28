@@ -9,6 +9,7 @@ bool ObjReader::parse(const char* filename)
         return false;
     }
     positions.reserve(200000);
+    normals.reserve(200000);
     texcoords.reserve(200000);
     faces.reserve(200000);
     char line[513];
@@ -27,6 +28,12 @@ bool ObjReader::parse(const char* filename)
             if (sscanf(line, "v %f %f %f", &pos.x, &pos.y, &pos.z) == 3)
             {
                 positions.push_back(pos / 10.f);
+                continue;
+            }
+
+            if (sscanf(line, "vn %f %f %f", &pos.x, &pos.y, &pos.z) == 3)
+            {
+                normals.push_back(pos);
                 continue;
             }
 

@@ -38,6 +38,10 @@ void RenderWorld::transform(ecs3::Id id, glm::mat4 transform)
 
 void RenderWorld::RenderOpaque()
 {
+    if (_index.size() == 0)
+    {
+        return;
+    }
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* tranform = _transforms.getPtr(0);
     Renderer* renderer = Application::getRenderer();
@@ -54,6 +58,11 @@ void RenderWorld::RenderOpaque()
 
 void RenderWorld::RenderTransparent()
 {
+    if (_index.size() == 0)
+    {
+        return;
+    }
+
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* tranform = _transforms.getPtr(0);
     Renderer* renderer = Application::getRenderer();
