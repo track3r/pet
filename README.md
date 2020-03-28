@@ -1,6 +1,10 @@
 # pet
 Pet game engine with C++, cache efficient ecs
 
+spot light with attenuation
+
+![image](https://user-images.githubusercontent.com/1905875/77820248-dc3fa380-70ae-11ea-835f-a528fde35eca.png)
+
 sorta lit sponza
 
 ![image](https://user-images.githubusercontent.com/1905875/77819117-6a635c00-70a6-11ea-9023-85c5eaf35053.png)
