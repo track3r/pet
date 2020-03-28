@@ -1,6 +1,10 @@
 # pet
 Pet game engine with C++, cache efficient ecs
 
+sorta lit sponza
+
+![image](https://user-images.githubusercontent.com/1905875/77819117-6a635c00-70a6-11ea-9023-85c5eaf35053.png)
+
 hacky textured sponza
 
 ![image](https://user-images.githubusercontent.com/1905875/76677840-fd799d80-65a0-11ea-8510-9bdb57204a98.png)
