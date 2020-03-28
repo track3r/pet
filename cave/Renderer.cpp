@@ -30,6 +30,7 @@ void Renderer::init()
         
         varying vec2 f_texcoord0;
         varying vec3 f_lighDir;
+        varying vec3 f_toLight;
         varying vec3 f_toCamera;
         varying vec3 f_normal;
         varying vec3 f_debug;
@@ -43,12 +44,17 @@ void Renderer::init()
             
             //mat4 eyeMatrix = v_mMatrix;
             f_debug = vec4(eyeMatrix * vec4(v_position, 0.0) ).xyz;
-            vec4 eyePos = eyeMatrix * vec4(v_position, 0.0);
+            vec4 eyePos = eyeMatrix * vec4(v_position, 1.0);
             f_toCamera = -eyePos.xyz;
 
             f_normal = vec4(eyeMatrix * vec4(v_normal, 0.0)).xyz;
 
             vec3 testLightDirWorld = vec3(0, 1, 0);
+            
+            vec3 testLightPosWorld = vec3(0, 20, 0);
+            vec3 lightPosEye = vec4(eyeMatrix * vec4(testLightPosWorld, 1.0)).xyz;
+            f_toLight = lightPosEye - eyePos;
+            
             f_lighDir = vec4(eyeMatrix * vec4(testLightDirWorld, 0.0)).xyz;
             
         }
@@ -65,6 +71,7 @@ void Renderer::init()
 
         varying vec2 f_texcoord0;
         varying vec3 f_lighDir;
+        varying vec3 f_toLight;
         varying vec3 f_toCamera;
         varying vec3 f_normal;
         varying vec3 f_debug;
@@ -75,9 +82,14 @@ void Renderer::init()
         
             //gl_FragColor = texture(texture0, f_texcoord0);
             vec3 normal = normalize(f_normal);
-            float ndl = dot(normal,normalize(f_lighDir));
+            //float ndl = dot(normal,normalize(f_lighDir));
+            float ndl = dot(normal,normalize(f_toLight));
+            float distance = length(f_toLight);
+            float att = 1 + distance*0.0004  + distance*distance*0.0004;
+            ndl /= att;
             //gl_FragColor = vec4(ndl, ndl, ndl, 1.0);
-            gl_FragColor = texture(texture0, f_texcoord0) * vec4(vec3(ndl),1.0);
+            //gl_FragColor = texture(texture0, f_texcoord0) * vec4(vec3(ndl),1.0);
+            gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl),1.0);
             //gl_FragColor = vec4(vec3(f_debug.z) / 100, 1.0);
         }
         )glsl";
