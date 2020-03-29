@@ -97,7 +97,7 @@ void LoadTestScene(ecs3::World* _world)
 		return;
 	}
 
-	ObjMtlreader mtlReader;
+	ObjMtlReader mtlReader;
 	const char* sponzaMtl = "..\\assets\\sponza\\sponza.mtl";
 	if (!mtlReader.parse(sponzaMtl))
 	{
@@ -136,12 +136,6 @@ void LoadTestScene(ecs3::World* _world)
 		}
 	};
 
-	LOG("Starting textures MT jobs...");
-	JobRunner jobs;
-	jobs.init(5);
-	jobs.startJob(job, func);
-	jobs.assist(job, func);
-	LOG("Textures MT jobs done");
 	std::unordered_map<std::string, Texture*> textures;
 	for (int i = 0; i < mtlReader.materials.size(); i++)
 	{
@@ -151,10 +145,15 @@ void LoadTestScene(ecs3::World* _world)
 		}
 
 		Texture* texture = new Texture();
-		
-		texture->init(textureDataArray[i]);
+
+		//texture->init(textureDataArray[i]);
 		textures[mtlReader.materials[i].name] = texture;
 	}
+
+	LOG("Starting textures MT jobs...");
+	JobRunner jobs;
+	jobs.init(5);
+	jobs.startJob(job, func);
 
 	MeshComponent meshComp;
 	ecs3::EntitityPrefab meshConf;
@@ -195,7 +194,19 @@ void LoadTestScene(ecs3::World* _world)
 		_world->createEntity(meshConf);
 		//break;
 	}
-	LOG("Uploading meshes complete");
+	LOG("Finalising texture jobs");
+	jobs.assist(job, func);
+	LOG("Uploading textures");
+	for (int i = 0; i < mtlReader.materials.size(); i++)
+	{
+		if (mtlReader.materials[i].texture[0] == 0)
+		{
+			continue;
+		}
+
+		textures[mtlReader.materials[i].name]->init(textureDataArray[i]);
+	}
+
 	for (int i = 0; i < textureDataArray.size(); i++)
 	{
 		freeTextureData(textureDataArray[i]);

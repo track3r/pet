@@ -30,7 +30,7 @@ public:
     bool parse(const char* filename);
 };
 
-class ObjMtlreader
+class ObjMtlReader
 {
 public:
     struct material_t

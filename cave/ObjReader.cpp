@@ -128,7 +128,7 @@ bool ObjReader::parse(const char* filename)
     return true;
 }
 
-bool ObjMtlreader::parse(const char* filename)
+bool ObjMtlReader::parse(const char* filename)
 {
     FILE* f = fopen(filename, "r");
     if (!f)
