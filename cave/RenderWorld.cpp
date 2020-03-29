@@ -3,14 +3,15 @@
 #include "Application.h"
 
 RenderWorld::RenderWorld()
-    :_index(1024)
+    :_meshIndex(1024)
+    ,_lightIndex(1024)
 {
 
 }
 
 ecs3::Id RenderWorld::createMesh(const RenderElement& element)
 {
-    ecs3::Id ret = _index.create();
+    ecs3::Id ret = _meshIndex.create();
     _meshes.add(element);
     _transforms.add(glm::mat4());
 
@@ -19,7 +20,7 @@ ecs3::Id RenderWorld::createMesh(const RenderElement& element)
 
 void RenderWorld::destroyMesh(ecs3::Id id)
 {
-    int pos = _index.remove(id);
+    int pos = _meshIndex.remove(id);
     _meshes.getPtr(pos)->~RenderElement();
     _meshes.remove(pos);    
     _transforms.remove(pos);
@@ -27,7 +28,7 @@ void RenderWorld::destroyMesh(ecs3::Id id)
 
 void RenderWorld::transform(ecs3::Id id, glm::mat4 transform)
 {
-    int pos = _index.lookup(id);
+    int pos = _meshIndex.lookup(id);
     if (pos == -1)
     {
         return;
@@ -36,16 +37,44 @@ void RenderWorld::transform(ecs3::Id id, glm::mat4 transform)
     *_transforms.getPtr(pos) = transform;
 }
 
+ecs3::Id RenderWorld::createLight(const RenderLight& light)
+{
+    ecs3::Id ret = _lightIndex.create();
+    _lights.add(light);
+
+    return ret;
+}
+
+void RenderWorld::updateLightPos(ecs3::Id id, const glm::vec3 position)
+{
+    int pos = _lightIndex.lookup(id);
+    assert(pos != -1);
+    if (pos == -1)
+    {
+        return;
+    }
+
+    _lights.getPtr(pos)->pos = position;
+    Renderer* renderer = Application::getRenderer();
+    renderer->setLightPos(position);//TODO fixme
+}
+
+void RenderWorld::destroyLight(ecs3::Id id)
+{
+    int pos = _lightIndex.remove(id);
+    _lights.remove(pos);
+}
+
 void RenderWorld::RenderOpaque()
 {
-    if (_index.size() == 0)
+    if (_meshIndex.size() == 0)
     {
         return;
     }
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* tranform = _transforms.getPtr(0);
     Renderer* renderer = Application::getRenderer();
-    for (int i = 0; i < _index.size(); i++)
+    for (int i = 0; i < _meshIndex.size(); i++)
     {
         if (elem[i]._transparent)
         {
@@ -58,7 +87,7 @@ void RenderWorld::RenderOpaque()
 
 void RenderWorld::RenderTransparent()
 {
-    if (_index.size() == 0)
+    if (_meshIndex.size() == 0)
     {
         return;
     }
@@ -66,7 +95,7 @@ void RenderWorld::RenderTransparent()
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* tranform = _transforms.getPtr(0);
     Renderer* renderer = Application::getRenderer();
-    for (int i = 0; i < _index.size(); i++)
+    for (int i = 0; i < _meshIndex.size(); i++)
     {
         if (!elem[i]._transparent)
         {

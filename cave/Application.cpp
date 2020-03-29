@@ -86,6 +86,14 @@ void CreateTestComponents(ecs3::World* _world)
 	_world->createEntity(playerConf);
 }
 
+void CreateLight(ecs3::World* _world, ecs3::Id lightId)
+{
+	ecs3::EntitityPrefab conf;
+	conf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, 20.f, 0.f)));
+	conf.addComponent(LightComponent(lightId));
+	_world->createEntity(conf);
+}
+
 void LoadTestScene(ecs3::World* _world)
 {
 	ObjReader reader;
@@ -251,6 +259,7 @@ bool Application::init(SDL_Window* window)
 	_world->registerSystem<PlayerSystem>();
 	_world->registerSystem<ecs3::SampleSystem>();
 	_world->registerSystem<ecs3::SampleRenderSystem>();
+	_world->registerSystem<LightRenderSystem>();
 	_world->registerSystem<MeshRenderSystem>();
 
 	_world->get<ecs3::InputSingleton>().mouseSpeed = c_mouseSpeed;
@@ -259,6 +268,7 @@ bool Application::init(SDL_Window* window)
 	_world->get<RenderSingleton>().world = renderWorld;
 
 	CreateTestComponents(_world);
+	CreateLight(_world, renderWorld->createLight(RenderLight()));
 	LoadTestScene(_world);
 	return true;
 }

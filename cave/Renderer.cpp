@@ -27,6 +27,8 @@ void Renderer::init()
         uniform mat4 v_mMatrix;
         uniform mat4 v_vMatrix;
         uniform mat4 v_pMatrix;
+
+        uniform vec3 v_lightPos;
         
         varying vec2 f_texcoord0;
         varying vec3 f_lighDir;
@@ -51,8 +53,8 @@ void Renderer::init()
 
             vec3 testLightDirWorld = vec3(0, 1, 0);
             
-            vec3 testLightPosWorld = vec3(0, 20, 0);
-            vec3 lightPosEye = vec4(eyeMatrix * vec4(testLightPosWorld, 1.0)).xyz;
+            //vec3 testLightPosWorld = vec3(0, 20, 0);
+            vec3 lightPosEye = vec4(eyeMatrix * vec4(v_lightPos, 1.0)).xyz;
             f_toLight = lightPosEye - eyePos;
             
             f_lighDir = vec4(eyeMatrix * vec4(testLightDirWorld, 0.0)).xyz;
@@ -222,6 +224,7 @@ void Renderer::beginRender()
     m_program->setPMatrix(camera().getProjection());
     m_program->setVMatrix(camera().getView());
     m_program->setMMatrix(glm::mat4(1.0f));
+    m_program->setLightPos(_lightPos);
     
     m_debugDraw.drawGrid();
 }
@@ -254,6 +257,11 @@ void Renderer::renderCube(const glm::mat4& transform)
 {
     m_debugDraw.drawCube(glm::vec3(transform[3]));
     renderElement(*m_program, m_test, transform);
+}
+
+void Renderer::setLightPos(glm::vec3 pos)
+{
+    _lightPos = pos;
 }
 
 Camera& Renderer::camera()

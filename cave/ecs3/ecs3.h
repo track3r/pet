@@ -10,6 +10,7 @@ namespace ecs3
         Transform = 1,
         Player = 2,
         Mesh = 3,
+        Light = 4,
         Max,
     };
 

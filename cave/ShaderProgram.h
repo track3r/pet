@@ -14,6 +14,7 @@ public:
 	void setMMatrix(const glm::mat4& matrix) const;
 	void setVMatrix(const glm::mat4& matrix) const;
 	void setTexture(int texture) const;
+	void setLightPos(const glm::vec3& pos) const;
 	void bindAttributes() const
 	{
 		bindAttributes(m_program);
@@ -29,5 +30,6 @@ private:
 	GLuint m_vvMatrixLoc;
 	GLuint m_vpMatrixLoc;
 	GLuint m_Texture0Loc;
+	GLuint m_vLightPos0Loc;
 };
 
