@@ -6,7 +6,6 @@ class RenderWorld;
 struct RenderSingleton
 {
     RenderWorld* world;
-    static const int ID = (int)ecs3::SingleComponentType::Render;
 };
 
 class MeshComponent

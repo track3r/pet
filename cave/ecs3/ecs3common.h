@@ -40,7 +40,7 @@ namespace ecs3
         float dt = 0;
         uint64_t number = 0;
 
-        static const int ID = (int)SingleComponentType::Frame;
+        static const int ID = -1;
     };
 
     struct InputSingleton
@@ -63,7 +63,7 @@ namespace ecs3
         glm::vec2 cameraMove;
         std::unordered_map<uint32_t, char>  keyStates;
 
-        static const int ID = (int)SingleComponentType::Input;
+        static const int ID = -1;
     };
 
 

@@ -7,6 +7,7 @@ namespace ecs3
 
     ComponentFactory::CreateComponentFn ComponentFactory::_functions[(size_t)ComponentType::Max] = { 0 };
     uint16_t ComponentFactory::_sizes[(int)ComponentType::Max] = { 0 };
+    int World::_numSingletons = 0;
 
     Family::Family(Configuration configuration)
         :_configuration(configuration)
@@ -78,18 +79,18 @@ namespace ecs3
     {
         Id id = _index.create();
 
-        Entity entity = Entity();
+        entityLocation_t entity = entityLocation_t();
         for (int i = 0; i < _families.size(); i++)
         {
             if (_families[i]._configuration == configuration)
             {
                 if (data == nullptr)
                 {
-                    _families[i].addEntity(id);
+                    entity._localId = _families[i].addEntity(id);
                 }
                 else
                 {
-                    _families[i].addEntity(id, *data);
+                    entity._localId = _families[i].addEntity(id, *data);
                 }
                 
                 //_entities[id]._family = i;
@@ -103,11 +104,11 @@ namespace ecs3
         int familyId = (int)_families.size() - 1;
         if (data == nullptr)
         {
-            _families[familyId].addEntity(id);
+            entity._localId = _families[familyId].addEntity(id);
         }
         else
         {
-            _families[familyId].addEntity(id, *data);
+            entity._localId = _families[familyId].addEntity(id, *data);
         }
         entity._family = familyId;
         _data.add(entity);
@@ -157,7 +158,12 @@ namespace ecs3
     {
         for (int i = 0; i < _systems.size(); i++)
         {
-            //delete _systems[i];
+            delete _systems[i];
+        }
+
+        for (int i = 0; i < MAX_SINGLETONS; i++)
+        {
+            _singletonDestructors[i](_singletons[i]);
         }
     }
 

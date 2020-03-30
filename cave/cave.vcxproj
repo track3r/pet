@@ -96,6 +96,7 @@
     <ClCompile Include="ecs3\ecs3common.cpp" />
     <ClCompile Include="ecs3\MeshRenderSystem.cpp" />
     <ClCompile Include="ecs3\PlayerSystem.cpp" />
+    <ClCompile Include="ecs3\TransformAnimationSystem.cpp" />
     <ClCompile Include="GeometryBuilder.cpp" />
     <ClCompile Include="Job.cpp" />
     <ClCompile Include="Log.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="ecs3\SampleRenderSystem.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UserInput.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -130,6 +132,7 @@
     <ClInclude Include="ecs3\PackedDataIndex.h" />
     <ClInclude Include="ecs3\ecs3pch.h" />
     <ClInclude Include="ecs3\PlayerSystem.h" />
+    <ClInclude Include="ecs3\TransformAnimationSystem.h" />
     <ClInclude Include="GeometryBuilder.h" />
     <ClInclude Include="GlHeaders.h" />
     <ClInclude Include="GlmIncludes.h" />
@@ -143,6 +146,7 @@
     <ClInclude Include="Room.h" />
     <ClInclude Include="ecs3\SampleRenderSystem.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Spline.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UserInput.h" />
     <ClInclude Include="Utils.h" />

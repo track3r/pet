@@ -48,6 +48,10 @@
     </ClCompile>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Job.cpp" />
+    <ClCompile Include="ecs3\TransformAnimationSystem.cpp">
+      <Filter>ecs3</Filter>
+    </ClCompile>
+    <ClCompile Include="Spline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -104,6 +108,10 @@
     </ClInclude>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Job.h" />
+    <ClInclude Include="ecs3\TransformAnimationSystem.h">
+      <Filter>ecs3</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="primitive_restart.fs.glsl" />

@@ -14,6 +14,7 @@ namespace ecs3
         Max,
     };
 
+#if 0
     enum class SingleComponentType
     {
         Frame,
@@ -22,6 +23,7 @@ namespace ecs3
         Render,
         Max,
     };
+#endif
 
     class ComponentFactory
     {
@@ -237,13 +239,13 @@ namespace ecs3
         int _familyId;
     };
 
-    class Entity
+    struct entityLocation_t
     {
-    public:
         Id          _localId;
         uint8_t     _family;
     };
 
+    static const int MAX_SINGLETONS = 32;
     class World
     {
     public:
@@ -264,22 +266,67 @@ namespace ecs3
             _systems.back()->onRegister();
         }
 
+        inline int nextSingletonId()
+        {
+            static int sId = 0;
+            return sId++;
+        }
+
+        template<class T>
+        inline int idForSingleton()
+        {
+            static int sId = nextSingletonId();
+            return sId;
+        }
+
         template<typename T>
         T& get()
         {
-            if (_singletons[T::ID] == nullptr)
+            int id = idForSingleton<T>();
+            assert(_numSingletons < MAX_SINGLETONS);
+            if (_numSingletons >= MAX_SINGLETONS)
             {
-                _singletons[T::ID] = (uint8_t*)new T();
+                exit(-1);
+            }            
+            
+            if (_singletons[id] == nullptr)
+            {
+                _singletons[id] = (uint8_t*)new T();
+                _singletonDestructors[id] = &deleteSingleton<T>;
             }
 
-            return *((T*)_singletons[T::ID]);
+            return *((T*)_singletons[id]);
         }
+
+        template <class T> 
+        static void deleteSingleton(uint8_t* memory)
+        {
+            T* t = (T*)memory;
+            delete t;
+        }
+        //TODO global getComponent
+        /*template<typename T>
+        T* getComponent(Id entity)
+        {
+            int pos = _index.lookup(entity);
+            if (pos == -1)
+            {
+                return nullptr;
+            }
+
+            const Entity ent = _data.get(pos);
+
+        }*/
         
-        std::vector<System*>    _systems;
-        uint8_t*                _singletons[(int)SingleComponentType::Max] = { 0 };
-        std::vector<Family>     _families;
-        PackedArrayIndex<Id>    _index;
-        TypedData<Entity>       _data;
+        
+        typedef void (*deleteSingeltonFn)(uint8_t* memory);
+        std::vector<System*>        _systems;
+        uint8_t*                    _singletons[MAX_SINGLETONS] = { 0 };
+        deleteSingeltonFn           _singletonDestructors[MAX_SINGLETONS];
+        static int                  _numSingletons;
+        std::vector<Family>         _families;
+        PackedArrayIndex<Id>        _index;
+        TypedData<entityLocation_t> _data;
     };
     
     class System
