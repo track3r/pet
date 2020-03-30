@@ -18,15 +18,17 @@
 - [x] MT texture loading, mip calc jobs
 - [x] mesh resource ownership - RenderWorld
 - [x] render alpha separate, no sorting yet
-- [ ] sample lighting
+- [x] integrate light to ecs
+- [x] light ecs animation
+- [ ] shadows
+- [ ] multi lights
 - [ ] cleanup + premake?
 - [ ] 2x2 mip bug
 - [ ] vulkan tutorial?
 - [ ] Rendering back/front end with sorting and commmand gen
-- [ ] lighting system
-- [ ] shadows
 - [ ] voxel chunk component
 - [ ] remove entity
+- [ ] light types?
 later
 - [ ] landscape or dungeon gen
 - [ ] collision

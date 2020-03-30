@@ -95,9 +95,11 @@ void CreateLight(ecs3::World* _world, ecs3::Id lightId)
 	conf.addComponent(LightComponent(lightId));
 
 	AnimationDescription descr;
-	descr.addPoint(glm::vec3(-100, 20, 0));
-	descr.addPoint(glm::vec3(100, 20, 0));
-	descr.addPoint(glm::vec3(-100, 20, 0));
+	descr.addPoint(glm::vec3(-80, 20, 0));
+	descr.addPoint(glm::vec3(80, 20, 0));
+	descr.addPoint(glm::vec3(80, 50, 0));
+	descr.addPoint(glm::vec3(-80, 50, 0));
+	descr.addPoint(glm::vec3(-80, 20, 0));
 	descr._speed = 30;
 
 	TransformAnimationComponent anim(descr);
