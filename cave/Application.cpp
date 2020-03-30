@@ -10,6 +10,8 @@
 #include "ecs3/SampleRenderSystem.h"
 #include "ecs3/PlayerSystem.h"
 #include "ecs3/MeshRenderSystem.h"
+#include "ecs3/TransformAnimationSystem.h"
+
 #include "RenderWorld.h"
 
 #include "ObjReader.h"
@@ -91,6 +93,15 @@ void CreateLight(ecs3::World* _world, ecs3::Id lightId)
 	ecs3::EntitityPrefab conf;
 	conf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, 20.f, 0.f)));
 	conf.addComponent(LightComponent(lightId));
+
+	AnimationDescription descr;
+	descr.addPoint(glm::vec3(-100, 20, 0));
+	descr.addPoint(glm::vec3(100, 20, 0));
+	descr.addPoint(glm::vec3(-100, 20, 0));
+	descr._speed = 30;
+
+	TransformAnimationComponent anim(descr);
+	conf.addComponent(anim);
 	_world->createEntity(conf);
 }
 
@@ -256,9 +267,12 @@ bool Application::init(SDL_Window* window)
     
 	_world = new ecs3::World();
 	_world->registerSystem<ecs3::InputSystem>();
+	_world->registerSystem<TransformAnimationSystem>();
 	_world->registerSystem<PlayerSystem>();
+
 	_world->registerSystem<ecs3::SampleSystem>();
 	_world->registerSystem<ecs3::SampleRenderSystem>();
+	
 	_world->registerSystem<LightRenderSystem>();
 	_world->registerSystem<MeshRenderSystem>();
 

@@ -57,6 +57,7 @@ void RenderWorld::updateLightPos(ecs3::Id id, const glm::vec3 position)
     _lights.getPtr(pos)->pos = position;
     Renderer* renderer = Application::getRenderer();
     renderer->setLightPos(position);//TODO fixme
+    //LOG("(%f, %f, %f)", position.x, position.y, position.z);
 }
 
 void RenderWorld::destroyLight(ecs3::Id id)

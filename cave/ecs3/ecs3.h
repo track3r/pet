@@ -11,19 +11,9 @@ namespace ecs3
         Player = 2,
         Mesh = 3,
         Light = 4,
+        TransformAnim = 5,
         Max,
     };
-
-#if 0
-    enum class SingleComponentType
-    {
-        Frame,
-        Input,
-        Camera,
-        Render,
-        Max,
-    };
-#endif
 
     class ComponentFactory
     {
