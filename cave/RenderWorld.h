@@ -19,6 +19,7 @@ public:
     void updateLightPos(ecs3::Id id, const glm::vec3 pos);
     void destroyLight(ecs3::Id id);
 
+    void RenderShadowMaps();
     void RenderOpaque();
     void RenderTransparent();
 

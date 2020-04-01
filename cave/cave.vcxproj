@@ -111,6 +111,7 @@
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="ecs3\SampleRenderSystem.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="ShadowCubeRt.cpp" />
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UserInput.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Room.h" />
     <ClInclude Include="ecs3\SampleRenderSystem.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="ShadowCubeRt.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UserInput.h" />

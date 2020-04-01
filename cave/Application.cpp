@@ -109,15 +109,6 @@ void CreateLight(ecs3::World* _world, ecs3::Id lightId)
 
 void LoadTestScene(ecs3::World* _world)
 {
-	ObjReader reader;
-	const char* sponza = "..\\assets\\sponza\\sponza.obj";
-	const char* cube = "..\\assets\\cube.obj";
-	if (!reader.parse(sponza))
-	{
-		LOG("Failed to read %s", sponza);
-		return;
-	}
-
 	ObjMtlReader mtlReader;
 	const char* sponzaMtl = "..\\assets\\sponza\\sponza.mtl";
 	if (!mtlReader.parse(sponzaMtl))
@@ -175,6 +166,15 @@ void LoadTestScene(ecs3::World* _world)
 	JobRunner jobs;
 	jobs.init(5);
 	jobs.startJob(job, func);
+
+	ObjReader reader;
+	const char* sponza = "..\\assets\\sponza\\sponza.obj";
+	const char* cube = "..\\assets\\cube.obj";
+	if (!reader.parse(sponza))
+	{
+		LOG("Failed to read %s", sponza);
+		return;
+	}
 
 	MeshComponent meshComp;
 	ecs3::EntitityPrefab meshConf;

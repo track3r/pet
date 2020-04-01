@@ -66,6 +66,14 @@ void RenderWorld::destroyLight(ecs3::Id id)
     _lights.remove(pos);
 }
 
+void RenderWorld::RenderShadowMaps()
+{
+    for (int i = 0; i < _lightIndex.size(); i++)
+    {
+
+    }
+}
+
 void RenderWorld::RenderOpaque()
 {
     if (_meshIndex.size() == 0)

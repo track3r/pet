@@ -77,11 +77,11 @@ void dbg_printf(const char* file, long line, const char* function, const char* f
 	{
 		if (function[0] == 0)
 		{
-			snprintf(szBuffer, 512, "%s( %li ): ", file, line);
+			snprintf(szBuffer, 512, "%s(%li): ", file, line);
 		}
 		else
 		{
-			snprintf(szBuffer, 512, "%s( %li ): %s() ", file, line, function);
+			snprintf(szBuffer, 512, "%s(%li): %s() ", file, line, function);
 		}
 	}
 	else

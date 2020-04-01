@@ -52,6 +52,9 @@
       <Filter>ecs3</Filter>
     </ClCompile>
     <ClCompile Include="Spline.cpp" />
+    <ClCompile Include="ShadowCubeRt.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -112,6 +115,9 @@
       <Filter>ecs3</Filter>
     </ClInclude>
     <ClInclude Include="Spline.h" />
+    <ClInclude Include="ShadowCubeRt.h">
+      <Filter>render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="primitive_restart.fs.glsl" />
