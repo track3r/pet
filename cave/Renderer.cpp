@@ -9,6 +9,7 @@ void CheckGlError()
 
 
 Renderer::Renderer()
+    :m_program(new ShaderProgram())
 {
 }
 
@@ -98,7 +99,7 @@ void Renderer::init()
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-    m_program = std::make_unique<ShaderProgram>(vShaderStr, fShaderStr);
+    m_program->init(vShaderStr, fShaderStr);
 
     GLfloat vertices[][3] =
     {
@@ -200,6 +201,8 @@ void Renderer::init()
     //glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
     CheckGlError();
+
+    _shadow.init(1024, 1024);
 }
 
 void Renderer::beginRender()

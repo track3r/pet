@@ -68,21 +68,38 @@ void RenderWorld::destroyLight(ecs3::Id id)
 
 void RenderWorld::RenderShadowMaps()
 {
+    Renderer* renderer = Application::getRenderer();
+    RenderLight* lights = _lights.getPtr(0);
+    ShadowRt& shadowRt = renderer->_shadow;
     for (int i = 0; i < _lightIndex.size(); i++)
     {
+        const RenderLight& light = lights[0];
+        shadowRt.setPos(light.pos);
+        shadowRt.bindRt();
 
+        RenderOpaque(shadowRt._program);
+        RenderTransparent(shadowRt._program);
+        break;
     }
+
+    shadowRt.unbindRt();
 }
 
-void RenderWorld::RenderOpaque()
+void RenderWorld::RenderOpaque(ShaderProgram* prog)
 {
     if (_meshIndex.size() == 0)
     {
         return;
     }
+    Renderer* renderer = Application::getRenderer();
+    if (prog == nullptr)
+    {
+        prog = renderer->getDefaultProgram();
+    }
+
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* tranform = _transforms.getPtr(0);
-    Renderer* renderer = Application::getRenderer();
+    
     for (int i = 0; i < _meshIndex.size(); i++)
     {
         if (elem[i]._transparent)
@@ -90,11 +107,11 @@ void RenderWorld::RenderOpaque()
             continue;
         }
 
-        renderer->renderElement(*renderer->getDefaultProgram(), elem[i], tranform[i]);
+        renderer->renderElement(*prog, elem[i], tranform[i]);
     }
 }
 
-void RenderWorld::RenderTransparent()
+void RenderWorld::RenderTransparent(ShaderProgram* prog)
 {
     if (_meshIndex.size() == 0)
     {
@@ -104,6 +121,10 @@ void RenderWorld::RenderTransparent()
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* tranform = _transforms.getPtr(0);
     Renderer* renderer = Application::getRenderer();
+    if (prog == nullptr)
+    {
+        prog = renderer->getDefaultProgram();
+    }
     for (int i = 0; i < _meshIndex.size(); i++)
     {
         if (!elem[i]._transparent)
@@ -111,6 +132,6 @@ void RenderWorld::RenderTransparent()
             continue;
         }
 
-        renderer->renderElement(*renderer->getDefaultProgram(), elem[i], tranform[i]);
+        renderer->renderElement(*prog, elem[i], tranform[i]);
     }
 }

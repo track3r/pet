@@ -7,6 +7,7 @@ struct RenderLight
     glm::vec3 pos;
 };
 
+class ShaderProgram;
 class RenderWorld
 {
 public:
@@ -20,8 +21,8 @@ public:
     void destroyLight(ecs3::Id id);
 
     void RenderShadowMaps();
-    void RenderOpaque();
-    void RenderTransparent();
+    void RenderOpaque(ShaderProgram* prog = nullptr);
+    void RenderTransparent(ShaderProgram* prog = nullptr);
 
 private:
     ecs3::PackedArrayIndex<ecs3::Id> _meshIndex;

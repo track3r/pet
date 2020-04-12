@@ -6,7 +6,7 @@
 class ShaderProgram
 {
 public:
-	ShaderProgram(const char* vertex, const char* fragment);
+	ShaderProgram();
 	~ShaderProgram();
 
 	void bind() const;
@@ -20,8 +20,9 @@ public:
 		bindAttributes(m_program);
 	}
 
-private:
 	bool init(const char* vertex, const char* fragment);
+
+private:	
 	static void bindAttributes(GLuint program);
 
 private:

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "GlHeaders.h"
+#include "ShaderProgram.h"
 #include "RenderShadow.h"
+#include "Application.h"
 
 ShadowCubeRt::ShadowCubeRt()
 {
@@ -80,8 +82,30 @@ void ShadowCubeRt::bindTexture()
 
 }
 
+const char shadowVertex[] = R"glsl(
+        attribute vec3 v_position;
 
+        uniform mat4 v_mMatrix;
+        uniform mat4 v_vMatrix;
+        uniform mat4 v_pMatrix;
 
+        void main()
+        {
+            gl_Position = v_pMatrix * v_vMatrix * v_mMatrix * vec4(v_position, 1.0);
+        }
+        )glsl";
+
+const char shadowFragment[] = R"glsl(      
+        void main()
+        {
+        }
+        )glsl";
+
+ShadowRt::ShadowRt()
+    :_program(new ShaderProgram)
+{
+
+}
 void ShadowRt::init(int width, int height)
 {
     _width = width;
@@ -99,9 +123,9 @@ void ShadowRt::init(int width, int height)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-
     glGenFramebuffers(1, &_fb);
     glBindFramebuffer(GL_FRAMEBUFFER, _fb);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _texture, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -109,17 +133,36 @@ void ShadowRt::init(int width, int height)
     float aspect = (float)width / (float)height;
     float near = 1.0f;
     float far = 100.0f;
-    _projection = glm::perspective(glm::radians(90.0f), aspect, near, far);
+    //_projection = glm::perspective(glm::radians(90.0f), aspect, near, far);
+    float near_plane = 1.0f, far_plane = 200.f;
+    _projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+
+    _program->init(shadowVertex, shadowFragment);
 }
 
 void ShadowRt::bindRt()
 {
-
+    glViewport(0, 0, _width, _height);
+    glBindFramebuffer(GL_FRAMEBUFFER, _fb);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    _program->bind();
+    _program->setPMatrix(_projection);
+    _program->setVMatrix(_transform);
+    _program->setMMatrix(glm::mat4(1.0f));
 }
 
 void ShadowRt::unbindRt()
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glm::vec2 winSize = Application::get()->getWindowSize();
+    glViewport(0, 0, (int)winSize.x, (int)winSize.y);
+}
 
+void ShadowRt::setPos(glm::vec3 pos)
+{
+    _transform = glm::lookAt(pos,
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void ShadowRt::bindTexture()

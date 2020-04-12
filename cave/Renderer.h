@@ -7,6 +7,9 @@
 #include "ShaderProgram.h"
 #include "DebugDraw.h"
 #include "Texture.h"
+#include "RenderShadow.h"
+
+class ShaderProgram;
 
 class Renderer
 {
@@ -23,13 +26,15 @@ public:
     void renderCube(const glm::mat4& transform);
 
     void setLightPos(glm::vec3 pos);
-    ShaderProgram* getDefaultProgram() { return m_program.get(); }
+    ShaderProgram* getDefaultProgram() { return m_program; }
     Camera& camera();
+
+    ShadowRt _shadow;
 private:
     Camera m_camera;
     DebugDraw m_debugDraw;
     RenderElement m_test;
     Texture m_defaultTexture;
-    std::unique_ptr<ShaderProgram> m_program;
+    ShaderProgram* m_program;
     glm::vec3 _lightPos;
 };

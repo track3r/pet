@@ -31,6 +31,7 @@ public:
 	void finish();
 	void reshape(int width, int height);
 	
+	glm::vec2 getWindowSize() { return m_windowSize; }
 	void updateMouseView(int dx, int dy);
 	void keyEvent(SDL_Keycode key, bool pressed);
     static Application* get();

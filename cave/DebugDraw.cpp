@@ -27,8 +27,8 @@ void main()
 
 DebugDraw::DebugDraw()
 	:m_element(GL_LINES)
-	,m_program(c_vShaderStr, c_fShaderStr)
 {
+	m_program.init(c_vShaderStr, c_fShaderStr);
 	m_element.m_indices = &m_indices;
 	m_element.m_vertices = &m_vertices;
 }

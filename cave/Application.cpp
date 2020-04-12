@@ -296,6 +296,7 @@ void Application::render()
  
     _renderer.beginRender();
     //_renderer.renderCube(glm::mat4());
+	_world->get<RenderSingleton>().world->RenderShadowMaps();
 	_world->get<RenderSingleton>().world->RenderOpaque();
 	_world->get<RenderSingleton>().world->RenderTransparent();
     _renderer.endRender();

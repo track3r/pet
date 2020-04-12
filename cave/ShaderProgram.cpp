@@ -3,9 +3,8 @@
 #include "VertexFormat.h"
 
 
-ShaderProgram::ShaderProgram(const char* vertex, const char* fragment)
+ShaderProgram::ShaderProgram()
 {
-	init(vertex, fragment);
 }
 
 
