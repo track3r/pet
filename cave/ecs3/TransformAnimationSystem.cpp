@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "TransformAnimationSystem.h"
 
-static int __transformAnim = ecs3::ComponentFactory::registerComponent<TransformAnimationComponent>();
-
 void AnimationDescription::addPoint(glm::vec3 pos)
 {
     if (!_points.empty())

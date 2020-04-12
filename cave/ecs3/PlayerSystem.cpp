@@ -2,8 +2,6 @@
 #include "PlayerSystem.h"
 #include "../Application.h"
 
-static int __player = ecs3::ComponentFactory::registerComponent<PlayerComponent>();
-
 PlayerSystem::PlayerSystem(ecs3::World* world)
     :System(world)
 {

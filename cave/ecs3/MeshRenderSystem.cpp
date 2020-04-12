@@ -4,9 +4,6 @@
 #include "../Application.h"
 #include "../RenderWorld.h"
 
-static int __mesh = ecs3::ComponentFactory::registerComponent<MeshComponent>();
-static int __light = ecs3::ComponentFactory::registerComponent<LightComponent>();
-
 MeshComponent::~MeshComponent()
 {
 }

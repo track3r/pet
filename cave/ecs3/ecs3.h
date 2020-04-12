@@ -59,12 +59,22 @@ namespace ecs3
             return _sizes[id];
         }
 
+#if 0
         template<class T>
         static int registerComponent()
         {
             CreateComponentFn funcP = &componentNew<T>;
             registerComponent(T::ID, funcP, (uint16_t) sizeof(T));
             return T::ID;
+        }
+#endif
+
+        template<class T>
+        static int registerComponent(int id)
+        {
+            CreateComponentFn funcP = &componentNew<T>;
+            registerComponent(id, funcP, (uint16_t)sizeof(T));
+            return id;
         }
 
     private:

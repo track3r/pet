@@ -20,3 +20,20 @@ public:
     glm::vec3 _target[6];
     glm::vec3 _up[6];
 };
+
+class ShadowRt
+{
+public:
+    void init(int width, int height);
+    void bindRt();
+    void unbindRt();
+    void bindTexture();
+
+    GLuint _texture = 0;
+    GLuint _fb = 0;
+    int _width = 0;
+    int _height = 0;
+
+    glm::mat4 _transform;
+    glm::mat4 _projection;
+};

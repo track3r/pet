@@ -8,15 +8,14 @@ struct RenderSingleton
     RenderWorld* world;
 };
 
-class MeshComponent
+class MeshComponent : public ecs3::AutoRegisterComponent<MeshComponent, (int)ecs3::ComponentType::Mesh>
 {
 public:
     ~MeshComponent();
-    static const int ID = (int)ecs3::ComponentType::Mesh;
     ecs3::Id mesh = ecs3::invalid<ecs3::Id>();
 };
 
-class LightComponent
+class LightComponent : public ecs3::AutoRegisterComponent<LightComponent, (int)ecs3::ComponentType::Light>
 {
 public:
     LightComponent()
@@ -29,7 +28,6 @@ public:
 
     }
     ~LightComponent();
-    static const int ID = (int)ecs3::ComponentType::Light;
     ecs3::Id light = ecs3::invalid<ecs3::Id>();
 };
 

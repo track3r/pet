@@ -1,9 +1,8 @@
 #pragma once
 
-class PlayerComponent
+class PlayerComponent : public ecs3::AutoRegisterComponent<PlayerComponent, (int)ecs3::ComponentType::Player>
 {
 public:
-    static const int ID = (int)ecs3::ComponentType::Player;
 };
 
 class PlayerSystem final : public ecs3::System

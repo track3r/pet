@@ -43,7 +43,7 @@ protected:
     float _totalDistance = 0;    
 };
 
-struct TransformAnimationComponent
+struct TransformAnimationComponent : public ecs3::AutoRegisterComponent<TransformAnimationComponent, (int)ecs3::ComponentType::TransformAnim>
 {
     TransformAnimationComponent()
     {
@@ -58,8 +58,6 @@ struct TransformAnimationComponent
     float _time = 0;
     float _distance = 0;
     bool _reverse = false;
-    
-    static const int ID = (int)ecs3::ComponentType::TransformAnim;
 };
 
 class TransformAnimationSystem final : public ecs3::System

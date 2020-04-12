@@ -3,9 +3,6 @@
 
 namespace ecs3
 {
-    static const int __sample = ComponentFactory::registerComponent<SampleComponent>();
-    static const int __trans = ComponentFactory::registerComponent<TransformComponent>();
-
     ///////////////////////////////////////////////////
     //SampleSystem
     ///////////////////////////////////////////////////

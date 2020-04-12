@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "GlHeaders.h"
-#include "ShadowCubeRt.h"
+#include "RenderShadow.h"
 
 ShadowCubeRt::ShadowCubeRt()
 {
@@ -76,6 +76,53 @@ void ShadowCubeRt::unbindRt()
 }
 
 void ShadowCubeRt::bindTexture()
+{
+
+}
+
+
+
+void ShadowRt::init(int width, int height)
+{
+    _width = width;
+    _height = height;
+
+    glGenTextures(1, &_texture);
+    CheckGlError();
+    glGenTextures(1, &_texture);
+    glBindTexture(GL_TEXTURE_2D, _texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+        _width, _height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
+    glGenFramebuffers(1, &_fb);
+    glBindFramebuffer(GL_FRAMEBUFFER, _fb);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    float aspect = (float)width / (float)height;
+    float near = 1.0f;
+    float far = 100.0f;
+    _projection = glm::perspective(glm::radians(90.0f), aspect, near, far);
+}
+
+void ShadowRt::bindRt()
+{
+
+}
+
+void ShadowRt::unbindRt()
+{
+
+}
+
+void ShadowRt::bindTexture()
 {
 
 }

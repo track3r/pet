@@ -2,7 +2,17 @@
 
 namespace ecs3
 {
-    class SampleComponent
+    template<class T, int Id>
+    class AutoRegisterComponent
+    {
+    public:
+        static const int ID;
+    };
+
+    template<class T, int Id>
+    const int AutoRegisterComponent<T, Id>::ID(ComponentFactory::registerComponent<T>(Id));
+
+    class SampleComponent : public AutoRegisterComponent<SampleComponent, (int)ComponentType::Sample>
     {
     public:
         SampleComponent()
@@ -14,10 +24,9 @@ namespace ecs3
         }
         int test;
         int test2;
-        const static int ID = (int)ComponentType::Sample;
     };
 
-    class TransformComponent
+    class TransformComponent : public AutoRegisterComponent<TransformComponent, (int)ComponentType::Transform>
     {
     public:
         TransformComponent()
@@ -32,7 +41,6 @@ namespace ecs3
         }
 
         glm::mat4 matrix;
-        const static int ID = (int)ComponentType::Transform;
     };
 
     struct FrameSingleton

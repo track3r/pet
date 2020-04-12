@@ -52,7 +52,7 @@
       <Filter>ecs3</Filter>
     </ClCompile>
     <ClCompile Include="Spline.cpp" />
-    <ClCompile Include="ShadowCubeRt.cpp">
+    <ClCompile Include="RenderShadow.cpp">
       <Filter>render</Filter>
     </ClCompile>
   </ItemGroup>
@@ -115,7 +115,7 @@
       <Filter>ecs3</Filter>
     </ClInclude>
     <ClInclude Include="Spline.h" />
-    <ClInclude Include="ShadowCubeRt.h">
+    <ClInclude Include="RenderShadow.h">
       <Filter>render</Filter>
     </ClInclude>
   </ItemGroup>

@@ -38,3 +38,6 @@ later
 
 even later:
 - [] cpu block allocator for ecs3 data strucures & more
+
+voxel:
+    don't worry too much about oclusion culling - no geometry will be generated for solid areas
