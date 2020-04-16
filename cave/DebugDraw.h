@@ -18,7 +18,7 @@ public:
 
 
 	void addVec(const glm::vec3& a, const glm::vec3 b);
-	void addLine(const glm::vec3& pos, const glm::vec3 vec, const glm::vec4 color = c_red, const glm::vec4 color2 = c_red);
+	void addLine(const glm::vec3& pos, const glm::vec3 pos2, const glm::vec4 color = c_red, const glm::vec4 color2 = c_red);
 	void drawGrid();
 	void drawCube(const glm::vec3& pos, const glm::vec4 color = c_red);
 

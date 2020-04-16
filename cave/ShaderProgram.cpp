@@ -111,11 +111,14 @@ bool ShaderProgram::init(const char* vertex, const char* fragment)
 	m_vpMatrixLoc = glGetUniformLocation(m_program, "v_pMatrix");
 	assert(m_vpMatrixLoc != GL_INVALID_VALUE);
 
+	m_vlMatrix = glGetUniformLocation(m_program, "v_lMatrix");
 
 	m_Texture0Loc = glGetUniformLocation(m_program, "texture0");
 	assert(m_Texture0Loc != GL_INVALID_VALUE);
 
 	m_vLightPos0Loc = glGetUniformLocation(m_program, "v_lightPos");
+
+	m_TextureShadowLoc = glGetUniformLocation(m_program, "textureShadow");
 
 	return true;
 }
@@ -138,9 +141,27 @@ void ShaderProgram::setVMatrix(const glm::mat4& matrix) const
 	CheckGlError();
 }
 
+void ShaderProgram::setLMatrix(const glm::mat4& matrix) const
+{
+	assert(m_vlMatrix != GL_INVALID_VALUE);
+	glUniformMatrix4fv(m_vlMatrix, 1, GL_FALSE, glm::value_ptr(matrix));
+	CheckGlError();
+}
+
 void ShaderProgram::setTexture(int texture) const
 {
 	glUniform1i(m_Texture0Loc, texture);
+	CheckGlError();
+}
+
+void ShaderProgram::setTextureShadow(int texture) const
+{
+	if (m_TextureShadowLoc == GL_INVALID_VALUE)
+	{
+		return;
+	}
+
+	glUniform1i(m_TextureShadowLoc, texture);
 	CheckGlError();
 }
 
@@ -154,3 +175,4 @@ void ShaderProgram::setLightPos(const glm::vec3& pos) const
 	glUniform3fv(m_vLightPos0Loc, 1, glm::value_ptr(pos));
 	CheckGlError();
 }
+

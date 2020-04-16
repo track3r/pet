@@ -103,7 +103,7 @@ void CreateLight(ecs3::World* _world, ecs3::Id lightId)
 	descr._speed = 30;
 
 	TransformAnimationComponent anim(descr);
-	conf.addComponent(anim);
+	//conf.addComponent(anim);
 	_world->createEntity(conf);
 }
 

@@ -83,6 +83,7 @@ void RenderWorld::RenderShadowMaps()
     }
 
     shadowRt.unbindRt();
+    shadowRt.bindTexture();
 }
 
 void RenderWorld::RenderOpaque(ShaderProgram* prog)

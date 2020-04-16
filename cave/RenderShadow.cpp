@@ -119,8 +119,8 @@ void ShadowRt::init(int width, int height)
         _width, _height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glGenFramebuffers(1, &_fb);
@@ -130,12 +130,12 @@ void ShadowRt::init(int width, int height)
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    float aspect = (float)width / (float)height;
+    float aspect = (float)_width / (float)_height;
     float near = 1.0f;
-    float far = 100.0f;
-    //_projection = glm::perspective(glm::radians(90.0f), aspect, near, far);
-    float near_plane = 1.0f, far_plane = 200.f;
-    _projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+    float far = 200.0f;
+    _projection = glm::perspective(glm::radians(90.0f), aspect, near, far);
+    float near_plane = 1.0f, far_plane = 100.f;
+    //_projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane);
 
     _program->init(shadowVertex, shadowFragment);
 }
@@ -149,6 +149,8 @@ void ShadowRt::bindRt()
     _program->setPMatrix(_projection);
     _program->setVMatrix(_transform);
     _program->setMMatrix(glm::mat4(1.0f));
+    //glCullFace(GL_FRONT);
+    glDisable(GL_CULL_FACE);
 }
 
 void ShadowRt::unbindRt()
@@ -156,16 +158,21 @@ void ShadowRt::unbindRt()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glm::vec2 winSize = Application::get()->getWindowSize();
     glViewport(0, 0, (int)winSize.x, (int)winSize.y);
+    glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
 }
 
 void ShadowRt::setPos(glm::vec3 pos)
 {
+    _pos = pos;
     _transform = glm::lookAt(pos,
-        glm::vec3(0.0f, 0.0f, 0.0f),
+        pos + glm::vec3(1.f, 0.0f, 0.0f),
         glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void ShadowRt::bindTexture()
 {
-
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, _texture);
+    glActiveTexture(GL_TEXTURE0);
 }

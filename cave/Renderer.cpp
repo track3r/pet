@@ -29,10 +29,13 @@ void Renderer::init()
         uniform mat4 v_vMatrix;
         uniform mat4 v_pMatrix;
 
+        uniform mat4 v_lMatrix;
+
         uniform vec3 v_lightPos;
         
         varying vec2 f_texcoord0;
         varying vec3 f_lighDir;
+        varying vec4 f_posLightspace;
         varying vec3 f_toLight;
         varying vec3 f_toCamera;
         varying vec3 f_normal;
@@ -42,7 +45,9 @@ void Renderer::init()
             
             f_texcoord0 = v_uv;
             gl_Position = v_pMatrix * v_vMatrix * v_mMatrix * vec4(v_position, 1.0);
-            
+        
+            vec3 posWorld = v_mMatrix * vec4(v_position, 1.0);
+            f_posLightspace = v_lMatrix * vec4(posWorld, 1.0);
             mat4 eyeMatrix = v_vMatrix * v_mMatrix;
             
             //mat4 eyeMatrix = v_mMatrix;
@@ -70,10 +75,13 @@ void Renderer::init()
         uniform mat4 v_mMatrix;
         uniform mat4 v_vMatrix;
         uniform mat4 v_pMatrix;
+
         uniform sampler2D texture0;
+        uniform sampler2D textureShadow;
 
         varying vec2 f_texcoord0;
         varying vec3 f_lighDir;
+        varying vec4 f_posLightspace;
         varying vec3 f_toLight;
         varying vec3 f_toCamera;
         varying vec3 f_normal;
@@ -81,19 +89,46 @@ void Renderer::init()
 
         void main()
         {
-            //gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
-        
-            //gl_FragColor = texture(texture0, f_texcoord0);
+            gl_FragColor.a = 1.0;
+
             vec3 normal = normalize(f_normal);
-            //float ndl = dot(normal,normalize(f_lighDir));
             float ndl = dot(normal,normalize(f_toLight));
             float distance = length(f_toLight);
-            float att = 1 + distance*0.0004  + distance*distance*0.0004;
-            ndl /= att;
-            //gl_FragColor = vec4(ndl, ndl, ndl, 1.0);
-            //gl_FragColor = texture(texture0, f_texcoord0) * vec4(vec3(ndl),1.0);
-            gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl),1.0);
-            //gl_FragColor = vec4(vec3(f_debug.z) / 100, 1.0);
+            float att = 1.0 + distance*0.0004  + distance*distance*0.0004;
+            ndl /= att;            
+
+            vec3 projCoords = f_posLightspace.xyz / f_posLightspace.w; // perform perspective divide
+            projCoords = projCoords * 0.5 + 0.5;// transform to [0,1] range
+            
+            //gl_FragColor.xyz = vec3(projCoords.y);
+            
+            //return;
+            
+            //projCoords.xy = clamp(projCoords.xy,vec2(0.0, 0.0),vec2(1.0,1.0));
+            
+            float closestDepth = texture(textureShadow, projCoords.xy).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+            float currentDepth = projCoords.z;// get depth of current fragment from light's perspective
+            
+            //gl_FragColor.xyz = vec3(closestDepth);
+            //return;
+            //gl_FragColor.xyz = saturate(closestDepth);
+            
+
+            float shadow = currentDepth <= closestDepth + 0.001  ? 1.0 : 0.1;
+
+            
+
+            //gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl),1.0);
+            //gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl),1.0) * shadow;
+            //gl_FragColor =  vec4(vec3(calcShadow_debug(f_posLightspace, bias)), 1.0);
+            
+            //ndl = 0.5;
+            gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl * shadow) + vec3(0.2, 0.2, 0.2) ,1.0) ;
+            //gl_FragColor = vec4(vec3(shadow) + vec3(0.1, 0.1, 0.1), 1.0);
+
+            //gl_FragColor.xy = f_texcoord0;
+            //gl_FragColor.a = 1.0;
+
         }
         )glsl";
 
@@ -184,7 +219,7 @@ void Renderer::init()
         vb.value<glm::vec2, VertexAttributeIndex::Uv>(i) = uv[i % 4];
         ib.intPointer()[i] = i;
 
-        m_debugDraw.addVec(pos, glm::normalize(pos));
+        //m_debugDraw.addVec(pos, glm::normalize(pos));
         //m_debugDraw.addVec(pos, pos);
     }
 
@@ -235,6 +270,24 @@ void Renderer::beginRender()
 void Renderer::endRender()
 {
     glDisable(GL_DEPTH_TEST);
+    glm::vec4 cube[] = { 
+        glm::vec4(-1.f, -1.f, -1.f, 1.f),  glm::vec4(-1.f, -1.f, 1.f, 1.f),
+        glm::vec4(-1.f, 1.f, -1.f, 1.f),  glm::vec4(-1.f, 1.f, 1.f, 1.f),
+        glm::vec4(1.f, 1.f, -1.f, 1.f),  glm::vec4(1.f, 1.f, 1.f, 1.f),
+        glm::vec4(1.f, -1.f, -1.f, 1.f),  glm::vec4(1.f, -1.f, 1.f, 1.f) };
+
+    glm::mat4 inverse = glm::inverse(_shadow.getLightMatrix());
+    for (int i = 0; i < 8; i++) {
+        cube[i] = inverse * cube[i];
+    }
+
+    m_debugDraw.drawCube(glm::vec3(_shadow._pos));
+
+    m_debugDraw.addLine(glm::vec3(cube[0]) / cube[0].w, glm::vec3(cube[1]) / cube[1].w);
+    m_debugDraw.addLine(glm::vec3(cube[2]) / cube[2].w, glm::vec3(cube[3]) / cube[3].w);
+    m_debugDraw.addLine(glm::vec3(cube[4]) / cube[4].w, glm::vec3(cube[5]) / cube[5].w);
+    m_debugDraw.addLine(glm::vec3(cube[6]) / cube[6].w, glm::vec3(cube[7]) / cube[7].w);
+
     m_debugDraw.m_element.updateVbo();
     renderElement(m_debugDraw.m_program, m_debugDraw.m_element);
     glEnable(GL_DEPTH_TEST);
@@ -247,7 +300,9 @@ void Renderer::renderElement(const ShaderProgram& program, const RenderElement& 
 
     program.bind();
     program.setTexture(0);
+    program.setTextureShadow(1);
     program.setMMatrix(transform);
+    program.setLMatrix(_shadow.getLightMatrix());
     if (element.textures[0] == nullptr)
     {
         glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
@@ -258,7 +313,7 @@ void Renderer::renderElement(const ShaderProgram& program, const RenderElement& 
 
 void Renderer::renderCube(const glm::mat4& transform)
 {
-    m_debugDraw.drawCube(glm::vec3(transform[3]));
+    //m_debugDraw.drawCube(glm::vec3(transform[3]));
     renderElement(*m_program, m_test, transform);
 }
 

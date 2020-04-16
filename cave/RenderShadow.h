@@ -32,7 +32,8 @@ public:
     void unbindRt();
     void setPos(glm::vec3 pos);
     void bindTexture();
-
+    glm::mat4 getLightMatrix() { return _projection * _transform; }
+    glm::vec3 _pos;
     GLuint _texture = 0;
     GLuint _fb = 0;
     int _width = 0;

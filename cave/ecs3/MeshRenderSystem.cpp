@@ -85,6 +85,5 @@ void LightRenderSystem::onUpdate(ecs3::BlockIterator& iterator)
             _world->get<RenderSingleton>().world->updateLightPos(light.light, glm::vec3(transform.matrix[3]));
         }
 
-        transform.matrix = glm::translate(transform.matrix, glm::vec3(0.1f, 0.f, 0.f));
     }
 }
