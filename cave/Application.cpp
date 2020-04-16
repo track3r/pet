@@ -103,7 +103,7 @@ void CreateLight(ecs3::World* _world, ecs3::Id lightId)
 	descr._speed = 30;
 
 	TransformAnimationComponent anim(descr);
-	//conf.addComponent(anim);
+	conf.addComponent(anim);
 	_world->createEntity(conf);
 }
 
@@ -181,8 +181,22 @@ void LoadTestScene(ecs3::World* _world)
 	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, -20.f, 0.f)));
 	meshConf.addComponent(meshComp);
 	LOG("Uploading meshes...");
+	const char* meshFilter[] = { "sponza_117","sponza_366", "sponza_367", "sponza_12", "sponza_16", "sponza_370", "sponza_371" };
 	for (const ObjReader::group_t& group : reader.groups)
 	{
+		bool skip = true;
+		for (int i = 0; i < sizeof(meshFilter) / sizeof(meshFilter[0]); i++)
+		{
+			if (strcmp(group.name, meshFilter[i]) == 0)
+			{
+				skip = false;
+				break;
+			}
+		}
+		if (skip)
+		{
+			continue;
+		}
 		int faces = group.endFace - group.startFace;
 		//LOG(">>Mesh %s", group.name);
 		VertexBuffer* vb = new VertexBuffer(faces * 3, c_defaultVf);

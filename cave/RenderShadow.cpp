@@ -51,6 +51,11 @@ void ShadowCubeRt::init(int width, int height)
     float near = 1.0f;
     float far = 25.0f;
     _projection = glm::perspective(glm::radians(90.0f), aspect, near, far);
+
+    const float bias[16] = {
+         };
+
+   
 }
 
 glm::mat4 ShadowCubeRt::getMvp(int face, glm::vec3 pos)
@@ -121,6 +126,13 @@ void ShadowRt::init(int width, int height)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+#if 0
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
+#endif
+
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glGenFramebuffers(1, &_fb);
@@ -136,6 +148,10 @@ void ShadowRt::init(int width, int height)
     _projection = glm::perspective(glm::radians(90.0f), aspect, near, far);
     float near_plane = 1.0f, far_plane = 100.f;
     //_projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane);
+    _bias = glm::mat4(0.5, 0.0, 0.0, 0.0,
+        0.0, 0.5, 0.0, 0.0,
+        0.0, 0.0, 0.5, 0.0,
+        0.5, 0.5, 0.5, 1.0);
 
     _program->init(shadowVertex, shadowFragment);
 }
@@ -149,8 +165,8 @@ void ShadowRt::bindRt()
     _program->setPMatrix(_projection);
     _program->setVMatrix(_transform);
     _program->setMMatrix(glm::mat4(1.0f));
-    //glCullFace(GL_FRONT);
-    glDisable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    //glDisable(GL_CULL_FACE);
 }
 
 void ShadowRt::unbindRt()
@@ -158,8 +174,8 @@ void ShadowRt::unbindRt()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glm::vec2 winSize = Application::get()->getWindowSize();
     glViewport(0, 0, (int)winSize.x, (int)winSize.y);
-    glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
+    //glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 }
 
 void ShadowRt::setPos(glm::vec3 pos)
@@ -175,4 +191,9 @@ void ShadowRt::bindTexture()
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _texture);
     glActiveTexture(GL_TEXTURE0);
+}
+
+glm::mat4 ShadowRt::getLightMatrix()
+{
+    return /*_bias * */ _projection * _transform;
 }

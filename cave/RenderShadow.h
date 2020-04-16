@@ -32,7 +32,7 @@ public:
     void unbindRt();
     void setPos(glm::vec3 pos);
     void bindTexture();
-    glm::mat4 getLightMatrix() { return _projection * _transform; }
+    glm::mat4 getLightMatrix();
     glm::vec3 _pos;
     GLuint _texture = 0;
     GLuint _fb = 0;
@@ -41,6 +41,7 @@ public:
 
     glm::mat4 _transform;
     glm::mat4 _projection;
+    glm::mat4 _bias;
 
     ShaderProgram* _program;
 };

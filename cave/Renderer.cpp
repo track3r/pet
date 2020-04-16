@@ -77,6 +77,7 @@ void Renderer::init()
         uniform mat4 v_pMatrix;
 
         uniform sampler2D texture0;
+        //uniform sampler2DShadow textureShadow;
         uniform sampler2D textureShadow;
 
         varying vec2 f_texcoord0;
@@ -101,20 +102,21 @@ void Renderer::init()
             projCoords = projCoords * 0.5 + 0.5;// transform to [0,1] range
             
             //gl_FragColor.xyz = vec3(projCoords.y);
-            
             //return;
             
-            //projCoords.xy = clamp(projCoords.xy,vec2(0.0, 0.0),vec2(1.0,1.0));
             
-            float closestDepth = texture(textureShadow, projCoords.xy).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-            float currentDepth = projCoords.z;// get depth of current fragment from light's perspective
+            float closestDepth = 1 - texture(textureShadow, projCoords.xy).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+            float currentDepth = 1 - projCoords.z;// get depth of current fragment from light's perspective
             
-            //gl_FragColor.xyz = vec3(closestDepth);
+            //float shadow = texture(textureShadow, projCoords) > 0 ? 1.0 : 0.1;
+            f_posLightspace.z += 0.05;
+            //float shadow = shadow2DProj(textureShadow, f_posLightspace);
+            
+            //gl_FragColor.xyz = vec3(f_posLightspace.w);
             //return;
-            //gl_FragColor.xyz = saturate(closestDepth);
             
 
-            float shadow = currentDepth <= closestDepth + 0.001  ? 1.0 : 0.1;
+            float shadow = currentDepth > closestDepth /*- 0.001*/  ? 1.0 : 0.1;
 
             
 
@@ -283,10 +285,10 @@ void Renderer::endRender()
 
     m_debugDraw.drawCube(glm::vec3(_shadow._pos));
 
-    m_debugDraw.addLine(glm::vec3(cube[0]) / cube[0].w, glm::vec3(cube[1]) / cube[1].w);
-    m_debugDraw.addLine(glm::vec3(cube[2]) / cube[2].w, glm::vec3(cube[3]) / cube[3].w);
-    m_debugDraw.addLine(glm::vec3(cube[4]) / cube[4].w, glm::vec3(cube[5]) / cube[5].w);
-    m_debugDraw.addLine(glm::vec3(cube[6]) / cube[6].w, glm::vec3(cube[7]) / cube[7].w);
+    m_debugDraw.addLine(glm::vec3(cube[0]) / cube[0].w, glm::vec3(cube[1]) / cube[1].w, c_red, c_green);
+    m_debugDraw.addLine(glm::vec3(cube[2]) / cube[2].w, glm::vec3(cube[3]) / cube[3].w, c_red, c_green);
+    m_debugDraw.addLine(glm::vec3(cube[4]) / cube[4].w, glm::vec3(cube[5]) / cube[5].w, c_red, c_green);
+    m_debugDraw.addLine(glm::vec3(cube[6]) / cube[6].w, glm::vec3(cube[7]) / cube[7].w, c_red, c_green);
 
     m_debugDraw.m_element.updateVbo();
     renderElement(m_debugDraw.m_program, m_debugDraw.m_element);
