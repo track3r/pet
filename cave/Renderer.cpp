@@ -109,14 +109,14 @@ void Renderer::init()
             float currentDepth = 1 - projCoords.z;// get depth of current fragment from light's perspective
             
             //float shadow = texture(textureShadow, projCoords) > 0 ? 1.0 : 0.1;
-            f_posLightspace.z += 0.05;
+            //f_posLightspace.z += 0.05;
             //float shadow = shadow2DProj(textureShadow, f_posLightspace);
             
             //gl_FragColor.xyz = vec3(f_posLightspace.w);
             //return;
             
 
-            float shadow = currentDepth > closestDepth /*- 0.001*/  ? 1.0 : 0.1;
+            float shadow = currentDepth > closestDepth + 0.001 ? 1.0 : 0.1;
 
             
 
