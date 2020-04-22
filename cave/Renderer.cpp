@@ -88,6 +88,13 @@ void Renderer::init()
         varying vec3 f_normal;
         varying vec3 f_debug;
 
+        float sampleShadow(vec3 projCoords, float bias)
+        {
+            float closestDepth = texture(textureShadow, projCoords.xy).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+            float currentDepth = projCoords.z;// get depth of current fragment from light's perspective
+            return closestDepth < currentDepth - bias  ? 0.0 : 1.0;
+        }
+
         void main()
         {
             gl_FragColor.a = 1.0;
@@ -104,30 +111,35 @@ void Renderer::init()
             //gl_FragColor.xyz = vec3(projCoords.y);
             //return;
             
-            float shadow = 0;
-            bool inShadow = projCoords.x > 0 && projCoords.x < 1 &&
-                projCoords.y > 0 && projCoords.y < 1 &&
-                projCoords.z > 0 && projCoords.z < 1;
+            float shadow = 0.0;
+            bool inShadow = projCoords.x > 0.0 && projCoords.x < 1.0 &&
+                projCoords.y > 0.0 && projCoords.y < 1.0 &&
+                projCoords.z > 0.0 && projCoords.z < 1.0;
             if (inShadow)
             {
                 
-                float closestDepth = 1 - texture(textureShadow, projCoords.xy).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-                float currentDepth = 1 - projCoords.z;// get depth of current fragment from light's perspective
+                float closestDepth = texture(textureShadow, projCoords.xy).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+                float currentDepth = projCoords.z;// get depth of current fragment from light's perspective
             
-                //float shadow = texture(textureShadow, projCoords) > 0 ? 1.0 : 0.1;
-                //f_posLightspace.z += 0.05;
-                //float shadow = shadow2DProj(textureShadow, f_posLightspace);
+                // + bias gives peter panning in simple case, - bias is a mess in complex scene
+                float bias = 0.0001 * ndl;                
+                //shadow = closestDepth < currentDepth - bias  ? 0.1 : 1.0;
+
+                vec2 offset = vec2(1.0/512.0);
+
+                //shadow = sampleShadow(projCoords, bias);
+                shadow += sampleShadow(projCoords + vec3(vec2(-1.5, -1.5) * offset, 0.0), bias);
+                shadow += sampleShadow(projCoords + vec3(vec2(-1.5, -0.5) * offset, 0.0), bias);
+                shadow += sampleShadow(projCoords + vec3(vec2(-1.5,  0.5) * offset, 0.0), bias);
+                shadow += sampleShadow(projCoords + vec3(vec2(-1.5,  1.5) * offset, 0.0), bias);
+
+                shadow /= 4;
+             }
             
-                //gl_FragColor.xyz = vec3(f_posLightspace.w);
-                //return;
-            
-                shadow = currentDepth > closestDepth + 0.001 ? 1.0 : 0.1;
-              }
-            
+            shadow = max(shadow, 0.1);
 
             //gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl),1.0);
             //gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl),1.0) * shadow;
-            //gl_FragColor =  vec4(vec3(calcShadow_debug(f_posLightspace, bias)), 1.0);
             
             //ndl = 0.5;
             gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl * shadow) + vec3(0.2, 0.2, 0.2) ,1.0) ;
@@ -248,7 +260,8 @@ gl_FragColor.x += 0.5;
     glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
     CheckGlError();
 
-    _shadow.init(1024, 1024);
+    //_shadow.init(1024, 1024);
+    _shadow.init(512, 512);
 }
 
 void Renderer::beginRender()

@@ -184,7 +184,7 @@ void LoadTestScene(ecs3::World* _world)
 	const char* meshFilter[] = { "sponza_117","sponza_366", "sponza_367", "sponza_12", "sponza_16", "sponza_370", "sponza_371" };
 	for (const ObjReader::group_t& group : reader.groups)
 	{
-#if 1
+#if 0
 		bool skip = true;
 		for (int i = 0; i < sizeof(meshFilter) / sizeof(meshFilter[0]); i++)
 		{

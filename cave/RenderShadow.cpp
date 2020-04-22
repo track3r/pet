@@ -143,11 +143,10 @@ void ShadowRt::init(int width, int height)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     float aspect = (float)_width / (float)_height;
-    float near = 1.0f;
-    float far = 200.0f;
+    float near = 0.1f;
+    float far = 1000.0f;
     _projection = glm::perspective(glm::radians(90.0f), aspect, near, far);
-    float near_plane = 1.0f, far_plane = 100.f;
-    //_projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane);
+    //_projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near, far);
     _bias = glm::mat4(0.5, 0.0, 0.0, 0.0,
         0.0, 0.5, 0.0, 0.0,
         0.0, 0.0, 0.5, 0.0,
@@ -166,6 +165,7 @@ void ShadowRt::bindRt()
     _program->setVMatrix(_transform);
     _program->setMMatrix(glm::mat4(1.0f));
     glCullFace(GL_FRONT);
+    //glCullFace(GL_BACK);
     //glDisable(GL_CULL_FACE);
 }
 
