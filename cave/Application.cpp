@@ -138,13 +138,10 @@ void LoadTestScene(ecs3::World* _world)
 				std::string filename = "..\\assets\\sponza\\";
 				filename += mtlReader.materials[i].texture;
 
-				//LOG_LEAN("Texture %s", filename.c_str());
-
 				loadTextureData(filename.c_str(), textureDataArray[i]);
 				done++;
 			}
 			index = InterlockedAdd(&_job.counter, _job.granularity) - _job.granularity;
-			InterlockedAdd(&_job.done, _job.granularity);
 		}
 	};
 

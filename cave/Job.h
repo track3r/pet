@@ -4,9 +4,11 @@ struct job_t
 {
     volatile long counter = 0;
     volatile long done = 0;
+    
     uint32_t numElements = 0;
-    uint16_t granularity = 0;
+    uint32_t granularity = 0;
     void* userData = nullptr;
+    volatile long workers = 0;
 };
 
 struct jobRunnerState_t;
