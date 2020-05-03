@@ -20,7 +20,10 @@
 - [x] render alpha separate, no sorting yet
 - [x] integrate light to ecs
 - [x] light ecs animation
-- [ ] shadows
+- [x] shadows - sorta
+- [ ] shader preprocess
+- [ ] shader reload
+- [ ] uniform buffers
 - [ ] multi lights
 - [ ] cleanup + premake?
 - [ ] 2x2 mip bug
