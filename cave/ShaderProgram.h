@@ -23,7 +23,7 @@ public:
 	}
 
 	bool init(const char* vertex, const char* fragment);
-
+	bool init(const char* filename);
 private:	
 	static void bindAttributes(GLuint program);
 

@@ -25,3 +25,19 @@ private:
     void threadFunc();
     jobRunnerState_t* _state;
 };
+
+typedef uint16_t jobId;
+
+#define MAX_QUEUED_JOBS 4096
+
+class Queue
+{
+public:
+    void push(jobId id);
+    jobId pop();
+    jobId steal();
+private:
+    volatile long _top = 0;
+    volatile long _bottom = 0;
+    jobId _data[MAX_QUEUED_JOBS] = { 0 };
+};

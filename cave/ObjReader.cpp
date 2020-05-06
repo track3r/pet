@@ -3,15 +3,16 @@
 
 bool ObjReader::parse(const char* filename)
 {
+    positions.reserve(200000);
+    normals.reserve(200000);
+    texcoords.reserve(200000);
+    faces.reserve(200000);
+
     FILE* f = fopen(filename, "r");
     if (!f)
     {
         return false;
     }
-    positions.reserve(200000);
-    normals.reserve(200000);
-    texcoords.reserve(200000);
-    faces.reserve(200000);
     char line[513];
     while (fgets(line, 512, f) != NULL)
     {

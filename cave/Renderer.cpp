@@ -157,7 +157,8 @@ gl_FragColor.x += 0.5;
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-    m_program->init(vShaderStr, fShaderStr);
+    //m_program->init(vShaderStr, fShaderStr);
+    m_program->init("..\\assets\\shaders\\main.glsl");
 
     GLfloat vertices[][3] =
     {

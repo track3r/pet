@@ -123,6 +123,54 @@ bool ShaderProgram::init(const char* vertex, const char* fragment)
 	return true;
 }
 
+void getFileName(const char* fullpath, std::string& result)
+{
+	int l = strlen(fullpath);
+	do
+	{
+		char c = fullpath[l - 1];
+		if (c == '\\' || c =='/')
+		{
+			result.assign(fullpath + l);
+			return;
+		}
+	} while (--l > 0);
+
+	result = fullpath;
+}
+
+bool readFile(const char* filename, std::string& result)
+{
+
+}
+
+bool ShaderProgram::init(const char* filename)
+{
+	FILE* f = fopen(filename, "r");
+	if (!f)
+	{
+		return false;
+	}
+	char line[513];
+	char buffer[256];
+	std::string header;
+	std::string vertex;
+	std::string fragment;
+	std::string* section = &header;
+	while (fgets(line, 512, f) != NULL)
+	{
+		if (sscanf(line, "#include \"%s\"", buffer) == 1)
+		{
+			*section += "//";
+			*section += line;
+			*section += "\n";
+
+
+		}
+	}
+	return false;
+}
+
 void ShaderProgram::setPMatrix(const glm::mat4& matrix) const
 {
 	glUniformMatrix4fv(m_vpMatrixLoc, 1, GL_FALSE, glm::value_ptr(matrix));
