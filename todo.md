@@ -21,7 +21,7 @@
 - [x] integrate light to ecs
 - [x] light ecs animation
 - [x] shadows - sorta
-- [ ] shader preprocess
+- [x] shader preprocess
 - [ ] shader reload
 - [ ] uniform buffers
 - [ ] multi lights

@@ -1,4 +1,5 @@
-#include "varyingDefault.glsl"
+#include "include/varyingDefault.glsl"
+
 #pragma vertex
 attribute vec3 v_position;
 attribute vec2 v_uv;
@@ -39,7 +40,6 @@ void main()
 }
 
 #pragma fragment
-
 varying vec3 pos;
 uniform mat4 v_mMatrix;
 uniform mat4 v_vMatrix;

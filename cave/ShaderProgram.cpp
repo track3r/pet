@@ -122,10 +122,34 @@ bool ShaderProgram::init(const char* vertex, const char* fragment)
 
 	return true;
 }
+int splitPath(const char* fullpath, int& filename)
+{
+	size_t l = strlen(fullpath);
+	if (l == 0)
+	{
+		return -1;
+	}
+
+	do
+	{
+		char c = fullpath[l - 1];
+		if (c == '\\' || c == '/')
+		{
+			return (int)l;
+		}
+	} while (--l > 0);
+
+	return (int)l;
+}
 
 void getFileName(const char* fullpath, std::string& result)
 {
-	int l = strlen(fullpath);
+	size_t l = strlen(fullpath);
+	if (l == 0)
+	{
+		result = "";
+		return;
+	}
 	do
 	{
 		char c = fullpath[l - 1];
@@ -139,36 +163,220 @@ void getFileName(const char* fullpath, std::string& result)
 	result = fullpath;
 }
 
+void getDirectory(const char* fullpath, std::string& result)
+{
+	size_t l = strlen(fullpath);
+	if (l == 0)
+	{
+		result = "";
+		return;
+	}
+
+	do
+	{
+		char c = fullpath[l - 1];
+		if (c == '\\' || c == '/')
+		{
+			result.assign(fullpath, l);
+			return;
+		}
+	} while (--l > 0);
+
+	result = fullpath;
+}
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <direct.h>
+
+bool ensureDir(const char* path)
+{
+	char temp[512] = { 0 };
+	size_t l = strlen(path);
+	if (l == 0)
+	{
+		return true;
+	}
+
+	int i = 0;
+	int begin = 0;
+	bool foundFile = false;
+	do
+	{
+		
+		if (path[i] == '/' || path[i] == '\\')
+		{
+			if (foundFile)
+			{
+				LOG("%s: dir in the middle", path);
+				return false;
+			}
+			struct stat info;
+
+			if (stat(temp, &info) != 0)
+			{
+				if (_mkdir(temp) != 0)
+				{
+					LOG("failed to make dir %s", temp);
+					return false;
+				}
+			}
+			else if (info.st_mode & S_IFDIR)
+			{
+				
+			} 
+			else
+			{
+				foundFile = true;
+			}
+		}
+
+		temp[i] = path[i];
+	} while (++i < l);
+
+	return true;
+}
+
 bool readFile(const char* filename, std::string& result)
 {
+	FILE* f = fopen(filename, "rb");
+	if (!f)
+	{
+		return false;
+	}
 
+	fseek(f, 0, SEEK_END);
+	long len = ftell(f);
+	result.resize(len);
+	fseek(f, 0, SEEK_SET);
+	fread(&result.front(), 1, len, f);
+
+	return true;
+}
+
+bool getLine(char* line, std::vector<FILE*>& stack)
+{
+	if (stack.empty())
+	{
+		return false;
+	}
+
+	while (fgets(line, 512, stack.back()) == NULL)
+	{
+		fclose(stack.back());
+		stack.pop_back();
+
+		if (stack.empty())
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 bool ShaderProgram::init(const char* filename)
 {
+	std::string dir;
+	getDirectory(filename, dir);
+
+	std::string file;
+	getFileName(filename, file);
+
 	FILE* f = fopen(filename, "r");
 	if (!f)
 	{
 		return false;
 	}
 	char line[513];
-	char buffer[256];
+	char buffer[256] = { 0 };
 	std::string header;
 	std::string vertex;
 	std::string fragment;
+	std::string includeBody;
+	std::string includeFile;
 	std::string* section = &header;
-	while (fgets(line, 512, f) != NULL)
+	int n = 0;
+
+	std::vector<FILE*> stack;
+	stack.push_back(f);
+
+	while (getLine(line, stack))
 	{
-		if (sscanf(line, "#include \"%s\"", buffer) == 1)
+		if (line[0] != '#')
+		{
+			*section += line;
+			continue;
+		}
+
+		if (sscanf(line, "#include \"%[^\"]", buffer) == 1)
 		{
 			*section += "//";
 			*section += line;
-			*section += "\n";
 
+			includeFile = dir;
+			includeFile += "/";
+			includeFile += buffer;
 
+			//readFile(includeFile.c_str(), includeBody);
+			//*section += includeBody;
+			//*section += "\n";
+			FILE* inc = fopen(includeFile.c_str(), "r");
+			if (inc == NULL)
+			{
+				LOG("Failed to open include file %s", includeFile.c_str());
+			}
+			stack.push_back(inc);
+			continue;
+		}
+
+		if (sscanf(line, "#pragma %s", buffer) == 1)
+		{
+			if (strcmp(buffer, "vertex") == 0)
+			{
+				section = &vertex;
+			} 
+			else if (strcmp(buffer, "fragment") == 0)
+			{
+				section = &fragment;
+			}
+			
+			continue;
 		}
 	}
-	return false;
+	header += "//end of header\n";
+	std::string vertexBody = header;
+	vertexBody.append(vertex);
+	std::string fragmentBody = header;
+	fragmentBody.append(fragment);
+
+	const char* buildTemp = "..\\build\\shaders\\";
+	std::string vertexFilename = buildTemp;
+	vertexFilename += file;
+	vertexFilename += "_v.glsl";
+	ensureDir(vertexFilename.c_str());
+	FILE* vertexFile = fopen(vertexFilename.c_str(), "w");
+	if (!vertexFile)
+	{
+		return false;
+	}
+	
+	fprintf(vertexFile, "%s", vertexBody.c_str());
+	fclose(vertexFile);
+
+	std::string fragmentFilename = buildTemp;
+	fragmentFilename += file;
+	fragmentFilename += "_f.glsl";
+	FILE* fragmentFile = fopen(fragmentFilename.c_str(), "w");
+	if (!fragmentFile)
+	{
+		return false;
+	}
+
+	fprintf(fragmentFile, "%s", fragmentBody.c_str());
+	fclose(fragmentFile);
+
+	return init(vertexBody.c_str(), fragmentBody.c_str());
 }
 
 void ShaderProgram::setPMatrix(const glm::mat4& matrix) const
