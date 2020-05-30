@@ -97,6 +97,7 @@
     <ClCompile Include="ecs3\MeshRenderSystem.cpp" />
     <ClCompile Include="ecs3\PlayerSystem.cpp" />
     <ClCompile Include="ecs3\TransformAnimationSystem.cpp" />
+    <ClCompile Include="FsUtils.cpp" />
     <ClCompile Include="GeometryBuilder.cpp" />
     <ClCompile Include="Job.cpp" />
     <ClCompile Include="Log.cpp" />
@@ -108,6 +109,7 @@
     <ClCompile Include="RenderElement.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderWorld.cpp" />
+    <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="ecs3\SampleRenderSystem.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
@@ -120,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\todo.md" />
+    <None Include="cpp.hint" />
     <None Include="primitive_restart.fs.glsl" />
     <None Include="primitive_restart.vs.glsl" />
   </ItemGroup>
@@ -134,6 +137,7 @@
     <ClInclude Include="ecs3\ecs3pch.h" />
     <ClInclude Include="ecs3\PlayerSystem.h" />
     <ClInclude Include="ecs3\TransformAnimationSystem.h" />
+    <ClInclude Include="FsUtils.h" />
     <ClInclude Include="GeometryBuilder.h" />
     <ClInclude Include="GlHeaders.h" />
     <ClInclude Include="GlmIncludes.h" />
@@ -144,6 +148,7 @@
     <ClInclude Include="RenderElement.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderWorld.h" />
+    <ClInclude Include="Resource.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="ecs3\SampleRenderSystem.h" />
     <ClInclude Include="ShaderProgram.h" />

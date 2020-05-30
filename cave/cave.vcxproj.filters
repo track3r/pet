@@ -55,6 +55,8 @@
     <ClCompile Include="RenderShadow.cpp">
       <Filter>render</Filter>
     </ClCompile>
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="FsUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -118,11 +120,14 @@
     <ClInclude Include="RenderShadow.h">
       <Filter>render</Filter>
     </ClInclude>
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="FsUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="primitive_restart.fs.glsl" />
     <None Include="primitive_restart.vs.glsl" />
     <None Include="..\todo.md" />
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ecs3">

@@ -22,7 +22,8 @@
 - [x] light ecs animation
 - [x] shadows - sorta
 - [x] shader preprocess
-- [ ] shader reload
+- [x] shader reload
+- [ ] fix cursor capture
 - [ ] uniform buffers
 - [ ] multi lights
 - [ ] cleanup + premake?

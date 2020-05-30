@@ -3,7 +3,7 @@
 #include "GlHeaders.h"
 #include "GlmIncludes.h"
 
-class ShaderProgram
+class ShaderProgram : public Resource
 {
 public:
 	ShaderProgram();
@@ -22,13 +22,17 @@ public:
 		bindAttributes(m_program);
 	}
 
+	bool build(const char* filename);
 	bool init(const char* vertex, const char* fragment);
 	bool init(const char* filename);
+	void refresh();
 private:	
 	static void bindAttributes(GLuint program);
 
 private:
 	GLuint m_program;
+	GLuint _vertexShader;
+	GLuint _fragmentShader;
 	GLuint m_vmMatrixLoc;
 	GLuint m_vvMatrixLoc;
 	GLuint m_vpMatrixLoc;

@@ -22,6 +22,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
+#include "Resource.h"
+
 #if defined(_MSC_VER) 
 void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const  void* userParam)
 {
@@ -178,10 +180,11 @@ void LoadTestScene(ecs3::World* _world)
 	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, -20.f, 0.f)));
 	meshConf.addComponent(meshComp);
 	LOG("Uploading meshes...");
-	const char* meshFilter[] = { "sponza_117","sponza_366", "sponza_367", "sponza_12", "sponza_16", "sponza_370", "sponza_371" };
+	
 	for (const ObjReader::group_t& group : reader.groups)
 	{
 #if 0
+		static const char* meshFilter[] = { "sponza_117","sponza_366", "sponza_367", "sponza_12", "sponza_16", "sponza_370", "sponza_371" };
 		bool skip = true;
 		for (int i = 0; i < sizeof(meshFilter) / sizeof(meshFilter[0]); i++)
 		{
@@ -341,8 +344,15 @@ void Application::update(float dt)
 	//printf("Application::update");
 	m_dt = dt;
 	m_input.UpdateControlls();
-	_world->get<ecs3::FrameSingleton>().dt = dt;
-	_world->get<ecs3::FrameSingleton>().number++;
+
+	ecs3::FrameSingleton& frameInfo = _world->get<ecs3::FrameSingleton>();
+	frameInfo.dt = dt;
+	frameInfo.number++;
+
+	if (frameInfo.number % 100)
+	{
+		resourceManager->checkForUpdates();
+	}
 
 	const float move = m_dt * c_speed;
     _renderer.camera().moveForward(move * m_input.getControlls().forwad);

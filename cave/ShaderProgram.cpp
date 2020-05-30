@@ -1,16 +1,21 @@
 #include "pch.h"
 #include "ShaderProgram.h"
 #include "VertexFormat.h"
+#include "FsUtils.h"
 
 
 ShaderProgram::ShaderProgram()
+	:Resource()
 {
+
 }
 
 
 ShaderProgram::~ShaderProgram()
 {
-
+	glDeleteProgram(m_program);
+	glDeleteShader(_vertexShader);
+	glDeleteShader(_fragmentShader);
 }
 
 void ShaderProgram::bind() const
@@ -63,21 +68,21 @@ GLuint LoadShader(GLenum type, const char *shaderSrc)
 
 bool ShaderProgram::init(const char* vertex, const char* fragment)
 {
-	GLuint vertexShader;
-	GLuint fragmentShader;
+	//GLuint vertexShader;
+	//GLuint fragmentShader;
 	GLuint programObject;
 	GLint linked;
 
 	// Load the vertex/fragment shaders
-	vertexShader = LoadShader(GL_VERTEX_SHADER, (const char*)vertex);
-	fragmentShader = LoadShader(GL_FRAGMENT_SHADER, (const char*)fragment);
+	_vertexShader = LoadShader(GL_VERTEX_SHADER, (const char*)vertex);
+	_fragmentShader = LoadShader(GL_FRAGMENT_SHADER, (const char*)fragment);
 
 	programObject = glCreateProgram();
 	if (programObject == 0)
 		return false;
 
-	glAttachShader(programObject, vertexShader);
-	glAttachShader(programObject, fragmentShader);
+	glAttachShader(programObject, _vertexShader);
+	glAttachShader(programObject, _fragmentShader);
 	
 	bindAttributes(programObject);
 
@@ -122,161 +127,11 @@ bool ShaderProgram::init(const char* vertex, const char* fragment)
 
 	return true;
 }
-int splitPath(const char* fullpath, int& filename)
+
+bool ShaderProgram::build(const char* filename)
 {
-	size_t l = strlen(fullpath);
-	if (l == 0)
-	{
-		return -1;
-	}
+	addFileDep(filename);
 
-	do
-	{
-		char c = fullpath[l - 1];
-		if (c == '\\' || c == '/')
-		{
-			return (int)l;
-		}
-	} while (--l > 0);
-
-	return (int)l;
-}
-
-void getFileName(const char* fullpath, std::string& result)
-{
-	size_t l = strlen(fullpath);
-	if (l == 0)
-	{
-		result = "";
-		return;
-	}
-	do
-	{
-		char c = fullpath[l - 1];
-		if (c == '\\' || c =='/')
-		{
-			result.assign(fullpath + l);
-			return;
-		}
-	} while (--l > 0);
-
-	result = fullpath;
-}
-
-void getDirectory(const char* fullpath, std::string& result)
-{
-	size_t l = strlen(fullpath);
-	if (l == 0)
-	{
-		result = "";
-		return;
-	}
-
-	do
-	{
-		char c = fullpath[l - 1];
-		if (c == '\\' || c == '/')
-		{
-			result.assign(fullpath, l);
-			return;
-		}
-	} while (--l > 0);
-
-	result = fullpath;
-}
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <direct.h>
-
-bool ensureDir(const char* path)
-{
-	char temp[512] = { 0 };
-	size_t l = strlen(path);
-	if (l == 0)
-	{
-		return true;
-	}
-
-	int i = 0;
-	int begin = 0;
-	bool foundFile = false;
-	do
-	{
-		
-		if (path[i] == '/' || path[i] == '\\')
-		{
-			if (foundFile)
-			{
-				LOG("%s: dir in the middle", path);
-				return false;
-			}
-			struct stat info;
-
-			if (stat(temp, &info) != 0)
-			{
-				if (_mkdir(temp) != 0)
-				{
-					LOG("failed to make dir %s", temp);
-					return false;
-				}
-			}
-			else if (info.st_mode & S_IFDIR)
-			{
-				
-			} 
-			else
-			{
-				foundFile = true;
-			}
-		}
-
-		temp[i] = path[i];
-	} while (++i < l);
-
-	return true;
-}
-
-bool readFile(const char* filename, std::string& result)
-{
-	FILE* f = fopen(filename, "rb");
-	if (!f)
-	{
-		return false;
-	}
-
-	fseek(f, 0, SEEK_END);
-	long len = ftell(f);
-	result.resize(len);
-	fseek(f, 0, SEEK_SET);
-	fread(&result.front(), 1, len, f);
-
-	return true;
-}
-
-bool getLine(char* line, std::vector<FILE*>& stack)
-{
-	if (stack.empty())
-	{
-		return false;
-	}
-
-	while (fgets(line, 512, stack.back()) == NULL)
-	{
-		fclose(stack.back());
-		stack.pop_back();
-
-		if (stack.empty())
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
-bool ShaderProgram::init(const char* filename)
-{
 	std::string dir;
 	getDirectory(filename, dir);
 
@@ -326,6 +181,7 @@ bool ShaderProgram::init(const char* filename)
 			{
 				LOG("Failed to open include file %s", includeFile.c_str());
 			}
+			addFileDep(includeFile.c_str());
 			stack.push_back(inc);
 			continue;
 		}
@@ -375,8 +231,24 @@ bool ShaderProgram::init(const char* filename)
 
 	fprintf(fragmentFile, "%s", fragmentBody.c_str());
 	fclose(fragmentFile);
-
 	return init(vertexBody.c_str(), fragmentBody.c_str());
+}
+
+bool ShaderProgram::init(const char* filename)
+{
+	bool ret = build(filename);
+	return Resource::init(filename);
+}
+
+void ShaderProgram::refresh()
+{
+#if defined(BUILD_TOOLS)
+	glDeleteProgram(m_program);
+	glDeleteShader(_vertexShader);
+	glDeleteShader(_fragmentShader);
+	clearDeps();
+	build(_name.c_str());
+#endif	
 }
 
 void ShaderProgram::setPMatrix(const glm::mat4& matrix) const
