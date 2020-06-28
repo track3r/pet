@@ -1,5 +1,6 @@
+#version 420
 #include "include/varyingDefault.glsl"
-
+#include "include/uniforms.glsl"
 #pragma vertex
 attribute vec3 v_position;
 attribute vec2 v_uv;
@@ -18,12 +19,12 @@ void main()
     f_texcoord0 = v_uv;
     gl_Position = v_pMatrix * v_vMatrix * v_mMatrix * vec4(v_position, 1.0);
         
-    vec3 posWorld = v_mMatrix * vec4(v_position, 1.0);
+    vec3 posWorld = (v_mMatrix * vec4(v_position, 1.0)).xyz;
     f_posLightspace = v_lMatrix * vec4(posWorld, 1.0);
     mat4 eyeMatrix = v_vMatrix * v_mMatrix;
             
     //mat4 eyeMatrix = v_mMatrix;
-    f_debug = vec4(eyeMatrix * vec4(v_position, 0.0) ).xyz;
+    f_debug = vec4(eyeMatrix * vec4(v_position, 0.0) ).xyz; 
     vec4 eyePos = eyeMatrix * vec4(v_position, 1.0);
     f_toCamera = -eyePos.xyz;
 
@@ -31,9 +32,12 @@ void main()
 
     vec3 testLightDirWorld = vec3(0, 1, 0);
             
-    //vec3 testLightPosWorld = vec3(0, 20, 0);
+    
     vec3 lightPosEye = vec4(eyeMatrix * vec4(v_lightPos, 1.0)).xyz;
-    f_toLight = lightPosEye - eyePos;
+    //vec4 lightPos = (inverse(v_lMatrix) * vec4(0.5, -1, .5, 1.0));
+    //lightPos /= lightPos.w;
+    //lightPosEye = vec4(eyeMatrix * vec4(lightPos.xyz, 1.0)).xyz;
+    f_toLight = lightPosEye - eyePos.xyz;
             
     f_lighDir = vec4(eyeMatrix * vec4(testLightDirWorld, 0.0)).xyz;
             
@@ -76,6 +80,7 @@ void main()
     bool inShadow = projCoords.x > 0.0 && projCoords.x < 1.0 &&
         projCoords.y > 0.0 && projCoords.y < 1.0 &&
         projCoords.z > 0.0 && projCoords.z < 1.0;
+
     if (inShadow)
     {
                 
@@ -112,5 +117,8 @@ void main()
     if (inShadow) {
         gl_FragColor.x += 0.5;
     }
+
+
+    //gl_FragColor.y = 1;
 
 }

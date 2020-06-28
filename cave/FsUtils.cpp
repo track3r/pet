@@ -134,21 +134,27 @@ bool readFile(const char* filename, std::string& result)
 	return true;
 }
 
-bool getLine(char* line, std::vector<FILE*>& stack)
+bool getLine(char* line, std::vector<fileStackEntry_t>& stack)
 {
 	if (stack.empty())
 	{
 		return false;
 	}
 
-	while (fgets(line, 512, stack.back()) == NULL)
+	while (fgets(line, 512, stack.back().file) == NULL)
 	{
-		fclose(stack.back());
+		fclose(stack.back().file);
+		fileStackEntry_t last = stack.back();
 		stack.pop_back();
 
 		if (stack.empty())
 		{
 			return false;
+		}
+		else
+		{
+			sprintf(line, "//end %s\n", last.filename);
+			return true;
 		}
 	}
 

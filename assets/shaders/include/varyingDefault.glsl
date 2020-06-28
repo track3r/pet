@@ -1,3 +1,9 @@
+#ifdef fragment
+#define varying in
+#endif
+#ifdef vertex
+#define varying out
+#endif
 varying vec2 f_texcoord0;
 varying vec3 f_lighDir;
 varying vec4 f_posLightspace;

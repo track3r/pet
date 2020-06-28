@@ -153,8 +153,11 @@ bool ShaderProgram::build(const char* filename)
 	std::string* section = &header;
 	int n = 0;
 
-	std::vector<FILE*> stack;
-	stack.push_back(f);
+	std::vector<fileStackEntry_t> stack;
+	fileStackEntry_t entry;
+	entry.file = f;
+	strcpy(entry.filename, filename);
+	stack.push_back(entry);
 
 	while (getLine(line, stack))
 	{
@@ -169,7 +172,8 @@ bool ShaderProgram::build(const char* filename)
 			*section += "//";
 			*section += line;
 
-			includeFile = dir;
+			includeFile.clear();
+			getDirectory(stack.back().filename, includeFile);
 			includeFile += "/";
 			includeFile += buffer;
 
@@ -182,11 +186,13 @@ bool ShaderProgram::build(const char* filename)
 				LOG("Failed to open include file %s", includeFile.c_str());
 			}
 			addFileDep(includeFile.c_str());
-			stack.push_back(inc);
+			fileStackEntry_t entry;
+			entry.file = inc;
+			strcpy(entry.filename, includeFile.c_str());
+			stack.push_back(entry);
 			continue;
 		}
-
-		if (sscanf(line, "#pragma %s", buffer) == 1)
+		else if (sscanf(line, "#pragma %s", buffer) == 1)
 		{
 			if (strcmp(buffer, "vertex") == 0)
 			{
@@ -198,6 +204,10 @@ bool ShaderProgram::build(const char* filename)
 			}
 			
 			continue;
+		}
+		else
+		{
+			*section += line;
 		}
 	}
 	header += "//end of header\n";
@@ -216,7 +226,7 @@ bool ShaderProgram::build(const char* filename)
 	{
 		return false;
 	}
-	
+	fprintf(vertexFile, "%s\n", "#define vertex");
 	fprintf(vertexFile, "%s", vertexBody.c_str());
 	fclose(vertexFile);
 
@@ -229,6 +239,7 @@ bool ShaderProgram::build(const char* filename)
 		return false;
 	}
 
+	fprintf(fragmentFile, "%s\n", "#define fragment");
 	fprintf(fragmentFile, "%s", fragmentBody.c_str());
 	fclose(fragmentFile);
 	return init(vertexBody.c_str(), fragmentBody.c_str());

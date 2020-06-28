@@ -57,6 +57,9 @@
     </ClCompile>
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="FsUtils.cpp" />
+    <ClCompile Include="UniformBuffer.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -122,6 +125,9 @@
     </ClInclude>
     <ClInclude Include="Resource.h" />
     <ClInclude Include="FsUtils.h" />
+    <ClInclude Include="UniformBuffer.h">
+      <Filter>render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="primitive_restart.fs.glsl" />

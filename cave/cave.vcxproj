@@ -116,6 +116,7 @@
     <ClCompile Include="RenderShadow.cpp" />
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="UniformBuffer.cpp" />
     <ClCompile Include="UserInput.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VertexFormat.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="RenderShadow.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="UniformBuffer.h" />
     <ClInclude Include="UserInput.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="VertexFormat.h" />
