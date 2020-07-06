@@ -23,8 +23,9 @@
 - [x] shadows - sorta
 - [x] shader preprocess
 - [x] shader reload
+- [x] uniform buffers
 - [ ] fix cursor capture
-- [ ] uniform buffers
+- [ ] better render state
 - [ ] multi lights
 - [ ] cleanup + premake?
 - [ ] 2x2 mip bug

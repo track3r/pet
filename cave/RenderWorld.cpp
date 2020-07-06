@@ -56,7 +56,7 @@ void RenderWorld::updateLightPos(ecs3::Id id, const glm::vec3 position)
 
     _lights.getPtr(pos)->pos = position;
     Renderer* renderer = Application::getRenderer();
-    renderer->setLightPos(position);//TODO fixme
+    renderer->setLightPos(position);//TODO fixme, assumes only one light active
     //LOG("(%f, %f, %f)", position.x, position.y, position.z);
 }
 
@@ -64,6 +64,34 @@ void RenderWorld::destroyLight(ecs3::Id id)
 {
     int pos = _lightIndex.remove(id);
     _lights.remove(pos);
+}
+
+bool RenderWorld::init()
+{
+    if (!_modelUniform.init())
+    {
+        return false;
+    }
+
+    if (!_viewUniform.init())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+void RenderWorld::Render(const ViewMatrices& viewParms)
+{
+    _viewUniform.bind(1);
+    _modelUniform.bind(2);
+
+    RenderShadowMaps();
+
+    _viewUniform.updateFull(viewParms);
+    
+    RenderOpaque();
+    RenderTransparent();
 }
 
 void RenderWorld::RenderShadowMaps()
@@ -77,6 +105,10 @@ void RenderWorld::RenderShadowMaps()
         shadowRt.setPos(light.pos);
         shadowRt.bindRt();
 
+        ViewMatrices viewParms;
+        viewParms.projection = shadowRt._projection;
+        viewParms.view = shadowRt._transform;
+        _viewUniform.updateFull(viewParms);
         RenderOpaque(shadowRt._program);
         RenderTransparent(shadowRt._program);
         break;
@@ -99,7 +131,7 @@ void RenderWorld::RenderOpaque(ShaderProgram* prog)
     }
 
     RenderElement* elem = _meshes.getPtr(0);
-    glm::mat4* tranform = _transforms.getPtr(0);
+    glm::mat4* transform = _transforms.getPtr(0);
     
     for (int i = 0; i < _meshIndex.size(); i++)
     {
@@ -108,7 +140,8 @@ void RenderWorld::RenderOpaque(ShaderProgram* prog)
             continue;
         }
 
-        renderer->renderElement(*prog, elem[i], tranform[i]);
+        _modelUniform.updateFull(transform[i]);
+        renderer->renderElement(*prog, elem[i]);
     }
 }
 
@@ -120,7 +153,7 @@ void RenderWorld::RenderTransparent(ShaderProgram* prog)
     }
 
     RenderElement* elem = _meshes.getPtr(0);
-    glm::mat4* tranform = _transforms.getPtr(0);
+    glm::mat4* transform = _transforms.getPtr(0);
     Renderer* renderer = Application::getRenderer();
     if (prog == nullptr)
     {
@@ -132,7 +165,7 @@ void RenderWorld::RenderTransparent(ShaderProgram* prog)
         {
             continue;
         }
-
-        renderer->renderElement(*prog, elem[i], tranform[i]);
+        _modelUniform.updateFull(transform[i]);
+        renderer->renderElement(*prog, elem[i]);
     }
 }

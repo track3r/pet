@@ -297,6 +297,11 @@ bool Application::init(SDL_Window* window)
 	_world->get<ecs3::InputSingleton>().mouseSpeed = c_mouseSpeed;
 
 	RenderWorld* renderWorld = new RenderWorld();
+	if (!renderWorld->init())
+	{
+		LOG("RenderWorld init failed");
+		return false;
+	}
 	_world->get<RenderSingleton>().world = renderWorld;
 
 	CreateTestComponents(_world);
@@ -311,10 +316,10 @@ void Application::render()
 
  
     _renderer.beginRender();
-    //_renderer.renderCube(glm::mat4());
-	_world->get<RenderSingleton>().world->RenderShadowMaps();
-	_world->get<RenderSingleton>().world->RenderOpaque();
-	_world->get<RenderSingleton>().world->RenderTransparent();
+	ViewMatrices viewParms;
+	viewParms.projection = _renderer.camera().getProjection();
+	viewParms.view = _renderer.camera().getView();
+	_world->get<RenderSingleton>().world->Render(viewParms);
     _renderer.endRender();
 
 	SDL_GL_SwapWindow(m_win);

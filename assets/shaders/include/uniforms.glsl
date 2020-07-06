@@ -2,5 +2,10 @@
 
 layout(std140, binding = 1) uniform View
 {
-    MVP mvp;
+    ViewMatrices viewMatrices;
+};
+
+layout(std140, binding = 2) uniform Model
+{
+    mat4 modelMatrix;
 };

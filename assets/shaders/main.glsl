@@ -6,9 +6,9 @@ attribute vec3 v_position;
 attribute vec2 v_uv;
 attribute vec3 v_normal;
 
-uniform mat4 v_mMatrix;
-uniform mat4 v_vMatrix;
-uniform mat4 v_pMatrix;
+//uniform mat4 v_mMatrix;
+//uniform mat4 v_vMatrix;
+//uniform mat4 v_pMatrix;
 
 uniform mat4 v_lMatrix;
 uniform vec3 v_lightPos;
@@ -17,13 +17,13 @@ void main()
 {
             
     f_texcoord0 = v_uv;
-    gl_Position = v_pMatrix * v_vMatrix * v_mMatrix * vec4(v_position, 1.0);
+    gl_Position = viewMatrices.projection * viewMatrices.view * modelMatrix * vec4(v_position, 1.0);
         
-    vec3 posWorld = (v_mMatrix * vec4(v_position, 1.0)).xyz;
+    vec3 posWorld = (modelMatrix * vec4(v_position, 1.0)).xyz;
     f_posLightspace = v_lMatrix * vec4(posWorld, 1.0);
-    mat4 eyeMatrix = v_vMatrix * v_mMatrix;
+    mat4 eyeMatrix = viewMatrices.view * modelMatrix;
             
-    //mat4 eyeMatrix = v_mMatrix;
+    //mat4 eyeMatrix = modelMatrix;
     f_debug = vec4(eyeMatrix * vec4(v_position, 0.0) ).xyz; 
     vec4 eyePos = eyeMatrix * vec4(v_position, 1.0);
     f_toCamera = -eyePos.xyz;
@@ -44,11 +44,6 @@ void main()
 }
 
 #pragma fragment
-varying vec3 pos;
-uniform mat4 v_mMatrix;
-uniform mat4 v_vMatrix;
-uniform mat4 v_pMatrix;
-
 uniform sampler2D texture0;
 //uniform sampler2DShadow textureShadow;
 uniform sampler2D textureShadow;

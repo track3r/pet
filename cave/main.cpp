@@ -76,7 +76,10 @@ int main(int argc, char *argv[])
 	bool quit = false;
 
 	Application app;
-	app.init(mainwindow);
+	if (!app.init(mainwindow))
+	{
+		return 1;
+	}
 	app.reshape(width, height);
 
 	SDL_Event event;

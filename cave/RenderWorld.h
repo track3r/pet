@@ -1,5 +1,7 @@
 #pragma once
 
+#include "UniformBuffer.h"
+
 class RenderElement;
 
 struct RenderLight
@@ -7,11 +9,18 @@ struct RenderLight
     glm::vec3 pos;
 };
 
+struct ViewMatrices
+{
+    glm::mat4 view;
+    glm::mat4 projection;
+};
+
 class ShaderProgram;
 class RenderWorld
 {
 public:
     RenderWorld();
+    bool init();
     ecs3::Id createMesh(const RenderElement& element);
     void destroyMesh(ecs3::Id id);
     void transform(ecs3::Id id, glm::mat4 transform);
@@ -21,6 +30,7 @@ public:
     void destroyLight(ecs3::Id id);
 
     void RenderShadowMaps();
+    void Render(const ViewMatrices& viewParms);
     void RenderOpaque(ShaderProgram* prog = nullptr);
     void RenderTransparent(ShaderProgram* prog = nullptr);
 
@@ -31,4 +41,7 @@ private:
 
     ecs3::PackedArrayIndex<ecs3::Id> _lightIndex;
     ecs3::TypedData<RenderLight> _lights;
+    //ecs3::TypedData<TypedUniformBuffer<ViewUniform>> _lightViewUniforms; //?
+    TypedUniformBuffer<glm::mat4> _modelUniform;
+    TypedUniformBuffer<ViewMatrices> _viewUniform;
 };

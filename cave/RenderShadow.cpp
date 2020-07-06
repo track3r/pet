@@ -87,24 +87,6 @@ void ShadowCubeRt::bindTexture()
 
 }
 
-const char shadowVertex[] = R"glsl(
-        attribute vec3 v_position;
-
-        uniform mat4 v_mMatrix;
-        uniform mat4 v_vMatrix;
-        uniform mat4 v_pMatrix;
-
-        void main()
-        {
-            gl_Position = v_pMatrix * v_vMatrix * v_mMatrix * vec4(v_position, 1.0);
-        }
-        )glsl";
-
-const char shadowFragment[] = R"glsl(      
-        void main()
-        {
-        }
-        )glsl";
 
 ShadowRt::ShadowRt()
     :_program(new ShaderProgram)
@@ -152,7 +134,7 @@ void ShadowRt::init(int width, int height)
         0.0, 0.0, 0.5, 0.0,
         0.5, 0.5, 0.5, 1.0);
 
-    _program->init(shadowVertex, shadowFragment);
+    _program->init("..\\assets\\shaders\\shadow_buffer.glsl");
 }
 
 void ShadowRt::bindRt()
@@ -161,9 +143,9 @@ void ShadowRt::bindRt()
     glBindFramebuffer(GL_FRAMEBUFFER, _fb);
     glClear(GL_DEPTH_BUFFER_BIT);
     _program->bind();
-    _program->setPMatrix(_projection);
-    _program->setVMatrix(_transform);
-    _program->setMMatrix(glm::mat4(1.0f));
+    //_program->setPMatrix(_projection);
+    //_program->setVMatrix(_transform);
+    //_program->setMMatrix(glm::mat4(1.0f));
     glCullFace(GL_FRONT);
     //glCullFace(GL_BACK);
     //glDisable(GL_CULL_FACE);
