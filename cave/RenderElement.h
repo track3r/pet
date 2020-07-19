@@ -94,7 +94,7 @@ public:
     int				_offset = 0;
     int				_count = -1;
 	
-private:
+
 	GLuint			m_objects[2];
 	bool			_isStream = false;
 	GLenum			m_mode;

@@ -226,6 +226,8 @@ void LoadTestScene(ecs3::World* _world)
 			element->_transparent = element->textures[0]->hasAlpha;
 		}		
 		element->setupVbo(false);
+		glObjectLabel(GL_BUFFER, element->m_objects[0], -1, group.name);
+		glObjectLabel(GL_BUFFER, element->m_objects[1], -1, group.name);
 		meshComp.mesh = _world->get<RenderSingleton>().world->createMesh(*element);
 		meshConf._data.addComponent(meshComp);
 		_world->createEntity(meshConf);
@@ -241,7 +243,10 @@ void LoadTestScene(ecs3::World* _world)
 			continue;
 		}
 
-		textures[mtlReader.materials[i].name]->init(textureDataArray[i]);
+		Texture* texture = textures[mtlReader.materials[i].name];
+		texture->init(textureDataArray[i]);
+
+		glObjectLabel(GL_TEXTURE, texture->m_texture, -1, mtlReader.materials[i].name);
 	}
 
 	for (int i = 0; i < textureDataArray.size(); i++)
@@ -265,12 +270,8 @@ bool Application::init(SDL_Window* window)
 		//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		//glDebugMessageCallback(openglCallbackFunction, nullptr);
 		GLuint unusedIds = 0;
-		glDebugMessageControl(GL_DONT_CARE,
-			GL_DONT_CARE,
-			GL_DONT_CARE,
-			0,
-			&unusedIds,
-			true);
+		glDebugMessageControl(GL_DONT_CARE,	GL_DONT_CARE, GL_DONT_CARE,	0, NULL, GL_TRUE);
+		glDebugMessageControl(GL_DEBUG_SOURCE_APPLICATION, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
 	}
 
     

@@ -83,19 +83,22 @@ bool RenderWorld::init()
 
 void RenderWorld::Render(const ViewMatrices& viewParms)
 {
+    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, -1, "RenderWorld::Render");
     _viewUniform.bind(1);
     _modelUniform.bind(2);
-
+    
     RenderShadowMaps();
 
     _viewUniform.updateFull(viewParms);
     
     RenderOpaque();
     RenderTransparent();
+    glPopDebugGroup();
 }
 
 void RenderWorld::RenderShadowMaps()
 {
+    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 2, -1, "RenderWorld::RenderShadowMaps");
     Renderer* renderer = Application::getRenderer();
     RenderLight* lights = _lights.getPtr(0);
     ShadowRt& shadowRt = renderer->_shadow;
@@ -116,10 +119,12 @@ void RenderWorld::RenderShadowMaps()
 
     shadowRt.unbindRt();
     shadowRt.bindTexture();
+    glPopDebugGroup();
 }
 
 void RenderWorld::RenderOpaque(ShaderProgram* prog)
 {
+    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 3, -1, "RenderWorld::RenderOpaque");
     if (_meshIndex.size() == 0)
     {
         return;
@@ -143,10 +148,12 @@ void RenderWorld::RenderOpaque(ShaderProgram* prog)
         _modelUniform.updateFull(transform[i]);
         renderer->renderElement(*prog, elem[i]);
     }
+    glPopDebugGroup();
 }
 
 void RenderWorld::RenderTransparent(ShaderProgram* prog)
 {
+    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 4, -1, "RenderWorld::RenderTransparent");
     if (_meshIndex.size() == 0)
     {
         return;
@@ -168,4 +175,5 @@ void RenderWorld::RenderTransparent(ShaderProgram* prog)
         _modelUniform.updateFull(transform[i]);
         renderer->renderElement(*prog, elem[i]);
     }
+    glPopDebugGroup();
 }

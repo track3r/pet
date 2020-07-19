@@ -253,7 +253,22 @@ bool ShaderProgram::build(const char* filename)
 bool ShaderProgram::init(const char* filename)
 {
 	bool ret = build(filename);
-	return Resource::init(filename);
+	if (!ret)
+	{
+		return false;
+	}
+
+	ret = Resource::init(filename);
+	if (!ret)
+	{
+		return false;
+	}
+
+	std::string file;
+	getFileName(filename, file);
+	glObjectLabel(GL_PROGRAM, m_program, -1, file.c_str());
+
+	return true;
 }
 
 void ShaderProgram::refresh()

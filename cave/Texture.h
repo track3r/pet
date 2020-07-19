@@ -15,6 +15,7 @@ struct textureData_t
 	mipLevel_t mipLevel[c_maxMipLevels];
 	int channels;
 	int numMipLevels;
+	char name[256];
 };
 
 bool loadTextureData(const char* filename, textureData_t& outData);
@@ -35,15 +36,15 @@ public:
 	const glm::vec2 size();
 
 	bool hasAlpha = false;
+
+	GLuint m_texture = 0;
+	glm::ivec2 m_size;
+	char _name[256];
 private:
 	Texture(const Texture& o) {}
 	Texture& operator=(const Texture& other)
     {
         return *this;
-    }
-
-private:
-	GLuint m_texture = 0;
-	glm::ivec2 m_size;
+    }	
 };
 

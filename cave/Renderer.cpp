@@ -147,14 +147,14 @@ void Renderer::beginRender()
     m_debugDraw.m_program.setPMatrix(camera().getProjection());
     m_debugDraw.m_program.setVMatrix(camera().getView());
     m_debugDraw.m_program.setMMatrix(glm::mat4( 1.0f ));
+    m_debugDraw.drawGrid();
 
     m_program->bind();
     m_program->setPMatrix(camera().getProjection());
     m_program->setVMatrix(camera().getView());
     m_program->setMMatrix(glm::mat4(1.0f));
-    m_program->setLightPos(_lightPos);
+    m_program->setLightPos(_lightPos);    
     
-    m_debugDraw.drawGrid();
 }
 
 void Renderer::endRender()

@@ -25,8 +25,10 @@
 - [x] shader reload
 - [x] uniform buffers
 - [ ] fix cursor capture
+- [ ] render pass class
 - [ ] better render state
 - [ ] multi lights
+- [ ] shadow atlas
 - [ ] cleanup + premake?
 - [ ] 2x2 mip bug
 - [ ] vulkan tutorial?

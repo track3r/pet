@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Texture.h"
 #include "Log.h"
+#include "FsUtils.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_JPEG
@@ -36,6 +37,10 @@ Texture::Texture(Texture&& other)
 
 bool loadTextureData(const char* filename, textureData_t& outData)
 {
+	std::string name;
+	getFileName(filename, name);
+	strncpy(outData.name, name.c_str(), 255);
+
 	stbi_set_flip_vertically_on_load(1);
 	int width;
 	int height;
@@ -52,11 +57,13 @@ bool loadTextureData(const char* filename, textureData_t& outData)
 	int mipLevel = 0;
 	glm::ivec2 mipDim = glm::ivec2(width, height);
 
-	while (mipDim.x != 0 && mipDim.y != 0)
+	do
 	{
 		unsigned char* mipBuffer = (unsigned char*)outData.mipLevel[mipLevel].data;
 		
 		glm::ivec2 nextDim = mipDim / 2;
+		nextDim.x = nextDim.x ? nextDim.x : 1;
+		nextDim.y = nextDim.y ? nextDim.y : 1;
 		unsigned char* nextBuffer = (unsigned char*)malloc(outData.channels *nextDim.x * nextDim.y);
 		stbir_resize_uint8(mipBuffer, mipDim.x, mipDim.y, 0, nextBuffer, nextDim.x, nextDim.y, 0, outData.channels);
 		
@@ -67,8 +74,9 @@ bool loadTextureData(const char* filename, textureData_t& outData)
 		outData.mipLevel[mipLevel].height = mipDim.y;
 		outData.mipLevel[mipLevel].data = nextBuffer;
 		
-	}
-	outData.numMipLevels = mipLevel;
+	} while (mipDim.x != 1 || mipDim.y != 1);
+
+	outData.numMipLevels = mipLevel + 1;
 	return true;
 }
 
@@ -89,6 +97,10 @@ void freeTextureData(textureData_t& data)
 
 void Texture::init(const char* filename)
 {
+	std::string name;
+	getFileName(filename, name);
+	strncpy(_name, name.c_str(), 255);
+
 	stbi_set_flip_vertically_on_load(1);
 	int channels = 0;
 	unsigned char* data = stbi_load(filename, &m_size.x, &m_size.y, &channels, 0);
@@ -146,6 +158,8 @@ void Texture::init(const char* filename)
 
 void Texture::init(const textureData_t& data)
 {
+	strncpy(_name, data.name, 255);
+
 	glGenTextures(1, &m_texture);
 	CheckGlError();
 
