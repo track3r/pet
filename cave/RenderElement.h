@@ -96,6 +96,7 @@ public:
 	
 
 	GLuint			m_objects[2];
+	GLuint			_vao = 0;
 	bool			_isStream = false;
 	GLenum			m_mode;
 };
