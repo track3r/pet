@@ -34,6 +34,8 @@ public:
     void RenderOpaque(ShaderProgram* prog = nullptr);
     void RenderTransparent(ShaderProgram* prog = nullptr);
 
+    void UpdateUniforms();
+
 private:
     ecs3::PackedArrayIndex<ecs3::Id> _meshIndex;
     ecs3::TypedData<RenderElement> _meshes;

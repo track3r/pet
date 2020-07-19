@@ -10,6 +10,8 @@ public:
     bool init(int size);
     void update(int offset, int size, const void* data);
     void bind(int bindingPoint);
+    void bindForUpdate();
+    void unbindForUpdate();
 
     GLuint _ubo = GL_INVALID_INDEX;
     uint16_t _size;

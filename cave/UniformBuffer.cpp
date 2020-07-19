@@ -20,12 +20,22 @@ bool UniformBuffer::init(int size)
     return true;
 }
 
-void UniformBuffer::update(int offset, int size, const void* data)
+void UniformBuffer::bindForUpdate()
 {
     glBindBuffer(GL_UNIFORM_BUFFER, _ubo);
-    glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
-    CheckGlError();
+}
+
+void UniformBuffer::unbindForUpdate()
+{
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void UniformBuffer::update(int offset, int size, const void* data)
+{
+    //glBindBuffer(GL_UNIFORM_BUFFER, _ubo);
+    glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+    //CheckGlError();
+    //glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void UniformBuffer::bind(int bindingPoint)

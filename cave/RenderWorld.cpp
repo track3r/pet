@@ -88,12 +88,17 @@ void RenderWorld::Render(const ViewMatrices& viewParms)
     _modelUniform.bind(2);
     
     RenderShadowMaps();
-
+    _viewUniform.bindForUpdate();
     _viewUniform.updateFull(viewParms);
     
     RenderOpaque();
     RenderTransparent();
     glPopDebugGroup();
+}
+
+void RenderWorld::UpdateUniforms()
+{
+
 }
 
 void RenderWorld::RenderShadowMaps()
@@ -111,6 +116,7 @@ void RenderWorld::RenderShadowMaps()
         ViewMatrices viewParms;
         viewParms.projection = shadowRt._projection;
         viewParms.view = shadowRt._transform;
+        _viewUniform.bindForUpdate();
         _viewUniform.updateFull(viewParms);
         RenderOpaque(shadowRt._program);
         RenderTransparent(shadowRt._program);
@@ -137,7 +143,8 @@ void RenderWorld::RenderOpaque(ShaderProgram* prog)
 
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* transform = _transforms.getPtr(0);
-    
+    _modelUniform.bindForUpdate();
+
     for (int i = 0; i < _meshIndex.size(); i++)
     {
         if (elem[i]._transparent)
@@ -146,8 +153,17 @@ void RenderWorld::RenderOpaque(ShaderProgram* prog)
         }
 
         _modelUniform.updateFull(transform[i]);
-        renderer->renderElement(*prog, elem[i]);
+        if (i == 0)
+        {
+            renderer->renderElement(*prog, elem[i]);
+        }
+        else
+        {
+            elem[i].render();
+        }
+        
     }
+    _modelUniform.unbindForUpdate();
     glPopDebugGroup();
 }
 
@@ -166,6 +182,7 @@ void RenderWorld::RenderTransparent(ShaderProgram* prog)
     {
         prog = renderer->getDefaultProgram();
     }
+    _modelUniform.bindForUpdate();
     for (int i = 0; i < _meshIndex.size(); i++)
     {
         if (!elem[i]._transparent)
@@ -173,7 +190,15 @@ void RenderWorld::RenderTransparent(ShaderProgram* prog)
             continue;
         }
         _modelUniform.updateFull(transform[i]);
-        renderer->renderElement(*prog, elem[i]);
+        if (i == 0)
+        {
+            renderer->renderElement(*prog, elem[i]);
+        }
+        else
+        {
+            elem[i].render();
+        }
     }
+    _modelUniform.unbindForUpdate();
     glPopDebugGroup();
 }
