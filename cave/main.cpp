@@ -10,6 +10,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
+
 #include "Application.h"
 #include "Log.h"
 
@@ -71,7 +72,8 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	//SDL_GL_SetSwapInterval(1);
+
+	SDL_GL_SetSwapInterval(0);
 
 	bool quit = false;
 

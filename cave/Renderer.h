@@ -23,6 +23,7 @@ public:
 
     void renderElement_dep(const ShaderProgram& program, const RenderElement& element, const glm::mat4& transform);
     void renderElement(const ShaderProgram& program, const RenderElement& element);
+    void renderElement(const RenderElement& element);
 
     void renderCube(const glm::mat4& transform);
 

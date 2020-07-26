@@ -88,12 +88,12 @@ void ShadowCubeRt::bindTexture()
 }
 
 
-ShadowRt::ShadowRt()
-    :_program(new ShaderProgram)
+ShadowPass::ShadowPass()
+    :_program(new ShaderProgram())
 {
 
 }
-void ShadowRt::init(int width, int height)
+void ShadowPass::init(int width, int height)
 {
     _width = width;
     _height = height;
@@ -102,8 +102,7 @@ void ShadowRt::init(int width, int height)
     CheckGlError();
     glGenTextures(1, &_texture);
     glBindTexture(GL_TEXTURE_2D, _texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-        _width, _height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, _width, _height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -124,7 +123,7 @@ void ShadowRt::init(int width, int height)
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    float aspect = (float)_width / (float)_height;
+    /*float aspect = (float)_width / (float)_height;
     float near = 0.1f;
     float far = 1000.0f;
     _projection = glm::perspective(glm::radians(90.0f), aspect, near, far);
@@ -132,17 +131,16 @@ void ShadowRt::init(int width, int height)
     _bias = glm::mat4(0.5, 0.0, 0.0, 0.0,
         0.0, 0.5, 0.0, 0.0,
         0.0, 0.0, 0.5, 0.0,
-        0.5, 0.5, 0.5, 1.0);
+        0.5, 0.5, 0.5, 1.0);*/
 
-    _program->init("..\\assets\\shaders\\shadow_buffer.glsl");
+    _program->init("../assets/shaders/shadow_buffer.glsl");
 }
 
-void ShadowRt::bindRt()
+void ShadowPass::begin()
 {
     glViewport(0, 0, _width, _height);
     glBindFramebuffer(GL_FRAMEBUFFER, _fb);
     glClear(GL_DEPTH_BUFFER_BIT);
-    _program->bind();
     //_program->setPMatrix(_projection);
     //_program->setVMatrix(_transform);
     //_program->setMMatrix(glm::mat4(1.0f));
@@ -151,7 +149,7 @@ void ShadowRt::bindRt()
     //glDisable(GL_CULL_FACE);
 }
 
-void ShadowRt::unbindRt()
+void ShadowPass::end()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glm::vec2 winSize = Application::get()->getWindowSize();
@@ -160,22 +158,22 @@ void ShadowRt::unbindRt()
     glCullFace(GL_BACK);
 }
 
-void ShadowRt::setPos(glm::vec3 pos)
+/*void ShadowPass::setPos(glm::vec3 pos)
 {
     _pos = pos;
     _transform = glm::lookAt(pos,
         pos + glm::vec3(1.f, 0.0f, 0.0f),
         glm::vec3(0.0f, 1.0f, 0.0f));
-}
+}*/
 
-void ShadowRt::bindTexture()
+void ShadowPass::bindTexture()
 {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _texture);
     glActiveTexture(GL_TEXTURE0);
 }
 
-glm::mat4 ShadowRt::getLightMatrix()
+/*glm::mat4 ShadowRt::getLightMatrix()
 {
-    return /*_bias * */ _projection * _transform;
-}
+    return  _projection * _transform;
+}*/

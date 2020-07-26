@@ -144,6 +144,7 @@ void RenderWorld::RenderOpaque(ShaderProgram* prog)
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* transform = _transforms.getPtr(0);
     _modelUniform.bindForUpdate();
+    prog->bind();
 
     for (int i = 0; i < _meshIndex.size(); i++)
     {
@@ -153,14 +154,7 @@ void RenderWorld::RenderOpaque(ShaderProgram* prog)
         }
 
         _modelUniform.updateFull(transform[i]);
-        if (i == 0)
-        {
-            renderer->renderElement(*prog, elem[i]);
-        }
-        else
-        {
-            elem[i].render();
-        }
+        elem[i].render();
         
     }
     _modelUniform.unbindForUpdate();
@@ -183,6 +177,7 @@ void RenderWorld::RenderTransparent(ShaderProgram* prog)
         prog = renderer->getDefaultProgram();
     }
     _modelUniform.bindForUpdate();
+    prog->bind();
     for (int i = 0; i < _meshIndex.size(); i++)
     {
         if (!elem[i]._transparent)
@@ -190,14 +185,7 @@ void RenderWorld::RenderTransparent(ShaderProgram* prog)
             continue;
         }
         _modelUniform.updateFull(transform[i]);
-        if (i == 0)
-        {
-            renderer->renderElement(*prog, elem[i]);
-        }
-        else
-        {
-            elem[i].render();
-        }
+        elem[i].render();
     }
     _modelUniform.unbindForUpdate();
     glPopDebugGroup();

@@ -226,8 +226,14 @@ void LoadTestScene(ecs3::World* _world)
 			element->_transparent = element->textures[0]->hasAlpha;
 		}		
 		element->setupVbo(false);
-		glObjectLabel(GL_BUFFER, element->m_objects[0], -1, group.name);
-		glObjectLabel(GL_BUFFER, element->m_objects[1], -1, group.name);
+		char nameBuffer[256];
+		sprintf(nameBuffer, "%s_vbo", group.name);
+		glObjectLabel(GL_BUFFER, element->m_objects[0], -1, nameBuffer);
+		sprintf(nameBuffer, "%s_ebo", group.name);
+		glObjectLabel(GL_BUFFER, element->m_objects[1], -1, nameBuffer);
+		sprintf(nameBuffer, "%s_vao", group.name);
+		glObjectLabel(GL_BUFFER, element->_vao, -1, nameBuffer);
+
 		meshComp.mesh = _world->get<RenderSingleton>().world->createMesh(*element);
 		meshConf._data.addComponent(meshComp);
 		_world->createEntity(meshConf);
@@ -267,8 +273,8 @@ bool Application::init(SDL_Window* window)
 #if defined(_DEBUG) && defined(_MSC_VER)
 	if (glDebugMessageCallback)
 	{
-		//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		//glDebugMessageCallback(openglCallbackFunction, nullptr);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(openglCallbackFunction, nullptr);
 		GLuint unusedIds = 0;
 		glDebugMessageControl(GL_DONT_CARE,	GL_DONT_CARE, GL_DONT_CARE,	0, NULL, GL_TRUE);
 		glDebugMessageControl(GL_DEBUG_SOURCE_APPLICATION, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);

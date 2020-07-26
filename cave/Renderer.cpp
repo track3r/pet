@@ -23,7 +23,7 @@ void Renderer::init()
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
     //m_program->init(vShaderStr, fShaderStr);
-    m_program->init("..\\assets\\shaders\\main.glsl");
+    m_program->init("../assets/shaders/main.glsl");
 
     GLfloat vertices[][3] =
     {
@@ -218,6 +218,7 @@ void Renderer::renderElement(const ShaderProgram& program, const RenderElement& 
 
     element.render();
 }
+
 
 void Renderer::renderCube(const glm::mat4& transform)
 {

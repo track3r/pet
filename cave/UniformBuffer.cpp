@@ -33,7 +33,18 @@ void UniformBuffer::unbindForUpdate()
 void UniformBuffer::update(int offset, int size, const void* data)
 {
     //glBindBuffer(GL_UNIFORM_BUFFER, _ubo);
+    
+    //glNamedBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+    //glNamedBufferData()
+    
+    
     glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+    
+    
+    //void* ptr = glMapBufferRange(GL_UNIFORM_BUFFER, offset, size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_WRITE_BIT);
+    //memcpy(ptr, data, size);
+    //glUnmapBuffer(GL_UNIFORM_BUFFER);
+    
     //CheckGlError();
     //glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

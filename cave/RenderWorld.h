@@ -15,6 +15,12 @@ struct ViewMatrices
     glm::mat4 projection;
 };
 
+struct View
+{
+    ViewMatrices viewMatrices;
+    glm::ivec4 shadowAtlasParams;
+};
+
 class ShaderProgram;
 class RenderWorld
 {
