@@ -45,7 +45,7 @@ ecs3::Id RenderWorld::createLight(const RenderLight& light)
     return ret;
 }
 
-void RenderWorld::updateLightPos(ecs3::Id id, const glm::vec3 position)
+/*void RenderWorld::updateLightPos(ecs3::Id id, const glm::vec3 position)
 {
     int pos = _lightIndex.lookup(id);
     assert(pos != -1);
@@ -55,9 +55,34 @@ void RenderWorld::updateLightPos(ecs3::Id id, const glm::vec3 position)
     }
 
     _lights.getPtr(pos)->pos = position;
-    Renderer* renderer = Application::getRenderer();
-    renderer->setLightPos(position);//TODO fixme, assumes only one light active
+    //Renderer* renderer = Application::getRenderer();
+    //renderer->setLightPos(position);//TODO fixme, assumes only one light active
     //LOG("(%f, %f, %f)", position.x, position.y, position.z);
+}*/
+
+bool RenderWorld::getLight(ecs3::Id id, RenderLight& light)
+{
+    int pos = _lightIndex.lookup(id);
+    assert(pos != -1);
+    if (pos == -1)
+    {
+        return false;
+    }
+
+    light = *_lights.getPtr(pos);
+    return true;
+}
+
+void RenderWorld::updateLight(ecs3::Id id, const RenderLight& light)
+{
+    int pos = _lightIndex.lookup(id);
+    assert(pos != -1);
+    if (pos == -1)
+    {
+        return;
+    }
+
+    *_lights.getPtr(pos) = light;
 }
 
 void RenderWorld::destroyLight(ecs3::Id id)
@@ -78,59 +103,87 @@ bool RenderWorld::init()
         return false;
     }
 
+    if (!_lightUniform.init())
+    {
+        return false;
+    }
+
+    if (!_shadowManager.init(500, 500, 1001, 1001))
+    {
+        return false;
+    }
+
     return true;
 }
 
-void RenderWorld::Render(const ViewMatrices& viewParms)
+void RenderWorld::render(const ViewMatrices& viewParms)
 {
-    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, -1, "RenderWorld::Render");
+    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, -1, "RenderWorld::render");
     _viewUniform.bind(1);
     _modelUniform.bind(2);
+    _lightUniform.bind(3);
     
-    RenderShadowMaps();
+    renderShadowMaps();
     _viewUniform.bindForUpdate();
     _viewUniform.updateFull(viewParms);
     
-    RenderOpaque();
-    RenderTransparent();
+    renderOpaque();
+    renderTransparent();
     glPopDebugGroup();
 }
 
-void RenderWorld::UpdateUniforms()
+void RenderWorld::updateUniforms()
 {
 
 }
 
-void RenderWorld::RenderShadowMaps()
+void RenderWorld::renderShadowMaps()
 {
-    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 2, -1, "RenderWorld::RenderShadowMaps");
+    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 2, -1, "RenderWorld::renderShadowMaps");
     Renderer* renderer = Application::getRenderer();
+    LightUniform lightUniform = {};
     RenderLight* lights = _lights.getPtr(0);
-    ShadowRt& shadowRt = renderer->_shadow;
+    //ShadowRt& shadowRt = renderer->_shadow;
+    _shadowManager.beginShadowPasses();
     for (int i = 0; i < _lightIndex.size(); i++)
     {
         const RenderLight& light = lights[0];
-        shadowRt.setPos(light.pos);
-        shadowRt.bindRt();
-
+        //shadowRt.setPos(light.pos);
+        //shadowRt.bindRt();
+        uint16_t atlasSlot = _shadowManager.beginShadowVew();
+        if (atlasSlot == -1)
+        {
+            //no space left in shadow atlas
+            break;
+        }
         ViewMatrices viewParms;
-        viewParms.projection = shadowRt._projection;
-        viewParms.view = shadowRt._transform;
+        viewParms.projection = _shadowManager._projection;
+        viewParms.view = glm::lookAt(light.pos,
+            light.pos + light.direction,
+            glm::vec3(0.0f, 1.0f, 0.0f));
+
+        lightUniform.lightParams[lightUniform.numLights].matrix = viewParms.projection * viewParms.view;
+        lightUniform.lightParams[lightUniform.numLights].pos = glm::vec4(light.pos, 0);
+        lightUniform.lightParams[lightUniform.numLights].atlas = _shadowManager.getAtlasCoords(atlasSlot);
+        lightUniform.numLights++;
+
         _viewUniform.bindForUpdate();
         _viewUniform.updateFull(viewParms);
-        RenderOpaque(shadowRt._program);
-        RenderTransparent(shadowRt._program);
+        renderOpaque(_shadowManager._renderPass._program);
+        //renderTransparent(shadowRt._program);
         break;
     }
 
-    shadowRt.unbindRt();
-    shadowRt.bindTexture();
+    //shadowRt.unbindRt();
+    _shadowManager._renderPass.end();
+    _shadowManager._renderPass.bindTexture();
+    _lightUniform.updateFull(lightUniform);
     glPopDebugGroup();
 }
 
-void RenderWorld::RenderOpaque(ShaderProgram* prog)
+void RenderWorld::renderOpaque(ShaderProgram* prog)
 {
-    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 3, -1, "RenderWorld::RenderOpaque");
+    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 3, -1, "RenderWorld::renderOpaque");
     if (_meshIndex.size() == 0)
     {
         return;
@@ -161,9 +214,9 @@ void RenderWorld::RenderOpaque(ShaderProgram* prog)
     glPopDebugGroup();
 }
 
-void RenderWorld::RenderTransparent(ShaderProgram* prog)
+void RenderWorld::renderTransparent(ShaderProgram* prog)
 {
-    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 4, -1, "RenderWorld::RenderTransparent");
+    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 4, -1, "RenderWorld::renderTransparent");
     if (_meshIndex.size() == 0)
     {
         return;

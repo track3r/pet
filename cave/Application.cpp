@@ -326,7 +326,7 @@ void Application::render()
 	ViewMatrices viewParms;
 	viewParms.projection = _renderer.camera().getProjection();
 	viewParms.view = _renderer.camera().getView();
-	_world->get<RenderSingleton>().world->Render(viewParms);
+	_world->get<RenderSingleton>().world->render(viewParms);
     _renderer.endRender();
 
 	SDL_GL_SwapWindow(m_win);

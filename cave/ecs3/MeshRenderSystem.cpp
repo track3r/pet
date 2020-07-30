@@ -72,7 +72,7 @@ void LightRenderSystem::onUpdate(ecs3::BlockIterator& iterator)
 
     ecs3::InputSingleton& input = _world->get<ecs3::InputSingleton>();
     ecs3::FrameSingleton& frame = _world->get<ecs3::FrameSingleton>();
-
+    RenderWorld* render = _world->get<RenderSingleton>().world;
     for (int i = 0; i < iterator.size(); i++)
     {
         ecs3::Id& id = iterator.getEntities()[i];
@@ -82,8 +82,12 @@ void LightRenderSystem::onUpdate(ecs3::BlockIterator& iterator)
         if (light.light != ecs3::invalid<ecs3::Id>())
         {
             //renderer->renderElement(*renderer->getDefaultProgram(), *mesh.mesh, transform.matrix);
-            _world->get<RenderSingleton>().world->updateLightPos(light.light, glm::vec3(transform.matrix[3]));
+            //_world->get<RenderSingleton>().world->updateLightPos(light.light, glm::vec3(transform.matrix[3]));
+            RenderLight lightParams;
+            lightParams.pos = glm::vec3(transform.matrix[3]);
+            //light.direction = glm::vec3(glm::vec4(1, 0, 0, 0) * transform.matrix);
+            lightParams.direction = glm::vec3(1, 0, 0);
+            render->updateLight(light.light, lightParams);
         }
-
     }
 }

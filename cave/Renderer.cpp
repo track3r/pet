@@ -126,8 +126,6 @@ void Renderer::init()
     glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
     CheckGlError();
 
-    //_shadow.init(1024, 1024);
-    _shadow.init(512, 512);
 }
 
 void Renderer::beginRender()
@@ -195,7 +193,6 @@ void Renderer::renderElement_dep(const ShaderProgram& program, const RenderEleme
 
     program.bind();
     program.setMMatrix(transform);
-    program.setLMatrix(_shadow.getLightMatrix());
     if (element.textures[0] == nullptr)
     {
         glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
@@ -210,7 +207,6 @@ void Renderer::renderElement(const ShaderProgram& program, const RenderElement& 
         return;
 
     program.bind();
-    program.setLMatrix(_shadow.getLightMatrix());
     if (element.textures[0] == nullptr)
     {
         glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
@@ -224,11 +220,6 @@ void Renderer::renderCube(const glm::mat4& transform)
 {
     //m_debugDraw.drawCube(glm::vec3(transform[3]));
     renderElement_dep(*m_program, m_test, transform);
-}
-
-void Renderer::setLightPos(glm::vec3 pos)
-{
-    _lightPos = pos;
 }
 
 Camera& Renderer::camera()

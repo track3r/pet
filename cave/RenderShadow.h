@@ -141,16 +141,19 @@ public:
 
         glm::ivec2 pos = _atlas.getPos(handle);
         glViewport(pos.x, pos.y, _atlas._elementSize.x, _atlas._elementSize.y);
+
+        return handle;
     }
 
     glm::vec4 getAtlasCoords(uint16_t handle)
     {
         glm::ivec2 pos = _atlas.getPos(handle);
-        float x1 = pos.x / (float)_atlas._size.x;
-        float y1 = pos.y / (float)_atlas._size.y;
+        float x1 = (float)pos.x / (float)_atlas._size.x;
+        float y1 = (float)pos.y / (float)_atlas._size.y;
 
-        float x2 = pos.x + 
-        return glm::vec4();
+        float x2 = (float)(pos.x + _atlas._elementSize.x) / (float)_atlas._size.x;
+        float y2 = (float)(pos.y + _atlas._elementSize.y) / (float)_atlas._size.y;
+        return glm::vec4(x1, y1, x2, y2);
     }
 
     SimpleAtlas _atlas;
