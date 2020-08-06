@@ -75,15 +75,22 @@ public:
 	const VertexFormat& format;
 };
 
+
 class RenderElement
 {
 public:
+	enum Flags
+	{
+		None = 0,
+		NoTextures = 1,
+	};
+
 	RenderElement(GLenum primitive = GL_TRIANGLES);
 	~RenderElement();
 
 	void setupVbo(bool isStream);
 	void updateVbo();
-	void render() const;
+	void render(uint8_t flags = None) const;
 
 	IndexBuffer*	m_indices = nullptr;
 	VertexBuffer*	m_vertices = nullptr;

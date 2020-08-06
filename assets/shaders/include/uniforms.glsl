@@ -1,9 +1,12 @@
-#include "uniformStructs.h"
+struct ViewMatrices
+{
+    mat4 view;
+    mat4 projection;
+};
 
 layout(std140, binding = 1) uniform View
 {
     ViewMatrices viewMatrices;
-    ivec4 shadowAtlasParams;
 };
 
 layout(std140, binding = 2) uniform Model
@@ -11,8 +14,15 @@ layout(std140, binding = 2) uniform Model
     mat4 modelMatrix;
 };
 
+struct LightParams
+{
+    mat4 matrix;
+    vec4 pos;
+    vec4 atlas;
+};
+
 layout(std140, binding = 3) uniform Light
 {
-    LightParms lightParms[100];
+    LightParams lightParams[100];
     int numLights;
 };

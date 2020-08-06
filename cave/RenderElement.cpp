@@ -83,38 +83,16 @@ void RenderElement::updateVbo()
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void RenderElement::render() const
+void RenderElement::render(uint8_t flags) const
 {
 	glBindVertexArray(_vao);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_objects[0]);
-	//CheckGlError();
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objects[1]);
-	//CheckGlError();
-
-	/*const auto& format = m_vertices->format;
-	for (const auto& atr : c_attribs)
+	if ( (flags & NoTextures) == 0 )
 	{
-		if (!format.haveAttribute(atr.index))
-			continue;
-
-		glEnableVertexAttribArray((int)atr.index);
-		CheckGlError();
-		glVertexAttribPointer((int)atr.index, atr.size, GL_FLOAT, GL_FALSE, (GLsizei)format.size(), (const void*)(size_t)format.attributeOffset(atr.index));
-		CheckGlError();
-	}*/
-
-	for (int i = 0; i < 2; i++)
-	{
-		if (textures[i] == nullptr)
+		if (textures[0] != nullptr)
 		{
-			continue;
-		}
-
-		//glActiveTexture(GL_TEXTURE0 + 1);
-		//CheckGlError();
-		glBindTexture(GL_TEXTURE_2D, textures[0]->getTexture());
-		//CheckGlError();
+			glBindTexture(GL_TEXTURE_2D, textures[0]->getTexture());
+		}		
 	}
 
     const int count = _count != -1? _count: (int)m_indices->elements();

@@ -10,8 +10,6 @@ attribute vec3 v_normal;
 //uniform mat4 v_vMatrix;
 //uniform mat4 v_pMatrix;
 
-uniform mat4 v_lMatrix;
-uniform vec3 v_lightPos;
          
 void main()
 {
@@ -20,7 +18,7 @@ void main()
     gl_Position = viewMatrices.projection * viewMatrices.view * modelMatrix * vec4(v_position, 1.0);
         
     vec3 posWorld = (modelMatrix * vec4(v_position, 1.0)).xyz;
-    f_posLightspace = v_lMatrix * vec4(posWorld, 1.0);
+    f_posLightspace = lightParams[0].matrix * vec4(posWorld, 1.0);
     mat4 eyeMatrix = viewMatrices.view * modelMatrix;
             
     //mat4 eyeMatrix = modelMatrix;
@@ -33,7 +31,7 @@ void main()
     vec3 testLightDirWorld = vec3(0, 1, 0);
             
     
-    vec3 lightPosEye = vec4(eyeMatrix * vec4(v_lightPos, 1.0)).xyz;
+    vec3 lightPosEye = vec4(eyeMatrix * vec4(lightParams[0].pos.xyz, 1.0)).xyz;
     //vec4 lightPos = (inverse(v_lMatrix) * vec4(0.5, -1, .5, 1.0));
     //lightPos /= lightPos.w;
     //lightPosEye = vec4(eyeMatrix * vec4(lightPos.xyz, 1.0)).xyz;
@@ -48,9 +46,12 @@ uniform sampler2D texture0;
 //uniform sampler2DShadow textureShadow;
 uniform sampler2D textureShadow;
 
-float sampleShadow(vec3 projCoords, float bias)
+float sampleShadow(vec3 projCoords, float bias, int light)
 {
-    float closestDepth = texture(textureShadow, projCoords.xy).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    vec4 atlas = lightParams[light].atlas;
+
+    vec2 finalCoord = mix(atlas.xy, atlas.zw, projCoords.xy);
+    float closestDepth = texture(textureShadow, finalCoord).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
     float currentDepth = projCoords.z;// get depth of current fragment from light's perspective
     return closestDepth < currentDepth - bias  ? 0.0 : 1.0;
 }
@@ -89,10 +90,10 @@ void main()
         vec2 offset = vec2(1.0/512.0);
 
         //shadow = sampleShadow(projCoords, bias);
-        shadow += sampleShadow(projCoords + vec3(vec2(-1.5, -1.5) * offset, 0.0), bias);
-        shadow += sampleShadow(projCoords + vec3(vec2(-1.5, -0.5) * offset, 0.0), bias);
-        shadow += sampleShadow(projCoords + vec3(vec2(-1.5,  0.5) * offset, 0.0), bias);
-        shadow += sampleShadow(projCoords + vec3(vec2(-1.5,  1.5) * offset, 0.0), bias);
+        shadow += sampleShadow(projCoords + vec3(vec2(-1.5, -1.5) * offset, 0.0), bias, 0);
+        shadow += sampleShadow(projCoords + vec3(vec2(-1.5, -0.5) * offset, 0.0), bias, 0);
+        shadow += sampleShadow(projCoords + vec3(vec2(-1.5,  0.5) * offset, 0.0), bias, 0);
+        shadow += sampleShadow(projCoords + vec3(vec2(-1.5,  1.5) * offset, 0.0), bias, 0);
 
         shadow /= 4;
     }

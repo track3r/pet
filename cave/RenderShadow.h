@@ -57,7 +57,13 @@ public:
         _elementSize = elementSize;
         _capacity = _size / _elementSize;
         assert(_capacity.x > 0 && _capacity.y > 0);
-        _border = (_size - (_capacity - glm::ivec2(1,1) * _elementSize) ) / _capacity;
+        if (_capacity.x == 1 || _capacity.y == 1) {
+            _border = glm::ivec2(0, 0);
+            return;
+        }
+        assert(_capacity.x > 0 && _capacity.y > 0);
+        glm::ivec2 unused = _size - (_capacity * glm::ivec2(1, 1) * _elementSize);
+        _border = unused / (_capacity - glm::ivec2(1, 1));
         //_map.resize(_capacity.x * _capacity.y, false);
     }
 
@@ -72,7 +78,7 @@ public:
 
     uint16_t alloc()
     {
-        if (_num == _capacity.x * _capacity.y - 1)
+        if (_num > _capacity.x * _capacity.y - 1)
         {
             return -1;
         }
@@ -110,7 +116,7 @@ public:
     bool init(uint16_t width, uint16_t height, uint16_t atlasWidth, uint16_t atlasHeight)
     {
         _atlas.init(glm::vec2(atlasWidth, atlasHeight), glm::ivec2(width, height));
-        _renderPass.init(width, height);
+        _renderPass.init(atlasWidth, atlasHeight);
         
         const float aspect = (float)width / (float)height;
         const float near = 0.1f;

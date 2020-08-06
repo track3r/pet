@@ -22,7 +22,7 @@ struct ViewUniform
     ViewMatrices viewMatrices;
 };
 
-struct LightParms
+struct LightParams
 {
     glm::mat4 matrix;
     glm::vec4 pos;
@@ -31,7 +31,7 @@ struct LightParms
 
 struct LightUniform
 {
-    LightParms lightParams[100];
+    LightParams lightParams[100];
     int numLights;
 };
 
@@ -54,8 +54,8 @@ public:
 
     void renderShadowMaps();
     void render(const ViewMatrices& viewParms);
-    void renderOpaque(ShaderProgram* prog = nullptr);
-    void renderTransparent(ShaderProgram* prog = nullptr);
+    void renderOpaque(ShaderProgram* prog = nullptr, uint8_t flags = 0);
+    void renderTransparent(ShaderProgram* prog = nullptr, uint8_t flags = 0);
 
     void updateUniforms();
 

@@ -158,28 +158,7 @@ void Renderer::beginRender()
 void Renderer::endRender()
 {
     glDisable(GL_DEPTH_TEST);
-    glm::vec4 cube[] = { 
-        glm::vec4(-1.f, -1.f, -1.f, 1.f),  glm::vec4(-1.f, -1.f, 1.f, 1.f),
-        glm::vec4(-1.f, 1.f, -1.f, 1.f),  glm::vec4(-1.f, 1.f, 1.f, 1.f),
-        glm::vec4(1.f, 1.f, -1.f, 1.f),  glm::vec4(1.f, 1.f, 1.f, 1.f),
-        glm::vec4(1.f, -1.f, -1.f, 1.f),  glm::vec4(1.f, -1.f, 1.f, 1.f) };
-
-    glm::mat4 inverse = glm::inverse(_shadow.getLightMatrix());
-    for (int i = 0; i < 8; i++) {
-        cube[i] = inverse * cube[i];
-    }
-
-    m_debugDraw.drawCube(glm::vec3(_shadow._pos));
-
-    m_debugDraw.addLine(glm::vec3(cube[0]) / cube[0].w, glm::vec3(cube[1]) / cube[1].w, c_red, c_green);
-    m_debugDraw.addLine(glm::vec3(cube[2]) / cube[2].w, glm::vec3(cube[3]) / cube[3].w, c_red, c_green);
-    m_debugDraw.addLine(glm::vec3(cube[4]) / cube[4].w, glm::vec3(cube[5]) / cube[5].w, c_red, c_green);
-    m_debugDraw.addLine(glm::vec3(cube[6]) / cube[6].w, glm::vec3(cube[7]) / cube[7].w, c_red, c_green);
-
-    m_debugDraw.addLine(glm::vec3(cube[1]) / cube[1].w, glm::vec3(cube[3]) / cube[3].w, c_green, c_green);
-    m_debugDraw.addLine(glm::vec3(cube[3]) / cube[3].w, glm::vec3(cube[5]) / cube[5].w, c_green, c_green);
-    m_debugDraw.addLine(glm::vec3(cube[5]) / cube[5].w, glm::vec3(cube[7]) / cube[7].w, c_green, c_green);
-    m_debugDraw.addLine(glm::vec3(cube[7]) / cube[7].w, glm::vec3(cube[1]) / cube[1].w, c_green, c_green);
+    
 
     m_debugDraw.m_element.updateVbo();
     renderElement(m_debugDraw.m_program, m_debugDraw.m_element);

@@ -136,6 +136,33 @@ void DebugDraw::drawCube(const glm::vec3& pos, const glm::vec4 color)
 	addLine(p[3], p[3 + 4]);
 }
 
+void DebugDraw::renderFrustum(glm::mat4 matrix)
+{
+	glm::vec4 cube[] = {
+		   glm::vec4(-1.f, -1.f, -1.f, 1.f),  glm::vec4(-1.f, -1.f, 1.f, 1.f),
+		   glm::vec4(-1.f, 1.f, -1.f, 1.f),  glm::vec4(-1.f, 1.f, 1.f, 1.f),
+		   glm::vec4(1.f, 1.f, -1.f, 1.f),  glm::vec4(1.f, 1.f, 1.f, 1.f),
+		   glm::vec4(1.f, -1.f, -1.f, 1.f),  glm::vec4(1.f, -1.f, 1.f, 1.f) };
+
+	glm::mat4 inverse = glm::inverse(matrix);
+	for (int i = 0; i < 8; i++) {
+		cube[i] = inverse * cube[i];
+	}
+
+	glm::vec4 pos = inverse * glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f);
+	drawCube(glm::vec3(pos));
+
+	addLine(glm::vec3(cube[0]) / cube[0].w, glm::vec3(cube[1]) / cube[1].w, c_red, c_green);
+	addLine(glm::vec3(cube[2]) / cube[2].w, glm::vec3(cube[3]) / cube[3].w, c_red, c_green);
+	addLine(glm::vec3(cube[4]) / cube[4].w, glm::vec3(cube[5]) / cube[5].w, c_red, c_green);
+	addLine(glm::vec3(cube[6]) / cube[6].w, glm::vec3(cube[7]) / cube[7].w, c_red, c_green);
+
+	addLine(glm::vec3(cube[1]) / cube[1].w, glm::vec3(cube[3]) / cube[3].w, c_green, c_green);
+	addLine(glm::vec3(cube[3]) / cube[3].w, glm::vec3(cube[5]) / cube[5].w, c_green, c_green);
+	addLine(glm::vec3(cube[5]) / cube[5].w, glm::vec3(cube[7]) / cube[7].w, c_green, c_green);
+	addLine(glm::vec3(cube[7]) / cube[7].w, glm::vec3(cube[1]) / cube[1].w, c_green, c_green);
+}
+
 void DebugDraw::drawGrid()
 {
 	const int n = 200;

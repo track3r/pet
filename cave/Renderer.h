@@ -30,6 +30,7 @@ public:
     void setLightPos(glm::vec3 pos);
     ShaderProgram* getDefaultProgram() { return m_program; }
     Camera& camera();
+    DebugDraw& getDebugDraw() { return m_debugDraw; }
 private:
     Camera m_camera;
     DebugDraw m_debugDraw;

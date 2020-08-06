@@ -145,6 +145,13 @@ void RenderWorld::renderShadowMaps()
     RenderLight* lights = _lights.getPtr(0);
     //ShadowRt& shadowRt = renderer->_shadow;
     _shadowManager.beginShadowPasses();
+    _viewUniform.bindForUpdate();
+
+    //atlas test
+    _shadowManager._atlas.alloc();
+    _shadowManager._atlas.alloc();
+    _shadowManager._atlas.alloc();
+
     for (int i = 0; i < _lightIndex.size(); i++)
     {
         const RenderLight& light = lights[0];
@@ -162,26 +169,30 @@ void RenderWorld::renderShadowMaps()
             light.pos + light.direction,
             glm::vec3(0.0f, 1.0f, 0.0f));
 
-        lightUniform.lightParams[lightUniform.numLights].matrix = viewParms.projection * viewParms.view;
-        lightUniform.lightParams[lightUniform.numLights].pos = glm::vec4(light.pos, 0);
-        lightUniform.lightParams[lightUniform.numLights].atlas = _shadowManager.getAtlasCoords(atlasSlot);
-        lightUniform.numLights++;
+        LightParams& params = lightUniform.lightParams[lightUniform.numLights++];
+        params.matrix = viewParms.projection * viewParms.view;
+        params.pos = glm::vec4(light.pos, 0);
+        params.atlas = _shadowManager.getAtlasCoords(atlasSlot);
+        renderer->getDebugDraw().renderFrustum(params.matrix);
 
-        _viewUniform.bindForUpdate();
+        
         _viewUniform.updateFull(viewParms);
-        renderOpaque(_shadowManager._renderPass._program);
+        renderOpaque(_shadowManager._renderPass._program, RenderElement::NoTextures);
         //renderTransparent(shadowRt._program);
         break;
     }
 
+    _viewUniform.unbindForUpdate();
     //shadowRt.unbindRt();
     _shadowManager._renderPass.end();
     _shadowManager._renderPass.bindTexture();
+    _lightUniform.bindForUpdate();
     _lightUniform.updateFull(lightUniform);
+    _lightUniform.unbindForUpdate();
     glPopDebugGroup();
 }
 
-void RenderWorld::renderOpaque(ShaderProgram* prog)
+void RenderWorld::renderOpaque(ShaderProgram* prog, uint8_t flags)
 {
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 3, -1, "RenderWorld::renderOpaque");
     if (_meshIndex.size() == 0)
@@ -197,6 +208,7 @@ void RenderWorld::renderOpaque(ShaderProgram* prog)
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* transform = _transforms.getPtr(0);
     _modelUniform.bindForUpdate();
+    CheckGlError();
     prog->bind();
 
     for (int i = 0; i < _meshIndex.size(); i++)
@@ -207,14 +219,14 @@ void RenderWorld::renderOpaque(ShaderProgram* prog)
         }
 
         _modelUniform.updateFull(transform[i]);
-        elem[i].render();
+        elem[i].render(flags);
         
     }
     _modelUniform.unbindForUpdate();
     glPopDebugGroup();
 }
 
-void RenderWorld::renderTransparent(ShaderProgram* prog)
+void RenderWorld::renderTransparent(ShaderProgram* prog, uint8_t flags)
 {
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 4, -1, "RenderWorld::renderTransparent");
     if (_meshIndex.size() == 0)
@@ -238,7 +250,7 @@ void RenderWorld::renderTransparent(ShaderProgram* prog)
             continue;
         }
         _modelUniform.updateFull(transform[i]);
-        elem[i].render();
+        elem[i].render(flags);
     }
     _modelUniform.unbindForUpdate();
     glPopDebugGroup();

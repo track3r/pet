@@ -21,7 +21,7 @@ public:
 	void addLine(const glm::vec3& pos, const glm::vec3 pos2, const glm::vec4 color = c_red, const glm::vec4 color2 = c_red);
 	void drawGrid();
 	void drawCube(const glm::vec3& pos, const glm::vec4 color = c_red);
-
+	void renderFrustum(glm::mat4 matrix);
 	void reset();
 
 	RenderElement m_element;
