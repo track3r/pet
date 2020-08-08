@@ -57,7 +57,10 @@ GLuint LoadShader(GLenum type, const char *shaderSrc)
 		{
 			char* infoLog = new char[infoLen];
 			glGetShaderInfoLog(shader, infoLen, NULL, infoLog);
-			printf("Error compiling shader:\n%s\n", infoLog);
+			//printf("Error compiling shader:\n%s\n", infoLog);
+			LOG("Error compiling shader:");
+			dbg_puts(infoLog);
+			dbg_puts("\n");
 			delete[] infoLog;
 		}
 		glDeleteShader(shader);

@@ -104,8 +104,13 @@ void dbg_printf(const char* file, long line, const char* function, const char* f
 	printf("%s", (szBuffer));
 
     snprintf(szBuffer, 512, " [%llu.%llu %d-%d]\n", ticks / 1000, ticks % 1000, GetCurrentThreadId(), GetCurrentProcessorNumber());
-    ::OutputDebugStringA(szBuffer);
-    printf("%s", (szBuffer));
+	dbg_puts(szBuffer);
 	//log(szBuffer);
 	va_end(args);
+}
+
+void dbg_puts(const char* str)
+{
+	::OutputDebugStringA(str);
+	printf("%s", (str));
 }
