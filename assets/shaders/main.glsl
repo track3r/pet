@@ -43,9 +43,10 @@ void main()
 
 #pragma fragment
 uniform sampler2D texture0;
-//uniform sampler2DShadow textureShadow;
-uniform sampler2D textureShadow;
+uniform sampler2DShadow textureShadow;
+//uniform sampler2D textureShadow;
 
+#if 0
 float sampleShadow(vec3 projCoords, float bias, int light)
 {
     vec4 atlas = lightParams[light].atlas;
@@ -53,7 +54,16 @@ float sampleShadow(vec3 projCoords, float bias, int light)
     vec2 finalCoord = mix(atlas.xy, atlas.zw, projCoords.xy);
     float closestDepth = texture(textureShadow, finalCoord).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
     float currentDepth = projCoords.z;// get depth of current fragment from light's perspective
-    return closestDepth < currentDepth - bias  ? 0.0 : 1.0;
+    //return closestDepth < currentDepth - bias  ? 0.0 : 1.0;
+    return closestDepth + bias < currentDepth  ? 0.0 : 1.0;
+}
+#endif
+
+float sampleShadowhPCF(vec3 projCoords, float bias, int light)
+{
+    vec4 atlas = lightParams[light].atlas;
+    vec3 finalCoord = vec3(mix(atlas.xy, atlas.zw, projCoords.xy), projCoords.z + bias);
+    return texture(textureShadow, finalCoord);
 }
 
 void main()
@@ -80,21 +90,38 @@ void main()
     if (inShadow)
     {
                 
-        float closestDepth = texture(textureShadow, projCoords.xy).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-        float currentDepth = projCoords.z;// get depth of current fragment from light's perspective
+        //float closestDepth = texture(textureShadow, projCoords.xy).r;// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+        //float currentDepth = projCoords.z;// get depth of current fragment from light's perspective
             
         // + bias gives peter panning in simple case, - bias is a mess in complex scene
         float bias = 0.0001 * ndl;                
         //shadow = closestDepth < currentDepth - bias  ? 0.1 : 1.0;
-
+        
         vec2 offset = vec2(1.0/512.0);
-
+        //projCoords.z += bias;
+        
         //shadow = sampleShadow(projCoords, bias);
+        #if 0//manual
         shadow += sampleShadow(projCoords + vec3(vec2(-1.5, -1.5) * offset, 0.0), bias, 0);
         shadow += sampleShadow(projCoords + vec3(vec2(-1.5, -0.5) * offset, 0.0), bias, 0);
         shadow += sampleShadow(projCoords + vec3(vec2(-1.5,  0.5) * offset, 0.0), bias, 0);
         shadow += sampleShadow(projCoords + vec3(vec2(-1.5,  1.5) * offset, 0.0), bias, 0);
 
+        shadow /= 4;
+        #endif
+        #if 0//hardware pcf
+        vec4 atlas = lightParams[0].atlas;
+        vec3 finalCoord = vec3(mix(atlas.xy, atlas.zw, projCoords.xy), projCoords.z + bias);
+        shadow = texture(textureShadow, finalCoord);
+        #endif
+
+        //hardware + manual pcf
+        float dist = 1.0;
+        bias = 0.0;
+        shadow += sampleShadowhPCF(projCoords + vec3(vec2(-dist, -dist) * offset, 0.0), bias, 0);
+        shadow += sampleShadowhPCF(projCoords + vec3(vec2(dist, -dist) * offset, 0.0), bias, 0);
+        shadow += sampleShadowhPCF(projCoords + vec3(vec2(-dist, dist) * offset, 0.0), bias, 0);
+        shadow += sampleShadowhPCF(projCoords + vec3(vec2(dist, dist) * offset, 0.0), bias, 0);
         shadow /= 4;
     }
             
