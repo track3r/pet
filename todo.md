@@ -24,15 +24,15 @@
 - [x] shader preprocess
 - [x] shader reload
 - [x] uniform buffers
+- [x] somple shadow atlas
+- [ ] multi lights - move light vectors out of  vryings, etc
 - [ ] fix cursor capture
 - [ ] render pass class
 - [ ] better render state
-- [ ] multi lights
-- [ ] shadow atlas
 - [ ] cleanup + premake?
 - [ ] 2x2 mip bug
 - [ ] vulkan tutorial?
-- [ ] Rendering back/front end with sorting and commmand gen
+- [ ] Rendering back/front end with sorting and commmand gen?
 - [ ] voxel chunk component
 - [ ] remove entity
 - [ ] light types?
