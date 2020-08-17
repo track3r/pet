@@ -1,4 +1,4 @@
-#version 420
+#pragma version 420
 #include "include/uniforms.glsl"
 #pragma vertex
 attribute vec3 v_position;

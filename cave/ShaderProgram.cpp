@@ -152,7 +152,8 @@ bool ShaderProgram::build(const char* filename)
 		return false;
 	}
 	char line[513];
-	char buffer[256] = { 0 };
+	char buffer[256] = {};
+	char param[256] = {};
 	std::string header;
 	std::string vertex;
 	std::string fragment;
@@ -166,7 +167,7 @@ bool ShaderProgram::build(const char* filename)
 	entry.file = f;
 	strcpy(entry.filename, filename);
 	stack.push_back(entry);
-
+	std::string version = "320";
 	while (getLine(line, stack))
 	{
 		if (line[0] != '#')
@@ -200,7 +201,7 @@ bool ShaderProgram::build(const char* filename)
 			stack.push_back(entry);
 			continue;
 		}
-		else if (sscanf(line, "#pragma %s", buffer) == 1)
+		else if (sscanf(line, "#pragma %s %s", buffer, param) > 0)
 		{
 			if (strcmp(buffer, "vertex") == 0)
 			{
@@ -210,7 +211,11 @@ bool ShaderProgram::build(const char* filename)
 			{
 				section = &fragment;
 			}
-			
+			else if (strcmp(buffer, "version") == 0 && param[0] != 0)
+			{
+				version = param;
+				param[0] = 0;
+			}
 			continue;
 		}
 		else
@@ -219,9 +224,20 @@ bool ShaderProgram::build(const char* filename)
 		}
 	}
 	header += "//end of header\n";
-	std::string vertexBody = header;
+	std::string vertexBody;
+	vertexBody.append("#version ");
+	vertexBody.append(version);
+	vertexBody.append("\n");
+	vertexBody.append("#define vertex\n");
+	vertexBody.append(header);
 	vertexBody.append(vertex);
-	std::string fragmentBody = header;
+
+	std::string fragmentBody;
+	fragmentBody.append("#version ");
+	fragmentBody.append(version);
+	fragmentBody.append("\n");
+	fragmentBody.append("#define fragment\n");
+	fragmentBody.append(header);
 	fragmentBody.append(fragment);
 
 	const char* buildTemp = "..\\build\\shaders\\";
@@ -234,7 +250,6 @@ bool ShaderProgram::build(const char* filename)
 	{
 		return false;
 	}
-	fprintf(vertexFile, "%s\n", "#define vertex");
 	fprintf(vertexFile, "%s", vertexBody.c_str());
 	fclose(vertexFile);
 
@@ -247,7 +262,6 @@ bool ShaderProgram::build(const char* filename)
 		return false;
 	}
 
-	fprintf(fragmentFile, "%s\n", "#define fragment");
 	fprintf(fragmentFile, "%s", fragmentBody.c_str());
 	fclose(fragmentFile);
 	return init(vertexBody.c_str(), fragmentBody.c_str());

@@ -1,44 +1,25 @@
-#version 420
-#include "include/varyingDefault.glsl"
+#pragma version 420
+#include "include/common.glsl"
 #include "include/uniforms.glsl"
+
+varying vec2 f_texcoord0;
+varying vec3 f_normal;
+varying vec3 f_eyePos;
+varying vec3 f_worldPos;
+
 #pragma vertex
 attribute vec3 v_position;
 attribute vec2 v_uv;
 attribute vec3 v_normal;
-
-//uniform mat4 v_mMatrix;
-//uniform mat4 v_vMatrix;
-//uniform mat4 v_pMatrix;
-
          
 void main()
 {
-            
+    gl_Position = viewMatrices.projection * viewMatrices.view * modelMatrix * vec4(v_position, 1.0);        
     f_texcoord0 = v_uv;
-    gl_Position = viewMatrices.projection * viewMatrices.view * modelMatrix * vec4(v_position, 1.0);
-        
-    vec3 posWorld = (modelMatrix * vec4(v_position, 1.0)).xyz;
-    f_posLightspace = lightParams[0].matrix * vec4(posWorld, 1.0);
+    f_worldPos = (modelMatrix * vec4(v_position, 1.0)).xyz;
     mat4 eyeMatrix = viewMatrices.view * modelMatrix;
-            
-    //mat4 eyeMatrix = modelMatrix;
-    f_debug = vec4(eyeMatrix * vec4(v_position, 0.0) ).xyz; 
-    vec4 eyePos = eyeMatrix * vec4(v_position, 1.0);
-    f_toCamera = -eyePos.xyz;
-
+    f_eyePos = (eyeMatrix * vec4(v_position, 1.0)).xyz;
     f_normal = vec4(eyeMatrix * vec4(v_normal, 0.0)).xyz;
-
-    vec3 testLightDirWorld = vec3(0, 1, 0);
-            
-    
-    vec3 lightPosEye = vec4(eyeMatrix * vec4(lightParams[0].pos.xyz, 1.0)).xyz;
-    //vec4 lightPos = (inverse(v_lMatrix) * vec4(0.5, -1, .5, 1.0));
-    //lightPos /= lightPos.w;
-    //lightPosEye = vec4(eyeMatrix * vec4(lightPos.xyz, 1.0)).xyz;
-    f_toLight = lightPosEye - eyePos.xyz;
-            
-    f_lighDir = vec4(eyeMatrix * vec4(testLightDirWorld, 0.0)).xyz;
-            
 }
 
 #pragma fragment
@@ -69,14 +50,19 @@ float sampleShadowhPCF(vec3 projCoords, float bias, int light)
 void main()
 {
     gl_FragColor.a = 1.0;
+    mat4 eyeMatrix = viewMatrices.view * modelMatrix;
+    vec3 lightPosEye = vec4(eyeMatrix * vec4(lightParams[0].pos.xyz, 1.0)).xyz;
+    vec3 toLight = lightPosEye - f_eyePos.xyz;
 
     vec3 normal = normalize(f_normal);
-    float ndl = dot(normal,normalize(f_toLight));
-    float distance = length(f_toLight);
+    float ndl = dot(normal,normalize(toLight));
+    float distance = length(toLight);
+
     float att = 1.0 + distance*0.0004  + distance*distance*0.0004;
     ndl /= att;            
 
-    vec3 projCoords = f_posLightspace.xyz / f_posLightspace.w; // perform perspective divide
+    vec4 posLightspace = lightParams[0].matrix * vec4(f_worldPos, 1.0);
+    vec3 projCoords = posLightspace.xyz / posLightspace.w; // perform perspective divide
     projCoords = projCoords * 0.5 + 0.5;// transform to [0,1] range
             
     //gl_FragColor.xyz = vec3(projCoords.y);
@@ -126,11 +112,8 @@ void main()
     }
             
     shadow = max(shadow, 0.1);
+    //shadow = 1;
 
-    //gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl),1.0);
-    //gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl),1.0) * shadow;
-            
-    //ndl = 0.5;
     gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(vec3(ndl * shadow) + vec3(0.2, 0.2, 0.2) ,1.0) ;
     //gl_FragColor = vec4(vec3(shadow) + vec3(0.1, 0.1, 0.1), 1.0);
 
@@ -138,7 +121,7 @@ void main()
     //gl_FragColor.a = 1.0;
 
     if (inShadow) {
-        gl_FragColor.x += 0.5;
+        //gl_FragColor.x += 0.5;
     }
 
 
