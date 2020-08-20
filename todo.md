@@ -24,10 +24,10 @@
 - [x] shader preprocess
 - [x] shader reload
 - [x] uniform buffers
-- [x] somple shadow atlas
-- [ ] multi lights - move light vectors out of  vryings, etc
+- [x] sample shadow atlas
+- [x] multi lights - move light vectors out of  varyings, etc
+- [x] render pass class (sorta)
 - [ ] fix cursor capture
-- [ ] render pass class
 - [ ] better render state
 - [ ] cleanup + premake?
 - [ ] 2x2 mip bug

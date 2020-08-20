@@ -13,12 +13,12 @@ ShadowCubeRt::ShadowCubeRt()
     _target[4] = glm::vec3(0.0, 0.0, 1.0);
     _target[5] = glm::vec3(0.0, 0.0, -1.0);
 
-    _up[0] = glm::vec3(0.0, -1.0, 0.0);
-    _up[1] = glm::vec3(0.0, -1.0, 0.0);
+    _up[0] = glm::vec3(0.0, 1.0, 0.0);
+    _up[1] = glm::vec3(0.0, 1.0, 0.0);
     _up[2] = glm::vec3(0.0, 0.0, 1.0);
     _up[3] = glm::vec3(0.0, 0.0, -1.0);
-    _up[4] = glm::vec3(0.0, -1.0, 0.0);
-    _up[5] = glm::vec3(0.0, -1.0, 0.0);
+    _up[4] = glm::vec3(0.0, 1.0, 0.0);
+    _up[5] = glm::vec3(0.0, 1.0, 0.0);
 }
 
 void ShadowCubeRt::init(int width, int height)

@@ -26,3 +26,14 @@ layout(std140, binding = 3) uniform Light
     LightParams lightParams[100];
     int numLights;
 };
+
+
+struct InstanceData
+{
+    mat4 tranform;
+};
+
+layout(std140, binding = 4) uniform Instance
+{
+    InstanceData instance[1000];
+};

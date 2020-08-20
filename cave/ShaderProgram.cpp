@@ -13,15 +13,23 @@ ShaderProgram::ShaderProgram()
 
 ShaderProgram::~ShaderProgram()
 {
-	glDeleteProgram(m_program);
-	glDeleteShader(_vertexShader);
-	glDeleteShader(_fragmentShader);
+	clear();
 }
 
 void ShaderProgram::bind() const
 {
 	glUseProgram(m_program);
 	CheckGlError();
+}
+
+void ShaderProgram::clear()
+{
+	if (m_program  != -1 ) glDeleteProgram(m_program);
+	if (_vertexShader != -1) glDeleteShader(_vertexShader);
+	if (_vertexShader != -1) glDeleteShader(_fragmentShader);
+	m_program = -1;
+	_vertexShader = -1;
+	_fragmentShader = -1;
 }
 
 
@@ -77,8 +85,29 @@ bool ShaderProgram::init(const char* vertex, const char* fragment)
 	GLint linked;
 
 	// Load the vertex/fragment shaders
-	_vertexShader = LoadShader(GL_VERTEX_SHADER, (const char*)vertex);
-	_fragmentShader = LoadShader(GL_FRAGMENT_SHADER, (const char*)fragment);
+	
+	GLuint vertexShader = LoadShader(GL_VERTEX_SHADER, (const char*)vertex);
+	GLuint fragmentShader = LoadShader(GL_FRAGMENT_SHADER, (const char*)fragment);
+	bool fail = vertexShader == -1 || fragmentShader == -1;
+	if (fail)
+	{
+		if (vertexShader != -1)
+		{
+			glDeleteShader(vertexShader);
+		}
+
+		if (fragmentShader != -1)
+		{
+			glDeleteShader(fragmentShader);
+		}
+
+		
+		return false;
+	}
+	
+	clear();
+	_fragmentShader = fragmentShader;
+	_vertexShader = vertexShader;
 
 	programObject = glCreateProgram();
 	if (programObject == 0)
@@ -291,9 +320,9 @@ bool ShaderProgram::init(const char* filename)
 void ShaderProgram::refresh()
 {
 #if defined(BUILD_TOOLS)
-	glDeleteProgram(m_program);
-	glDeleteShader(_vertexShader);
-	glDeleteShader(_fragmentShader);
+	//glDeleteProgram(m_program);
+	//glDeleteShader(_vertexShader);
+	//glDeleteShader(_fragmentShader);
 	clearDeps();
 	build(_name.c_str());
 #endif	

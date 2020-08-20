@@ -11,6 +11,7 @@ enum class VertexAttributeIndex
 	Normal = 2,
 	Tangent = 3,
 	Color = 4,
+	Matrix = 5,
 	Last
 };
 
@@ -27,7 +28,8 @@ const VertexAttribute c_attribs[] =
 	{ VertexAttributeIndex::Uv, 2, "v_uv" },
 	{ VertexAttributeIndex::Normal, 3, "v_normal" },
 	{ VertexAttributeIndex::Tangent, 3, "v_tangent" },
-	{ VertexAttributeIndex::Color, 4, "v_color" }
+	{ VertexAttributeIndex::Color, 4, "v_color" },
+	{ VertexAttributeIndex::Matrix, 12, "v_matrix" }
 };
 
 typedef int64_t VertexFormatCode;

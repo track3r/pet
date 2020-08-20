@@ -9,6 +9,7 @@ UniformBuffer::~UniformBuffer()
 
 bool UniformBuffer::init(int size)
 {
+    _size = size;
     glGenBuffers(1, &_ubo);
     CheckGlError();
     glBindBuffer(GL_UNIFORM_BUFFER, _ubo);

@@ -25,14 +25,15 @@ public:
 	bool build(const char* filename);
 	bool init(const char* vertex, const char* fragment);
 	bool init(const char* filename);
+	void clear();
 	void refresh();
 private:	
 	static void bindAttributes(GLuint program);
 
 private:
-	GLuint m_program;
-	GLuint _vertexShader;
-	GLuint _fragmentShader;
+	GLuint m_program = -1;
+	GLuint _vertexShader = -1;
+	GLuint _fragmentShader = -1;
 	GLuint m_vmMatrixLoc;
 	GLuint m_vvMatrixLoc;
 	GLuint m_vpMatrixLoc;

@@ -44,7 +44,7 @@ class IndexBuffer : public Buffer
 {
 public:
 	IndexBuffer(int32_t size)
-		:Buffer(size * sizeof(int), size, GL_ELEMENT_ARRAY_BUFFER)
+		:Buffer(size * sizeof(uint32_t), size, GL_ELEMENT_ARRAY_BUFFER)
 		, m_elementType(GL_UNSIGNED_INT)
 	{}
 	uint32_t* intPointer();
@@ -86,9 +86,11 @@ public:
 	};
 
 	RenderElement(GLenum primitive = GL_TRIANGLES);
+	RenderElement(const RenderElement& other, int offset, int count);
 	~RenderElement();
 
 	void setupVbo(bool isStream);
+	void setupEmptyVbo(bool isStream);
 	void updateVbo();
 	void render(uint8_t flags = None) const;
 
@@ -106,5 +108,6 @@ public:
 	GLuint			_vao = 0;
 	bool			_isStream = false;
 	GLenum			m_mode;
+	bool			_reference = false;
 };
 

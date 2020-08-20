@@ -109,6 +109,14 @@ void CreateLight(ecs3::World* _world, ecs3::Id lightId)
 	_world->createEntity(conf);
 }
 
+void CreateLight2(ecs3::World* _world, ecs3::Id lightId)
+{
+	ecs3::EntitityPrefab conf;
+	conf.addComponent(ecs3::TransformComponent(glm::vec3(-80, 20, 0)));
+	conf.addComponent(LightComponent(lightId));
+	_world->createEntity(conf);
+}
+
 void LoadTestScene(ecs3::World* _world)
 {
 	ObjMtlReader mtlReader;
@@ -177,12 +185,21 @@ void LoadTestScene(ecs3::World* _world)
 
 	MeshComponent meshComp;
 	ecs3::EntitityPrefab meshConf;
-	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, -20.f, 0.f)));
+
+	//meshConf.addComponent(ecs3::TransformComponent(glm::vec3(200.f * randf(), 0.f + , 0.f)));
 	meshConf.addComponent(meshComp);
 	LOG("Uploading meshes...");
-	
+	VertexBuffer* worldVb = new VertexBuffer((uint32_t)reader.faces.size() * 3, c_defaultVf);
+	IndexBuffer* worldIb = new IndexBuffer((uint32_t)reader.faces.size() * 3);
+	uint32_t offset = 0;
+	RenderElement* world = new RenderElement();
+	world->m_vertices = worldVb;
+	world->m_indices = worldIb;
+	world->setupEmptyVbo(false);
 	for (const ObjReader::group_t& group : reader.groups)
 	{
+		//meshConf.addComponent(ecs3::TransformComponent(glm::vec3(20.f * randf(), 20.f * randf(), 20.f * randf())));
+		meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.0f, -20.f, 0.0f)));
 #if 0
 		static const char* meshFilter[] = { "sponza_117","sponza_366", "sponza_367", "sponza_12", "sponza_16", "sponza_370", "sponza_371" };
 		bool skip = true;
@@ -201,44 +218,43 @@ void LoadTestScene(ecs3::World* _world)
 #endif
 		int faces = group.endFace - group.startFace;
 		//LOG(">>Mesh %s", group.name);
-		VertexBuffer* vb = new VertexBuffer(faces * 3, c_defaultVf);
-		IndexBuffer* ib = new IndexBuffer(faces * 3);
+		//VertexBuffer* vb = new VertexBuffer(faces * 3, c_defaultVf);
+		//IndexBuffer* ib = new IndexBuffer(faces * 3);
 		uint32_t index = 0;
 		for (uint32_t f = group.startFace; f < group.endFace; f++)
 		{
 			const ObjReader::face_t& face = reader.faces[f];
 			for (int v = 0; v < 3; v++)
 			{
-				vb->value<glm::vec3, VertexAttributeIndex::Pos>(index) = reader.positions[face.vertices[v] - 1];
-				vb->value<glm::vec2, VertexAttributeIndex::Uv>(index) = reader.texcoords[face.texcoords[v] - 1];
-				vb->value<glm::vec3, VertexAttributeIndex::Normal>(index) = reader.normals[face.normals[v] - 1];
-				ib->intPointer()[index] = index;
+				worldVb->value<glm::vec3, VertexAttributeIndex::Pos>(offset + index) = reader.positions[face.vertices[v] - 1];
+				worldVb->value<glm::vec2, VertexAttributeIndex::Uv>(offset + index) = reader.texcoords[face.texcoords[v] - 1];
+				worldVb->value<glm::vec3, VertexAttributeIndex::Normal>(offset + index) = reader.normals[face.normals[v] - 1];
+				worldIb->intPointer()[offset + index] = offset + index;
 				index++;
 			}
 		}
 
-		RenderElement* element = new RenderElement();
-		element->m_indices = ib;
-		element->m_vertices = vb;
+		RenderElement* element = new RenderElement(*world, offset, faces * 3);
 		element->textures[0] = textures[group.material];
 		if (element->textures[0] != nullptr)
 		{
 			element->_transparent = element->textures[0]->hasAlpha;
 		}		
-		element->setupVbo(false);
-		char nameBuffer[256];
-		sprintf(nameBuffer, "%s_vbo", group.name);
-		glObjectLabel(GL_BUFFER, element->m_objects[0], -1, nameBuffer);
-		sprintf(nameBuffer, "%s_ebo", group.name);
-		glObjectLabel(GL_BUFFER, element->m_objects[1], -1, nameBuffer);
-		sprintf(nameBuffer, "%s_vao", group.name);
-		glObjectLabel(GL_BUFFER, element->_vao, -1, nameBuffer);
+		offset += faces * 3;
+		//char nameBuffer[256];
+		//sprintf(nameBuffer, "%s_vbo", group.name);
+		//glObjectLabel(GL_BUFFER, element->m_objects[0], -1, nameBuffer);
+		//sprintf(nameBuffer, "%s_ebo", group.name);
+		//glObjectLabel(GL_BUFFER, element->m_objects[1], -1, nameBuffer);
+		//sprintf(nameBuffer, "%s_vao", group.name);
+		//glObjectLabel(GL_BUFFER, element->_vao, -1, nameBuffer);
 
 		meshComp.mesh = _world->get<RenderSingleton>().world->createMesh(*element);
 		meshConf._data.addComponent(meshComp);
 		_world->createEntity(meshConf);
 		//break;
 	}
+	world->updateVbo();
 	LOG("Finalising texture jobs");
 	jobs.assist(job, func);
 	LOG("Uploading textures");
@@ -312,7 +328,9 @@ bool Application::init(SDL_Window* window)
 	_world->get<RenderSingleton>().world = renderWorld;
 
 	CreateTestComponents(_world);
+	
 	CreateLight(_world, renderWorld->createLight(RenderLight()));
+	CreateLight2(_world, renderWorld->createLight(RenderLight()));	
 	LoadTestScene(_world);
 	return true;
 }
