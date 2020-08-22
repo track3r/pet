@@ -1,6 +1,10 @@
 # pet
 Pet game engine with C++, cache efficient ecs
 
+multiple point lights with shadow atlas and multidraw
+
+![image](https://user-images.githubusercontent.com/1905875/90947323-8b806c80-e3fa-11ea-8fc2-f1ccecc5e8ac.png)
+
 shadow mapping - shadow volume vis
 
 ![image](https://user-images.githubusercontent.com/1905875/81126434-dedcb680-8f00-11ea-971e-88c9326f0600.png)
