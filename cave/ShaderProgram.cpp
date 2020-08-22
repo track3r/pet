@@ -157,6 +157,7 @@ bool ShaderProgram::init(const char* vertex, const char* fragment)
 
 	m_TextureShadowLoc = glGetUniformLocation(m_program, "textureShadow");
 
+	_drawIdLoc = glGetUniformLocation(m_program, "u_drawId");
 	glUseProgram(m_program);
 	setTexture(0);
 	setTextureShadow(1);
@@ -351,6 +352,14 @@ void ShaderProgram::setLMatrix(const glm::mat4& matrix) const
 	assert(m_vlMatrix != GL_INVALID_VALUE);
 	glUniformMatrix4fv(m_vlMatrix, 1, GL_FALSE, glm::value_ptr(matrix));
 	CheckGlError();
+}
+
+void ShaderProgram::setDrawId(uint32_t drawId) const
+{
+	if (_drawIdLoc != -1)
+	{
+		glUniform1ui(_drawIdLoc, drawId);
+	}
 }
 
 void ShaderProgram::setTexture(int texture) const

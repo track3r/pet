@@ -34,6 +34,7 @@ struct InstanceData
 struct RenderConstrains
 {
     static const int maxInstancesPerDraw = 1000;
+    static const bool multidraw = true;
 };
 
 struct InstanceUniform

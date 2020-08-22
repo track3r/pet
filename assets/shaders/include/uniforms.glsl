@@ -27,13 +27,14 @@ layout(std140, binding = 3) uniform Light
     int numLights;
 };
 
-
 struct InstanceData
 {
-    mat4 tranform;
+    mat4 transform;
 };
 
 layout(std140, binding = 4) uniform Instance
 {
     InstanceData instance[1000];
 };
+
+uniform uint u_drawId;

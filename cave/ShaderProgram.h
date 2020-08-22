@@ -14,6 +14,7 @@ public:
 	void setMMatrix(const glm::mat4& matrix) const;
 	void setVMatrix(const glm::mat4& matrix) const;
 	void setLMatrix(const glm::mat4& matrix) const;
+	void setDrawId(uint32_t drawData) const;
 	void setTexture(int texture) const;
 	void setTextureShadow(int texture) const;
 	void setLightPos(const glm::vec3& pos) const;
@@ -41,5 +42,6 @@ private:
 	GLuint m_TextureShadowLoc;
 	GLuint m_vLightPos0Loc;
 	GLuint m_vlMatrix;
+	GLuint _drawIdLoc = -1;
 };
 
