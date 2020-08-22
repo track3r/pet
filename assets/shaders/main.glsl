@@ -1,4 +1,7 @@
 #pragma version 420
+//how to fetch model matrix
+//#pragma permute P_DRAWID,P_UMODEL, P_DIVISOR
+#define P_DRAWID
 #include "include/common.glsl"
 #include "include/uniforms.glsl"
 
@@ -7,16 +10,23 @@ varying vec3 f_normal;
 varying vec3 f_eyePos;
 varying vec3 f_worldPos;
 
+mat4 getInstanceMatrix()
+{
+#if defined (P_DRAWID)
+    return instance[u_drawId].transform;
+#elif defined (P_UMODEL)
+    return modelMatrix;
+#endif
+}
+
 #pragma vertex
 attribute vec3 v_position;
 attribute vec2 v_uv;
 attribute vec3 v_normal;
-         
+
 void main()
 {
-    //instance[u_drawId].transform 
-    //modelMatrix
-    mat4 instanceMatrix = instance[u_drawId].transform;
+    mat4 instanceMatrix = getInstanceMatrix();
     gl_Position = viewMatrices.projection * viewMatrices.view * instanceMatrix * vec4(v_position, 1.0);        
     f_texcoord0 = v_uv;
     f_worldPos = (instanceMatrix * vec4(v_position, 1.0)).xyz;
@@ -114,7 +124,7 @@ vec3 calculateLight(int lightId, mat4 eyeMatrix, vec3 normal)
 void main()
 {
     gl_FragColor.a = 1.0;
-    mat4 instanceMatrix = instance[u_drawId].transform;
+    mat4 instanceMatrix = getInstanceMatrix();
     mat4 eyeMatrix = viewMatrices.view * instanceMatrix;
     vec3 normal = normalize(f_normal);
 

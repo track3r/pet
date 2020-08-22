@@ -27,6 +27,7 @@
 - [x] sample shadow atlas
 - [x] multi lights - move light vectors out of  varyings, etc
 - [x] render pass class (sorta)
+- [ ] permutation flags
 - [ ] fix cursor capture
 - [ ] better render state
 - [ ] cleanup + premake?
