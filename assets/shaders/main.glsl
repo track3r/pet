@@ -114,7 +114,8 @@ vec3 calculateLight(int lightId, mat4 eyeMatrix, vec3 normal)
 void main()
 {
     gl_FragColor.a = 1.0;
-    mat4 eyeMatrix = viewMatrices.view * modelMatrix;
+    mat4 instanceMatrix = instance[u_drawId].transform;
+    mat4 eyeMatrix = viewMatrices.view * instanceMatrix;
     vec3 normal = normalize(f_normal);
 
     //shadow = 1;
