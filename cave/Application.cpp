@@ -90,18 +90,29 @@ void CreateTestComponents(ecs3::World* _world)
 	_world->createEntity(playerConf);
 }
 
-void CreateLight(ecs3::World* _world, ecs3::Id lightId)
+
+
+void CreateLight(ecs3::World* _world, ecs3::Id lightId, int startPoint = 0)
 {
 	ecs3::EntitityPrefab conf;
 	conf.addComponent(ecs3::TransformComponent(glm::vec3(0.f, 20.f, 0.f)));
 	conf.addComponent(LightComponent(lightId));
 
 	AnimationDescription descr;
-	descr.addPoint(glm::vec3(-80, 20, 0));
-	descr.addPoint(glm::vec3(80, 20, 0));
-	descr.addPoint(glm::vec3(80, 50, 0));
-	descr.addPoint(glm::vec3(-80, 50, 0));
-	descr.addPoint(glm::vec3(-80, 20, 0));
+	const glm::vec3 points[] =
+	{
+		glm::vec3(-90, 60, 50),
+		glm::vec3(80, 60, 50),
+		glm::vec3(80, 60, -50),
+		glm::vec3(-90, 60, -50),
+		//glm::vec3(-90, 60, 50),
+	};
+
+	const int numPoints = sizeof(points) / sizeof(glm::vec3);
+	for (int i = 0; i < numPoints + 1; i++)
+	{
+		descr.addPoint(points[(i + startPoint) % numPoints]);
+	}	
 	descr._speed = 30;
 
 	TransformAnimationComponent anim(descr);
@@ -186,7 +197,7 @@ void LoadTestScene(ecs3::World* _world)
 	MeshComponent meshComp;
 	ecs3::EntitityPrefab meshConf;
 
-	//meshConf.addComponent(ecs3::TransformComponent(glm::vec3(200.f * randf(), 0.f + , 0.f)));
+	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f)));
 	meshConf.addComponent(meshComp);
 	LOG("Uploading meshes...");
 	VertexBuffer* worldVb = new VertexBuffer((uint32_t)reader.faces.size() * 3, c_defaultVf);
@@ -198,8 +209,8 @@ void LoadTestScene(ecs3::World* _world)
 	world->setupEmptyVbo(false);
 	for (const ObjReader::group_t& group : reader.groups)
 	{
-		//meshConf.addComponent(ecs3::TransformComponent(glm::vec3(20.f * randf(), 20.f * randf(), 20.f * randf())));
-		meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.0f, -20.f, 0.0f)));
+		//meshConf.addComponent(ecs3::TransformComponent(glm::vec3(10.f * randfun(), 0.f * randfun(), 10.f * randfun())));
+		//meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.0f, -20.f, 0.0f)));
 #if 0
 		static const char* meshFilter[] = { "sponza_117","sponza_366", "sponza_367", "sponza_12", "sponza_16", "sponza_370", "sponza_371" };
 		bool skip = true;
@@ -329,7 +340,10 @@ bool Application::init(SDL_Window* window)
 
 	CreateTestComponents(_world);
 	
-	CreateLight(_world, renderWorld->createLight(RenderLight()));
+	//CreateLight(_world, renderWorld->createLight(RenderLight()), 0);
+	//CreateLight(_world, renderWorld->createLight(RenderLight()), 1);
+	//CreateLight(_world, renderWorld->createLight(RenderLight()), 2);
+	//CreateLight(_world, renderWorld->createLight(RenderLight()), 3);
 	CreateLight2(_world, renderWorld->createLight(RenderLight()));	
 	LoadTestScene(_world);
 	return true;
