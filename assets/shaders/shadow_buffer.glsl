@@ -5,7 +5,10 @@ attribute vec3 v_position;
 attribute mat4 v_matrix;
 void main()
 {
-   gl_Position = viewMatrices.projection * viewMatrices.view * v_matrix * vec4(v_position, 1.0);       
+   gl_Position = viewMatrices.projection * viewMatrices.view * v_matrix * vec4(v_position, 1.0);
+   //gl_Position = viewMatrices.projection * viewMatrices.view * modelMatrix * vec4(v_position, 1.0);
+   //gl_Position = viewMatrices.projection * viewMatrices.view * instance[u_drawId].transform * vec4(v_position, 1.0);
+   
 }
 
 #pragma fragment

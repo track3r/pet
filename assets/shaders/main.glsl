@@ -14,10 +14,13 @@ attribute vec3 v_normal;
          
 void main()
 {
-    gl_Position = viewMatrices.projection * viewMatrices.view * modelMatrix * vec4(v_position, 1.0);        
+    //instance[u_drawId].transform 
+    //modelMatrix
+    mat4 instanceMatrix = instance[u_drawId].transform;
+    gl_Position = viewMatrices.projection * viewMatrices.view * instanceMatrix * vec4(v_position, 1.0);        
     f_texcoord0 = v_uv;
-    f_worldPos = (modelMatrix * vec4(v_position, 1.0)).xyz;
-    mat4 eyeMatrix = viewMatrices.view * modelMatrix;
+    f_worldPos = (instanceMatrix * vec4(v_position, 1.0)).xyz;
+    mat4 eyeMatrix = viewMatrices.view * instanceMatrix;
     f_eyePos = (eyeMatrix * vec4(v_position, 1.0)).xyz;
     f_normal = vec4(eyeMatrix * vec4(v_normal, 0.0)).xyz;
 }
