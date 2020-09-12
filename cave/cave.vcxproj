@@ -115,6 +115,7 @@
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="RenderShadow.cpp" />
     <ClCompile Include="Spline.cpp" />
+    <ClCompile Include="Sponza.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UniformBuffer.cpp" />
     <ClCompile Include="UserInput.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="RenderShadow.h" />
     <ClInclude Include="Spline.h" />
+    <ClInclude Include="Sponza.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UniformBuffer.h" />
     <ClInclude Include="UserInput.h" />

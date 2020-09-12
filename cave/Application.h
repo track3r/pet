@@ -24,8 +24,9 @@ namespace ecs3
 class Application
 {
 public:
-
+	virtual ~Application() {}
 	bool init(SDL_Window* window);
+	virtual void subInit() {}
 	void render();
 	void update(float dt);
 	void finish();
@@ -50,7 +51,8 @@ private:
 	int m_lastY = 0;
 	SDL_Window *m_win;
 	UserInput m_input;
-  
+
+protected:
     Renderer _renderer;
 	ecs3::World* _world;
 };

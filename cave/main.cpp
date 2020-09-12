@@ -12,6 +12,7 @@
 
 
 #include "Application.h"
+#include "Sponza.h"
 #include "Log.h"
 
 #if _DEBUG
@@ -77,7 +78,9 @@ int main(int argc, char *argv[])
 
 	bool quit = false;
 
-	Application app;
+	SponzaApplication* spozaApp = new SponzaApplication();
+	Application* application = spozaApp;
+	Application& app = *application;
 	if (!app.init(mainwindow))
 	{
 		return 1;

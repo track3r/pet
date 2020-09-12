@@ -60,6 +60,7 @@
     <ClCompile Include="UniformBuffer.cpp">
       <Filter>render</Filter>
     </ClCompile>
+    <ClCompile Include="Sponza.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -128,6 +129,7 @@
     <ClInclude Include="UniformBuffer.h">
       <Filter>render</Filter>
     </ClInclude>
+    <ClInclude Include="Sponza.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="primitive_restart.fs.glsl" />
