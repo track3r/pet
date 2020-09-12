@@ -82,6 +82,7 @@ public:
 
     void renderShadowMaps();
     void render(const ViewMatrices& viewParms);
+    void updateInstanceData();
     void renderOpaque(ShaderProgram* prog = nullptr, uint8_t flags = 0);
     void renderTransparent(ShaderProgram* prog = nullptr, uint8_t flags = 0);
 

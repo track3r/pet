@@ -142,6 +142,19 @@ void RenderWorld::render(const ViewMatrices& viewParms)
     _lightUniform.bind(3);
     //_instanceUniform.bind(4);
 
+    updateInstanceData();
+
+    renderShadowMaps();
+    _viewUniform.bindForUpdate();
+    _viewUniform.updateFull(viewParms);
+    
+    renderOpaque();
+    renderTransparent();
+    glPopDebugGroup();
+}
+
+void RenderWorld::updateInstanceData()
+{
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* transform = _transforms.getPtr(0);
 
@@ -152,14 +165,6 @@ void RenderWorld::render(const ViewMatrices& viewParms)
     glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(InstanceData) * _meshIndex.size(), _instanceUniformData.instance, GL_STREAM_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    renderShadowMaps();
-    _viewUniform.bindForUpdate();
-    _viewUniform.updateFull(viewParms);
-    
-    renderOpaque();
-    renderTransparent();
-    glPopDebugGroup();
 }
 
 void RenderWorld::updateUniforms()
@@ -188,7 +193,6 @@ void RenderWorld::setupMultidraw(bool skipTransparent)
             continue;
         }
 
-        //_instanceUniformData.instance[i].tranform = glm::mat4(transform[i]);
         _indirectBufferData.emplace_back();
         DrawIndirectCommand& cmd = _indirectBufferData.back();
         cmd.baseInstance = curDrawId;
@@ -197,15 +201,12 @@ void RenderWorld::setupMultidraw(bool skipTransparent)
         cmd.instanceCount = 1;
         cmd.vertexCount = elem[i]._count;
     }
-    //_instanceUniform.bindForUpdate();
-    //_instanceUniform.updateFull(_instanceUniformData);
 
     glBindBuffer(GL_DRAW_INDIRECT_BUFFER, _indirectBuffer);
     glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawIndirectCommand) * _indirectBufferData.size(), &_indirectBufferData[0], GL_STREAM_DRAW);
 
     glBindVertexArray(elem[0]._vao);
     glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(InstanceData) * _meshIndex.size(), _instanceUniformData.instance, GL_STREAM_DRAW);
     GLsizei vec4Size = (GLsizei)sizeof(glm::vec4);
 
     glEnableVertexAttribArray((int)VertexAttributeIndex::Matrix);
@@ -270,14 +271,6 @@ void RenderWorld::renderShadowMaps()
     RenderLight* lights = _lights.getPtr(0);
     //ShadowRt& shadowRt = renderer->_shadow;
     _shadowManager.beginShadowPasses();
-    
-    
-#if ATLAS_TEST
-
-    _shadowManager._atlas.alloc();
-    _shadowManager._atlas.alloc();
-    _shadowManager._atlas.alloc();
-#endif
     int numLights = 0;
     if (RenderConstrains::multidraw)
     {
@@ -291,7 +284,6 @@ void RenderWorld::renderShadowMaps()
         int sides = 6;
         for (int side = 0; side < sides; side++)
         {
-            
             uint16_t atlasSlot = _shadowManager.beginShadowVew();
             if (atlasSlot == -1)
             {
@@ -361,7 +353,6 @@ void RenderWorld::renderOpaque(ShaderProgram* prog, uint8_t flags)
     }
 
     RenderElement* elem = _meshes.getPtr(0);
-    glm::mat4* transform = _transforms.getPtr(0);
     _modelUniform.bindForUpdate();
     CheckGlError();
     prog->bind();
