@@ -84,8 +84,9 @@ vec3 calculateLight(int lightId, mat4 eyeMatrix, vec3 normal)
     {
             
         // + bias gives peter panning in simple case, - bias is a mess in complex scene
-        float bias = 0.0001 * ndl;                
-        
+        //float bias = 0.0001 * ndl;                
+        float bias = 0.005f*tan(acos(ndl));
+        bias = clamp(bias, 0.0f,0.02f);
         vec2 offset = vec2(1.0/512.0);
         
         #if 0//manual
