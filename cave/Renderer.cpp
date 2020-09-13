@@ -144,14 +144,12 @@ void Renderer::beginRender()
     //mat = glm::translate(mat, glm::vec3(0, 0, 2));
     //renderCube(mat);
     m_debugDraw.reset();
-    //m_debugDraw.m_program.bind();
     _context.bindProgram(m_debugDraw.m_program);
     m_debugDraw.m_program.setPMatrix(camera().getProjection());
     m_debugDraw.m_program.setVMatrix(camera().getView());
     m_debugDraw.m_program.setMMatrix(glm::mat4( 1.0f ));
     m_debugDraw.drawGrid();
 
-    //m_program->bind();
     _context.bindProgram(*m_program);
     m_program->setLightPos(_lightPos);    
     
@@ -172,12 +170,10 @@ void Renderer::renderElement_dep(const ShaderProgram& program, const RenderEleme
     if (element._count == 0)
         return;
 
-    //program.bind();
     _context.bindProgram(program);
     program.setMMatrix(transform);
     if (element.textures[0] == nullptr)
     {
-        //glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
         _context.bindTexture(m_defaultTexture, 0);
     }
 
@@ -189,11 +185,9 @@ void Renderer::renderElement(const ShaderProgram& program, const RenderElement& 
     if (element._count == 0)
         return;
 
-    //program.bind();
     _context.bindProgram(program);
     if (element.textures[0] == nullptr)
     {
-        //glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
         _context.bindTexture(m_defaultTexture, 0);
     }
 

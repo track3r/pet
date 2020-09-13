@@ -34,8 +34,6 @@ RenderElement::~RenderElement()
 RenderElement::RenderElement(const RenderElement& other, int offset, int count)
 {
 	_reference = true;
-	//m_objects[0] = other.m_objects[0];
-	//m_objects[1] = other.m_objects[1];
 	_vertexBuffer.init(other._vertexBuffer, 0, 0);
 	_indexBuffer.init(other._indexBuffer, 0, 0);
 	_offset = offset;
@@ -56,12 +54,7 @@ void RenderElement::setupEmptyVbo(RenderContext* context, bool isStream)
 {
 	_isStream = isStream;
 	GLenum type = isStream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
-	//glBindVertexArray(_vao);
 	RenderContext::oglContext->bindVao(_vao);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_objects[0]);
-	//CheckGlError();
-	//glBufferData(GL_ARRAY_BUFFER, m_vertices->memorySize(), nullptr, type);
-	//CheckGlError();
 	_vertexBuffer.init(GpuBuffer::Vertex, m_vertices->memorySize());
 
 	const VertexFormat& format = m_vertices->format;
@@ -76,39 +69,15 @@ void RenderElement::setupEmptyVbo(RenderContext* context, bool isStream)
 		CheckGlError();
 	}
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objects[1]);
-	//CheckGlError();
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices->memorySize(), nullptr, type);
-	//CheckGlError();
 	_indexBuffer.init(GpuBuffer::Index, m_indices->memorySize());
-
-	//glBindVertexArray(0);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	//CheckGlError();
 }
 
 void RenderElement::updateVbo(RenderContext* context)
 {
-	//assert(_isStream);
 	GLenum type = _isStream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
-	//glBindVertexArray(_vao);
-	//glBindVertexArray(0); //ok too
 	RenderContext::oglContext->bindVao(_vao);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_objects[0]);
-	//CheckGlError();
-	//glBufferData(GL_ARRAY_BUFFER, m_vertices->memorySize(), m_vertices->pointer(), type);
-	//CheckGlError();
 	_vertexBuffer.update(0, m_vertices->memorySize(), m_vertices->pointer());
-
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objects[1]);
-	//CheckGlError();
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices->memorySize(), m_indices->pointer(), type);
-	//CheckGlError();
 	_indexBuffer.update(0, m_indices->memorySize(), m_indices->pointer());
-
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void RenderElement::render(RenderContext* context, uint8_t flags) const
@@ -119,15 +88,11 @@ void RenderElement::render(RenderContext* context, uint8_t flags) const
 	{
 		if (textures[0] != nullptr)
 		{
-			//glBindTexture(GL_TEXTURE_2D, textures[0]->getTexture());
 			context->bindTexture(*textures[0], 0);
 		}		
 	}
 
     const int count = _count != -1? _count: (int)m_indices->elements();
 	glDrawElements(m_mode, count, m_indices->type(),(const void* )(_offset * sizeof(GLuint)));
-	//glDrawArrays(m_mode, 0, count);
 	CheckGlError();
-
-	//glBindVertexArray(0);
 }

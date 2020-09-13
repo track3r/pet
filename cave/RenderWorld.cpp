@@ -118,15 +118,7 @@ bool RenderWorld::init()
         return false;
     }
 
-    //glGenBuffers(1, &_indirectBuffer);
-    //glBindBuffer(GL_DRAW_INDIRECT_BUFFER, _indirectBuffer);
-    //glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawIndirectCommand) * RenderConstrains::maxInstancesPerDraw, nullptr, GL_STREAM_DRAW);
-    //glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
     _indirectBuffer.init(GpuBuffer::Indirect, sizeof(DrawIndirectCommand) * RenderConstrains::maxInstancesPerDraw);
-
-    //glGenBuffers(1, &_instanceBuffer);
-    //glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(InstanceData) * RenderConstrains::maxInstancesPerDraw, nullptr, GL_STREAM_DRAW);
     _instanceBuffer.init(GpuBuffer::Vertex, sizeof(InstanceData) * RenderConstrains::maxInstancesPerDraw);
 
     return true;
@@ -143,19 +135,13 @@ void RenderWorld::render(const ViewMatrices& viewParams)
     Renderer* renderer = Application::getRenderer();
     RenderContext* context = &renderer->getRenderContext();
 
-    //_viewUniform.bind(1);
     context->bindUniform(_viewUniform, 1);
-    //_modelUniform.bind(2);
     context->bindUniform(_modelUniform, 2);
-    //_lightUniform.bind(3);
     context->bindUniform(_lightUniform, 3);
-    //_instanceUniform.bind(4);
 
     updateInstanceData();
 
     renderShadowMaps();
-    //_viewUniform.bindForUpdate();
-    //_viewUniform.updateFull(viewParms);
     _viewUniform.updateFull(viewParams);
 
     renderOpaque(context);
@@ -172,9 +158,6 @@ void RenderWorld::updateInstanceData()
     {
         _instanceUniformData.instance[i].tranform = glm::mat4(transform[i]);
     }
-    //glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(InstanceData) * _meshIndex.size(), _instanceUniformData.instance, GL_STREAM_DRAW);
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
     _instanceBuffer.update(0, (uint32_t) (sizeof(InstanceData) * _meshIndex.size()), _instanceUniformData.instance);
 }
 
@@ -213,14 +196,10 @@ void RenderWorld::setupMultidraw(RenderContext* context, bool skipTransparent)
         cmd.vertexCount = elem[i]._count;
     }
 
-    //glBindBuffer(GL_DRAW_INDIRECT_BUFFER, _indirectBuffer);
-    //glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawIndirectCommand) * _indirectBufferData.size(), &_indirectBufferData[0], GL_STREAM_DRAW);
     context->bindBuffer(_indirectBuffer, GpuBuffer::Indirect);
     _indirectBuffer.update(0, (uint32_t) (sizeof(DrawIndirectCommand) * _indirectBufferData.size()), &_indirectBufferData[0]);
 
-    //glBindVertexArray(elem[0]._vao);
     context->bindVao(elem[0]._vao);
-    //glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
     context->bindBuffer(_instanceBuffer, GpuBuffer::Vertex);
     GLsizei vec4Size = (GLsizei)sizeof(glm::vec4);
 
@@ -254,8 +233,6 @@ void RenderWorld::teardownMultidraw(RenderContext* context)
     glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix + 1);
     glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix + 2);
     glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix + 4);
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
-    //glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 }
 
 static const glm::vec3 boxForward[] = 
@@ -320,14 +297,10 @@ void RenderWorld::renderShadowMaps()
             params.atlas = _shadowManager.getAtlasCoords(atlasSlot);
             renderer->getDebugDraw().renderFrustum(params.matrix);
 
-            //_viewUniform.bindForUpdate();
             _viewUniform.updateFull(viewParms);
-            
-            //_viewUniform.unbindForUpdate();
 
-            //
-            //_shadowManager._renderPass._program->bind();
             context->bindProgram(*_shadowManager._renderPass._program);
+
             if (RenderConstrains::multidraw)
             {
                 issueMultidraw(context, 0, (int)_indirectBufferData.size());
@@ -348,19 +321,13 @@ void RenderWorld::renderShadowMaps()
     
     _shadowManager._renderPass.end();
     _shadowManager._renderPass.bindTexture();
-    //_lightUniform.bindForUpdate();
     _lightUniform.updateFull(lightUniform);
-
-    //_lightUniform.unbindForUpdate();
     glPopDebugGroup();
 }
 
 void RenderWorld::renderOpaque(RenderContext* context, ShaderProgram* prog, uint8_t flags)
 {
-    //return;
-    
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 3, -1, "RenderWorld::renderOpaque");
-    //glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
     context->bindBuffer(_instanceBuffer, GpuBuffer::Vertex);
     if (_meshIndex.size() == 0)
     {
@@ -374,11 +341,7 @@ void RenderWorld::renderOpaque(RenderContext* context, ShaderProgram* prog, uint
     }
 
     RenderElement* elem = _meshes.getPtr(0);
-    //_modelUniform.bindForUpdate();
-    //CheckGlError();
-    //prog->bind();
     context->bindProgram(*prog);
-    //glBindBufferBase(GL_UNIFORM_BUFFER, 4, _instanceBuffer);
     context->bindUniform(_instanceBuffer, 4);
     
     for (int i = 0; i < _meshIndex.size(); i++)
@@ -388,12 +351,10 @@ void RenderWorld::renderOpaque(RenderContext* context, ShaderProgram* prog, uint
             continue;
         }
 
-        //_modelUniform.updateFull(transform[i]);
         prog->setDrawId(i);
         elem[i].render(context, flags);
         
     }
-    //_modelUniform.unbindForUpdate();
     glPopDebugGroup();
 }
 
@@ -413,8 +374,6 @@ void RenderWorld::renderTransparent(RenderContext* context, ShaderProgram* prog,
     {
         prog = renderer->getDefaultProgram();
     }
-    //_modelUniform.bindForUpdate();
-    //prog->bind();
     context->bindProgram(*prog);
     for (int i = 0; i < _meshIndex.size(); i++)
     {
@@ -425,6 +384,5 @@ void RenderWorld::renderTransparent(RenderContext* context, ShaderProgram* prog,
         _modelUniform.updateFull(transform[i]);
         elem[i].render(context, flags);
     }
-    //_modelUniform.unbindForUpdate();
     glPopDebugGroup();
 }
