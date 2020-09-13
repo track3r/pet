@@ -1,14 +1,15 @@
 #include "pch.h"
 #include "RenderElement.h"
+#include "Renderer.h"
 
 const void* Buffer::pointer()
 {
 	return &m_buffer[0];
 }
 
-size_t Buffer::memorySize()
+uint32_t Buffer::memorySize()
 {
-	return m_buffer.size();
+	return (uint32_t)m_buffer.size();
 }
 
 uint32_t* IndexBuffer::intPointer()
@@ -19,7 +20,6 @@ uint32_t* IndexBuffer::intPointer()
 RenderElement::RenderElement(GLenum primitive)
 	:m_mode(primitive)
 {
-	glGenBuffers(2, m_objects);
 	glGenVertexArrays(1, &_vao);
 	textures[0] = nullptr;
 	textures[1] = nullptr;
@@ -34,8 +34,10 @@ RenderElement::~RenderElement()
 RenderElement::RenderElement(const RenderElement& other, int offset, int count)
 {
 	_reference = true;
-	m_objects[0] = other.m_objects[0];
-	m_objects[1] = other.m_objects[1];
+	//m_objects[0] = other.m_objects[0];
+	//m_objects[1] = other.m_objects[1];
+	_vertexBuffer.init(other._vertexBuffer, 0, 0);
+	_indexBuffer.init(other._indexBuffer, 0, 0);
 	_offset = offset;
 	_count = count;
 	m_vertices = other.m_vertices;
@@ -44,21 +46,23 @@ RenderElement::RenderElement(const RenderElement& other, int offset, int count)
 	m_mode = other.m_mode;
 }
 
-void RenderElement::setupVbo(bool isStream)
+void RenderElement::setupVbo(RenderContext* context, bool isStream)
 {
-	setupEmptyVbo(isStream);
-	updateVbo();
+	setupEmptyVbo(context, isStream);
+	updateVbo(context);
 }
 
-void RenderElement::setupEmptyVbo(bool isStream)
+void RenderElement::setupEmptyVbo(RenderContext* context, bool isStream)
 {
 	_isStream = isStream;
 	GLenum type = isStream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
-	glBindVertexArray(_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, m_objects[0]);
-	CheckGlError();
-	glBufferData(GL_ARRAY_BUFFER, m_vertices->memorySize(), nullptr, type);
-	CheckGlError();
+	//glBindVertexArray(_vao);
+	RenderContext::oglContext->bindVao(_vao);
+	//glBindBuffer(GL_ARRAY_BUFFER, m_objects[0]);
+	//CheckGlError();
+	//glBufferData(GL_ARRAY_BUFFER, m_vertices->memorySize(), nullptr, type);
+	//CheckGlError();
+	_vertexBuffer.init(GpuBuffer::Vertex, m_vertices->memorySize());
 
 	const VertexFormat& format = m_vertices->format;
 	for (const auto& atr : c_attribs)
@@ -72,46 +76,51 @@ void RenderElement::setupEmptyVbo(bool isStream)
 		CheckGlError();
 	}
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objects[1]);
-	CheckGlError();
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices->memorySize(), nullptr, type);
-	CheckGlError();
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objects[1]);
+	//CheckGlError();
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices->memorySize(), nullptr, type);
+	//CheckGlError();
+	_indexBuffer.init(GpuBuffer::Index, m_indices->memorySize());
 
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	CheckGlError();
-	
+	//glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	//CheckGlError();
 }
 
-void RenderElement::updateVbo()
+void RenderElement::updateVbo(RenderContext* context)
 {
 	//assert(_isStream);
 	GLenum type = _isStream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
-	glBindVertexArray(_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, m_objects[0]);
+	//glBindVertexArray(_vao);
+	//glBindVertexArray(0); //ok too
+	RenderContext::oglContext->bindVao(_vao);
+	//glBindBuffer(GL_ARRAY_BUFFER, m_objects[0]);
 	//CheckGlError();
-	glBufferData(GL_ARRAY_BUFFER, m_vertices->memorySize(), m_vertices->pointer(), type);
-	CheckGlError();
+	//glBufferData(GL_ARRAY_BUFFER, m_vertices->memorySize(), m_vertices->pointer(), type);
+	//CheckGlError();
+	_vertexBuffer.update(0, m_vertices->memorySize(), m_vertices->pointer());
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objects[1]);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objects[1]);
 	//CheckGlError();
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices->memorySize(), m_indices->pointer(), type);
-	CheckGlError();
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices->memorySize(), m_indices->pointer(), type);
+	//CheckGlError();
+	_indexBuffer.update(0, m_indices->memorySize(), m_indices->pointer());
 
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void RenderElement::render(uint8_t flags) const
+void RenderElement::render(RenderContext* context, uint8_t flags) const
 {
-	glBindVertexArray(_vao);
+	context->bindVao(_vao);
 
 	if ( (flags & NoTextures) == 0 )
 	{
 		if (textures[0] != nullptr)
 		{
-			glBindTexture(GL_TEXTURE_2D, textures[0]->getTexture());
+			//glBindTexture(GL_TEXTURE_2D, textures[0]->getTexture());
+			context->bindTexture(*textures[0], 0);
 		}		
 	}
 

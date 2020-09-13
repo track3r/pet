@@ -5,14 +5,18 @@
 #include <glm/glm.hpp>
 #include "GlHeaders.h"
 #include <vector>
+#include "GpuBuffer.h"
 
 class Texture;
+class RenderContext;
+
+
 
 class Buffer
 {
 public:
 	const void* pointer();
-	size_t memorySize();
+	uint32_t memorySize();
 
 	uint32_t elements()
 	{
@@ -89,10 +93,10 @@ public:
 	RenderElement(const RenderElement& other, int offset, int count);
 	~RenderElement();
 
-	void setupVbo(bool isStream);
-	void setupEmptyVbo(bool isStream);
-	void updateVbo();
-	void render(uint8_t flags = None) const;
+	void setupVbo(RenderContext* context, bool isStream);
+	void setupEmptyVbo(RenderContext* context, bool isStream);
+	void updateVbo(RenderContext* context);
+	void render(RenderContext* context, uint8_t flags = None) const;
 
 	IndexBuffer*	m_indices = nullptr;
 	VertexBuffer*	m_vertices = nullptr;
@@ -104,7 +108,9 @@ public:
     int				_count = -1;
 	
 
-	GLuint			m_objects[2];
+	//GLuint			m_objects[2];
+	GpuBuffer		_vertexBuffer;
+	GpuBuffer		_indexBuffer;
 	GLuint			_vao = 0;
 	bool			_isStream = false;
 	GLenum			m_mode;

@@ -145,8 +145,6 @@ void Texture::init(const char* filename)
 		//break;
 	}
 
-	
-
 	//GL_TEXTURE_MAX_LEVEL 
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 	//CheckGlError();
@@ -154,6 +152,11 @@ void Texture::init(const char* filename)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	CheckGlError();
 	stbi_image_free(data);
+}
+
+void Texture::init(const textureInfo_t& info)
+{
+
 }
 
 void Texture::init(const textureData_t& data)
@@ -199,11 +202,6 @@ void Texture::init(const textureData_t& data)
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	CheckGlError();
-}
-
-GLuint Texture::getTexture()
-{
-	return m_texture;
 }
 
 const glm::vec2 Texture::size()

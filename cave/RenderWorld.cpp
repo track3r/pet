@@ -118,18 +118,21 @@ bool RenderWorld::init()
         return false;
     }
 
-    glGenBuffers(1, &_indirectBuffer);
-    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, _indirectBuffer);
-    glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawIndirectCommand) * RenderConstrains::maxInstancesPerDraw, nullptr, GL_STREAM_DRAW);
-    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+    //glGenBuffers(1, &_indirectBuffer);
+    //glBindBuffer(GL_DRAW_INDIRECT_BUFFER, _indirectBuffer);
+    //glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawIndirectCommand) * RenderConstrains::maxInstancesPerDraw, nullptr, GL_STREAM_DRAW);
+    //glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+    _indirectBuffer.init(GpuBuffer::Indirect, sizeof(DrawIndirectCommand) * RenderConstrains::maxInstancesPerDraw);
 
-    glGenBuffers(1, &_instanceBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(InstanceData) * RenderConstrains::maxInstancesPerDraw, nullptr, GL_STREAM_DRAW);
+    //glGenBuffers(1, &_instanceBuffer);
+    //glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(InstanceData) * RenderConstrains::maxInstancesPerDraw, nullptr, GL_STREAM_DRAW);
+    _instanceBuffer.init(GpuBuffer::Vertex, sizeof(InstanceData) * RenderConstrains::maxInstancesPerDraw);
+
     return true;
 }
 
-void RenderWorld::render(const ViewMatrices& viewParms)
+void RenderWorld::render(const ViewMatrices& viewParams)
 {
     if (_meshIndex.size() == 0)
     {
@@ -137,19 +140,26 @@ void RenderWorld::render(const ViewMatrices& viewParms)
     }
 
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, -1, "RenderWorld::render");
-    _viewUniform.bind(1);
-    _modelUniform.bind(2);
-    _lightUniform.bind(3);
+    Renderer* renderer = Application::getRenderer();
+    RenderContext* context = &renderer->getRenderContext();
+
+    //_viewUniform.bind(1);
+    context->bindUniform(_viewUniform, 1);
+    //_modelUniform.bind(2);
+    context->bindUniform(_modelUniform, 2);
+    //_lightUniform.bind(3);
+    context->bindUniform(_lightUniform, 3);
     //_instanceUniform.bind(4);
 
     updateInstanceData();
 
     renderShadowMaps();
-    _viewUniform.bindForUpdate();
-    _viewUniform.updateFull(viewParms);
-    
-    renderOpaque();
-    renderTransparent();
+    //_viewUniform.bindForUpdate();
+    //_viewUniform.updateFull(viewParms);
+    _viewUniform.updateFull(viewParams);
+
+    renderOpaque(context);
+    renderTransparent(context);
     glPopDebugGroup();
 }
 
@@ -162,9 +172,10 @@ void RenderWorld::updateInstanceData()
     {
         _instanceUniformData.instance[i].tranform = glm::mat4(transform[i]);
     }
-    glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(InstanceData) * _meshIndex.size(), _instanceUniformData.instance, GL_STREAM_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(InstanceData) * _meshIndex.size(), _instanceUniformData.instance, GL_STREAM_DRAW);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    _instanceBuffer.update(0, (uint32_t) (sizeof(InstanceData) * _meshIndex.size()), _instanceUniformData.instance);
 }
 
 void RenderWorld::updateUniforms()
@@ -172,7 +183,7 @@ void RenderWorld::updateUniforms()
 
 }
 
-void RenderWorld::setupMultidraw(bool skipTransparent)
+void RenderWorld::setupMultidraw(RenderContext* context, bool skipTransparent)
 {
     _indirectBufferData.clear();
     _indirectBufferData.reserve(_meshIndex.size());
@@ -202,11 +213,15 @@ void RenderWorld::setupMultidraw(bool skipTransparent)
         cmd.vertexCount = elem[i]._count;
     }
 
-    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, _indirectBuffer);
-    glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawIndirectCommand) * _indirectBufferData.size(), &_indirectBufferData[0], GL_STREAM_DRAW);
+    //glBindBuffer(GL_DRAW_INDIRECT_BUFFER, _indirectBuffer);
+    //glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawIndirectCommand) * _indirectBufferData.size(), &_indirectBufferData[0], GL_STREAM_DRAW);
+    context->bindBuffer(_indirectBuffer, GpuBuffer::Indirect);
+    _indirectBuffer.update(0, (uint32_t) (sizeof(DrawIndirectCommand) * _indirectBufferData.size()), &_indirectBufferData[0]);
 
-    glBindVertexArray(elem[0]._vao);
-    glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
+    //glBindVertexArray(elem[0]._vao);
+    context->bindVao(elem[0]._vao);
+    //glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
+    context->bindBuffer(_instanceBuffer, GpuBuffer::Vertex);
     GLsizei vec4Size = (GLsizei)sizeof(glm::vec4);
 
     glEnableVertexAttribArray((int)VertexAttributeIndex::Matrix);
@@ -227,20 +242,20 @@ void RenderWorld::setupMultidraw(bool skipTransparent)
     glVertexAttribDivisor((int)VertexAttributeIndex::Matrix + 3, 1);
 }
 
-void RenderWorld::issueMultidraw(int offset, int size)
+void RenderWorld::issueMultidraw(RenderContext* context, int offset, int size)
 {
     GLsizei s = (GLsizei)_indirectBufferData.size();
     glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, s, 0);
 }
 
-void RenderWorld::teardownMultidraw()
+void RenderWorld::teardownMultidraw(RenderContext* context)
 {
     glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix);
     glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix + 1);
     glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix + 2);
     glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix + 4);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 }
 
 static const glm::vec3 boxForward[] = 
@@ -267,6 +282,7 @@ void RenderWorld::renderShadowMaps()
 {
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 2, -1, "RenderWorld::renderShadowMaps");
     Renderer* renderer = Application::getRenderer();
+    RenderContext* context = &renderer->getRenderContext();
     LightUniform lightUniform = {};
     RenderLight* lights = _lights.getPtr(0);
     //ShadowRt& shadowRt = renderer->_shadow;
@@ -274,7 +290,7 @@ void RenderWorld::renderShadowMaps()
     int numLights = 0;
     if (RenderConstrains::multidraw)
     {
-        setupMultidraw(true);
+        setupMultidraw(context, true);
     }
     
     for (int i = 0; i < _lightIndex.size(); i++)
@@ -304,20 +320,21 @@ void RenderWorld::renderShadowMaps()
             params.atlas = _shadowManager.getAtlasCoords(atlasSlot);
             renderer->getDebugDraw().renderFrustum(params.matrix);
 
-            _viewUniform.bindForUpdate();
+            //_viewUniform.bindForUpdate();
             _viewUniform.updateFull(viewParms);
             
             //_viewUniform.unbindForUpdate();
 
             //
-            _shadowManager._renderPass._program->bind();
+            //_shadowManager._renderPass._program->bind();
+            context->bindProgram(*_shadowManager._renderPass._program);
             if (RenderConstrains::multidraw)
             {
-                issueMultidraw(0, (int)_indirectBufferData.size());
+                issueMultidraw(context, 0, (int)_indirectBufferData.size());
             }
             else
             {
-                renderOpaque(_shadowManager._renderPass._program, RenderElement::NoTextures);
+                renderOpaque(context, _shadowManager._renderPass._program, RenderElement::NoTextures);
             }       
             
             numLights++;
@@ -326,37 +343,44 @@ void RenderWorld::renderShadowMaps()
     lightUniform.numLights = numLights;
     if (RenderConstrains::multidraw)
     {
-        teardownMultidraw();
+        teardownMultidraw(context);
     }
     
     _shadowManager._renderPass.end();
     _shadowManager._renderPass.bindTexture();
-    _lightUniform.bindForUpdate();
+    //_lightUniform.bindForUpdate();
     _lightUniform.updateFull(lightUniform);
-    _lightUniform.unbindForUpdate();
+
+    //_lightUniform.unbindForUpdate();
     glPopDebugGroup();
 }
 
-void RenderWorld::renderOpaque(ShaderProgram* prog, uint8_t flags)
+void RenderWorld::renderOpaque(RenderContext* context, ShaderProgram* prog, uint8_t flags)
 {
     //return;
-    glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
+    
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 3, -1, "RenderWorld::renderOpaque");
+    //glBindBuffer(GL_ARRAY_BUFFER, _instanceBuffer);
+    context->bindBuffer(_instanceBuffer, GpuBuffer::Vertex);
     if (_meshIndex.size() == 0)
     {
         return;
     }
-    Renderer* renderer = Application::getRenderer();
+    
     if (prog == nullptr)
     {
+        Renderer* renderer = Application::getRenderer();
         prog = renderer->getDefaultProgram();
     }
 
     RenderElement* elem = _meshes.getPtr(0);
-    _modelUniform.bindForUpdate();
-    CheckGlError();
-    prog->bind();
-    glBindBufferBase(GL_UNIFORM_BUFFER, 4, _instanceBuffer);
+    //_modelUniform.bindForUpdate();
+    //CheckGlError();
+    //prog->bind();
+    context->bindProgram(*prog);
+    //glBindBufferBase(GL_UNIFORM_BUFFER, 4, _instanceBuffer);
+    context->bindUniform(_instanceBuffer, 4);
+    
     for (int i = 0; i < _meshIndex.size(); i++)
     {
         if (elem[i]._transparent)
@@ -366,14 +390,14 @@ void RenderWorld::renderOpaque(ShaderProgram* prog, uint8_t flags)
 
         //_modelUniform.updateFull(transform[i]);
         prog->setDrawId(i);
-        elem[i].render(flags);
+        elem[i].render(context, flags);
         
     }
-    _modelUniform.unbindForUpdate();
+    //_modelUniform.unbindForUpdate();
     glPopDebugGroup();
 }
 
-void RenderWorld::renderTransparent(ShaderProgram* prog, uint8_t flags)
+void RenderWorld::renderTransparent(RenderContext* context, ShaderProgram* prog, uint8_t flags)
 {
     return;
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 4, -1, "RenderWorld::renderTransparent");
@@ -389,8 +413,9 @@ void RenderWorld::renderTransparent(ShaderProgram* prog, uint8_t flags)
     {
         prog = renderer->getDefaultProgram();
     }
-    _modelUniform.bindForUpdate();
-    prog->bind();
+    //_modelUniform.bindForUpdate();
+    //prog->bind();
+    context->bindProgram(*prog);
     for (int i = 0; i < _meshIndex.size(); i++)
     {
         if (!elem[i]._transparent)
@@ -398,8 +423,8 @@ void RenderWorld::renderTransparent(ShaderProgram* prog, uint8_t flags)
             continue;
         }
         _modelUniform.updateFull(transform[i]);
-        elem[i].render(flags);
+        elem[i].render(context, flags);
     }
-    _modelUniform.unbindForUpdate();
+    //_modelUniform.unbindForUpdate();
     glPopDebugGroup();
 }

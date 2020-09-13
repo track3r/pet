@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UniformBuffer.h"
+#include "GpuBuffer.h"
 #include "RenderShadow.h"
 
 class RenderElement;
@@ -64,6 +64,7 @@ struct LightUniform
 
 
 class ShaderProgram;
+class RenderContext;
 
 class RenderWorld
 {
@@ -83,12 +84,12 @@ public:
     void renderShadowMaps();
     void render(const ViewMatrices& viewParms);
     void updateInstanceData();
-    void renderOpaque(ShaderProgram* prog = nullptr, uint8_t flags = 0);
-    void renderTransparent(ShaderProgram* prog = nullptr, uint8_t flags = 0);
+    void renderOpaque(RenderContext* context, ShaderProgram* prog = nullptr, uint8_t flags = 0);
+    void renderTransparent(RenderContext* context, ShaderProgram* prog = nullptr, uint8_t flags = 0);
 
-    void setupMultidraw(bool skipTransparent);
-    void issueMultidraw(int offset, int size);
-    void teardownMultidraw();
+    void setupMultidraw(RenderContext* context, bool skipTransparent);
+    void issueMultidraw(RenderContext* context, int offset, int size);
+    void teardownMultidraw(RenderContext* context);
     void updateUniforms();
 
 private:
@@ -108,6 +109,6 @@ private:
     InstanceUniform _instanceUniformData;
 
     ShadowManager _shadowManager;
-    GLuint _indirectBuffer;
-    GLuint _instanceBuffer;
+    GpuBuffer _indirectBuffer;
+    GpuBuffer _instanceBuffer;
 };

@@ -57,10 +57,10 @@
     </ClCompile>
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="FsUtils.cpp" />
-    <ClCompile Include="UniformBuffer.cpp">
+    <ClCompile Include="Sponza.cpp" />
+    <ClCompile Include="GpuBuffer.cpp">
       <Filter>render</Filter>
     </ClCompile>
-    <ClCompile Include="Sponza.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -126,10 +126,10 @@
     </ClInclude>
     <ClInclude Include="Resource.h" />
     <ClInclude Include="FsUtils.h" />
-    <ClInclude Include="UniformBuffer.h">
+    <ClInclude Include="Sponza.h" />
+    <ClInclude Include="GpuBuffer.h">
       <Filter>render</Filter>
     </ClInclude>
-    <ClInclude Include="Sponza.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="primitive_restart.fs.glsl" />

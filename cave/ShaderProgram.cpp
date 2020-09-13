@@ -16,12 +16,6 @@ ShaderProgram::~ShaderProgram()
 	clear();
 }
 
-void ShaderProgram::bind() const
-{
-	glUseProgram(m_program);
-	CheckGlError();
-}
-
 void ShaderProgram::clear()
 {
 	if (m_program  != -1 ) glDeleteProgram(m_program);

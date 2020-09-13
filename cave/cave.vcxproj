@@ -51,7 +51,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPENGL;WIN32;_DEBUG;_WINDOWS;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\libs\glm;..\libs\glew;..\libs\sdl;..\libs\stb;.</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -74,7 +74,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\libs\glm;..\libs\glew;..\libs\sdl;..\libs\stb;.</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -117,7 +117,7 @@
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Sponza.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="UniformBuffer.cpp" />
+    <ClCompile Include="GpuBuffer.cpp" />
     <ClCompile Include="UserInput.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VertexFormat.cpp" />
@@ -158,7 +158,7 @@
     <ClInclude Include="Spline.h" />
     <ClInclude Include="Sponza.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="UniformBuffer.h" />
+    <ClInclude Include="GpuBuffer.h" />
     <ClInclude Include="UserInput.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="VertexFormat.h" />

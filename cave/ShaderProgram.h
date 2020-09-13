@@ -9,7 +9,6 @@ public:
 	ShaderProgram();
 	~ShaderProgram();
 
-	void bind() const;
 	void setPMatrix(const glm::mat4& matrix) const;
 	void setMMatrix(const glm::mat4& matrix) const;
 	void setVMatrix(const glm::mat4& matrix) const;
@@ -28,6 +27,9 @@ public:
 	bool init(const char* filename);
 	void clear();
 	void refresh();
+#ifdef OPENGL
+	GLuint getGlProgram() const { return m_program; };
+#endif
 private:	
 	static void bindAttributes(GLuint program);
 

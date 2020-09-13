@@ -75,7 +75,7 @@ void CreateLight2(ecs3::World* _world, ecs3::Id lightId)
 	_world->createEntity(conf);
 }
 
-void LoadTestScene(ecs3::World* _world)
+void LoadTestScene(RenderContext* context, ecs3::World* _world)
 {
 	ObjMtlReader mtlReader;
 	const char* sponzaMtl = "..\\assets\\sponza\\sponza.mtl";
@@ -153,7 +153,8 @@ void LoadTestScene(ecs3::World* _world)
 	RenderElement* world = new RenderElement();
 	world->m_vertices = worldVb;
 	world->m_indices = worldIb;
-	world->setupEmptyVbo(false);
+	
+	world->setupEmptyVbo(context, false);
 	for (const ObjReader::group_t& group : reader.groups)
 	{
 		//meshConf.addComponent(ecs3::TransformComponent(glm::vec3(10.f * randfun(), 0.f * randfun(), 10.f * randfun())));
@@ -212,7 +213,7 @@ void LoadTestScene(ecs3::World* _world)
 		_world->createEntity(meshConf);
 		//break;
 	}
-	world->updateVbo();
+	world->updateVbo(context);
 	LOG("Finalising texture jobs");
 	jobs.assist(job, func);
 	LOG("Uploading textures");
@@ -247,5 +248,5 @@ void SponzaApplication::subInit()
 	CreateLight(_world, renderWorld->createLight(RenderLight()), 2);
 	CreateLight(_world, renderWorld->createLight(RenderLight()), 3);
 	CreateLight2(_world, renderWorld->createLight(RenderLight()));
-	LoadTestScene(_world);
+	LoadTestScene(&_renderer.getRenderContext(), _world);
 }

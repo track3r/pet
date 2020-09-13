@@ -20,6 +20,8 @@ Renderer::~Renderer()
 
 void Renderer::init()
 {
+    _context.init();
+
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
     //m_program->init(vShaderStr, fShaderStr);
@@ -112,8 +114,8 @@ void Renderer::init()
         //m_debugDraw.addVec(pos, pos);
     }
 
-    m_test.setupVbo(false);
-    m_debugDraw.m_element.setupVbo(true);
+    m_test.setupVbo(&_context, false);
+    m_debugDraw.m_element.setupVbo(&_context, true);
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
@@ -123,7 +125,8 @@ void Renderer::init()
     
     m_defaultTexture.init("..\\assets\\sponza\\textures\\spnza_bricks_a_diff.png");
     //glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
+    //glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
+    _context.bindTexture(m_defaultTexture, 0);
     CheckGlError();
 
 }
@@ -141,13 +144,15 @@ void Renderer::beginRender()
     //mat = glm::translate(mat, glm::vec3(0, 0, 2));
     //renderCube(mat);
     m_debugDraw.reset();
-    m_debugDraw.m_program.bind();
+    //m_debugDraw.m_program.bind();
+    _context.bindProgram(m_debugDraw.m_program);
     m_debugDraw.m_program.setPMatrix(camera().getProjection());
     m_debugDraw.m_program.setVMatrix(camera().getView());
     m_debugDraw.m_program.setMMatrix(glm::mat4( 1.0f ));
     m_debugDraw.drawGrid();
 
-    m_program->bind();
+    //m_program->bind();
+    _context.bindProgram(*m_program);
     m_program->setLightPos(_lightPos);    
     
 }
@@ -157,7 +162,7 @@ void Renderer::endRender()
     glDisable(GL_DEPTH_TEST);
     
 
-    m_debugDraw.m_element.updateVbo();
+    m_debugDraw.m_element.updateVbo(&_context);
     renderElement(m_debugDraw.m_program, m_debugDraw.m_element);
     glEnable(GL_DEPTH_TEST);
 }
@@ -167,14 +172,16 @@ void Renderer::renderElement_dep(const ShaderProgram& program, const RenderEleme
     if (element._count == 0)
         return;
 
-    program.bind();
+    //program.bind();
+    _context.bindProgram(program);
     program.setMMatrix(transform);
     if (element.textures[0] == nullptr)
     {
-        glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
+        //glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
+        _context.bindTexture(m_defaultTexture, 0);
     }
 
-    element.render();
+    element.render(&_context);
 }
 
 void Renderer::renderElement(const ShaderProgram& program, const RenderElement& element)
@@ -182,13 +189,15 @@ void Renderer::renderElement(const ShaderProgram& program, const RenderElement& 
     if (element._count == 0)
         return;
 
-    program.bind();
+    //program.bind();
+    _context.bindProgram(program);
     if (element.textures[0] == nullptr)
     {
-        glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
+        //glBindTexture(GL_TEXTURE_2D, m_defaultTexture.getTexture());
+        _context.bindTexture(m_defaultTexture, 0);
     }
 
-    element.render();
+    element.render(&_context);
 }
 
 
@@ -201,4 +210,102 @@ void Renderer::renderCube(const glm::mat4& transform)
 Camera& Renderer::camera()
 {
     return m_camera;
+}
+
+
+bool RenderContext::init()
+{
+#ifdef OPENGL
+    assert(oglContext == nullptr);
+    oglContext = this;
+#endif
+    return true;
+}
+
+#ifdef OPENGL
+RenderContext* RenderContext::oglContext = nullptr;
+
+// Vertex, Index, Uniform, Indirect, MaxType
+static GLenum toGlEnum[] = { GL_NONE, GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_UNIFORM_BUFFER, GL_DRAW_INDIRECT_BUFFER, GL_NONE };
+
+GLenum RenderContext::glBufferType(uint8_t type)
+{
+    return toGlEnum[type];
+}
+
+void RenderContext::bindGlBuffer(uint8_t type, GLuint buffer)
+{
+    if (_boundBuffers[type] == buffer)
+    {
+        return;
+    }
+
+    glBindBuffer(toGlEnum[type], buffer);
+    _boundBuffers[type] = buffer;
+}
+#endif
+
+void RenderContext::bindProgram(const ShaderProgram& program)
+{
+    if (_program == &program)
+    {
+        return;
+    }
+
+    glUseProgram(program.getGlProgram());
+    _program = &program;
+}
+
+void RenderContext::bindBuffer(const GpuBuffer& buffer, uint8_t bindAs)
+{
+    if (bindAs == GpuBuffer::None)
+    {
+        bindAs = buffer.getType();
+    }
+
+    bindGlBuffer(bindAs, buffer.getGlObject());
+}
+
+void RenderContext::bindUniform(const GpuBuffer& uniform, uint8_t unit)
+{
+    if (_uniforms[unit] == &uniform)
+    {
+        return;
+    }
+
+    _uniforms[unit] = &uniform;
+    glBindBufferBase(GL_UNIFORM_BUFFER, unit, uniform.getGlObject());
+}
+
+void RenderContext::bindTexture(const Texture& texture, uint8_t unit)
+{
+    if (_texture[unit] == &texture)
+    {
+        return;
+    }
+
+    setTu(unit);
+    _texture[unit] = &texture;
+    glBindTexture(texture.getGlType(), texture.getGlObject());
+}
+
+void RenderContext::bindVao(GLuint vao)
+{
+    if (_vao == vao)
+    {
+        return;
+    }
+
+    glBindVertexArray(vao);
+    _vao = vao;
+}
+
+void RenderContext::setTu(uint8_t unit)
+{
+    if (_tu == unit)
+    {
+        return;
+    }
+
+    glActiveTexture(GL_TEXTURE0 + unit);
 }
