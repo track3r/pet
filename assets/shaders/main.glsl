@@ -2,6 +2,7 @@
 //how to fetch model matrix
 //#pragma permute P_DRAWID,P_UMODEL, P_DIVISOR
 #define P_DRAWID
+//#define P_VDRAWID
 #include "include/common.glsl"
 #include "include/uniforms.glsl"
 
@@ -10,12 +11,26 @@ varying vec3 f_normal;
 varying vec3 f_eyePos;
 varying vec3 f_worldPos;
 
+#if defined(P_VDRAWID)
+    #if defined(vertex)
+attribute uint v_drawId;
+    #endif
+flat varying uint f_drawId;
+#endif
+
+
 mat4 getInstanceMatrix()
 {
 #if defined (P_DRAWID)
     return instance[u_drawId].transform;
 #elif defined (P_UMODEL)
     return modelMatrix;
+#elif defined(P_VDRAWID)
+    #if defined(vertex)
+        return instance[v_drawId].transform;
+    #else
+        return instance[f_drawId].transform;
+    #endif
 #endif
 }
 
@@ -33,6 +48,9 @@ void main()
     mat4 eyeMatrix = viewMatrices.view * instanceMatrix;
     f_eyePos = (eyeMatrix * vec4(v_position, 1.0)).xyz;
     f_normal = vec4(eyeMatrix * vec4(v_normal, 0.0)).xyz;
+    #if defined(P_VDRAWID)
+        f_drawId = v_drawId;
+    #endif
 }
 
 #pragma fragment

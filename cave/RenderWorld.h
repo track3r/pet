@@ -97,6 +97,7 @@ private:
     ecs3::TypedData<RenderElement> _meshes;
     ecs3::TypedData<glm::mat4> _transforms;
     std::vector<DrawIndirectCommand> _indirectBufferData;
+    std::vector<uint32_t> _drawIdBufferData;
 
     ecs3::PackedArrayIndex<ecs3::Id> _lightIndex;
     ecs3::TypedData<RenderLight> _lights;
@@ -111,4 +112,5 @@ private:
     ShadowManager _shadowManager;
     GpuBuffer _indirectBuffer;
     GpuBuffer _instanceBuffer;
+    GpuBuffer _drawIdBuffer;
 };

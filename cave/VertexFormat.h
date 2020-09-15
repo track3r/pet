@@ -11,7 +11,8 @@ enum class VertexAttributeIndex
 	Normal = 2,
 	Tangent = 3,
 	Color = 4,
-	Matrix = 5,
+	DrawId = 5,
+	Matrix = 6,
 	Last
 };
 
@@ -22,13 +23,14 @@ struct VertexAttribute
 	const char* name;
 };
 
-const VertexAttribute c_attribs[] =
+constexpr VertexAttribute c_attribs[] =
 {
 	{ VertexAttributeIndex::Pos, 3, "v_position" },
 	{ VertexAttributeIndex::Uv, 2, "v_uv" },
 	{ VertexAttributeIndex::Normal, 3, "v_normal" },
 	{ VertexAttributeIndex::Tangent, 3, "v_tangent" },
 	{ VertexAttributeIndex::Color, 4, "v_color" },
+	{ VertexAttributeIndex::DrawId, 1, "v_drawId" },
 	{ VertexAttributeIndex::Matrix, 12, "v_matrix" }
 };
 
@@ -45,7 +47,7 @@ public:
 	template<class T, VertexAttributeIndex a>
 	T& value(void* base) const
 	{
-		//static_assert(sizeof(T) == c_attribs[(int)a].size * sizeof(float), "Wrong data type");
+		static_assert(sizeof(T) == c_attribs[(int)a].size * sizeof(float), "Wrong data type");
 		const char* ptr = (char*)base + attributeOffset(a);
 		return *((T*)ptr);
 	}
@@ -70,7 +72,7 @@ const VertexFormat c_defaultVf =
 	VertexAttributeIndex::Pos,
 	VertexAttributeIndex::Uv,
 	VertexAttributeIndex::Normal,
-	VertexAttributeIndex::Tangent
+	//VertexAttributeIndex::Tangent
 };
 
 const VertexFormat c_debugVf =

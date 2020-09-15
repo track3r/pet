@@ -118,9 +118,9 @@ bool RenderWorld::init()
         return false;
     }
 
-    _indirectBuffer.init(GpuBuffer::Indirect, sizeof(DrawIndirectCommand) * RenderConstrains::maxInstancesPerDraw);
-    _instanceBuffer.init(GpuBuffer::Vertex, sizeof(InstanceData) * RenderConstrains::maxInstancesPerDraw);
-
+    _indirectBuffer.init(GpuBuffer::Indirect, sizeof(DrawIndirectCommand) * RenderConstrains::maxInstancesPerDraw, "indirect");
+    _instanceBuffer.init(GpuBuffer::Vertex, sizeof(InstanceData) * RenderConstrains::maxInstancesPerDraw, "instance");
+    _drawIdBuffer.init(GpuBuffer::Vertex, sizeof(uint32_t) * RenderConstrains::maxInstancesPerDraw, "drawid");
     return true;
 }
 
@@ -138,6 +138,7 @@ void RenderWorld::render(const ViewMatrices& viewParams)
     context->bindUniform(_viewUniform, 1);
     context->bindUniform(_modelUniform, 2);
     context->bindUniform(_lightUniform, 3);
+    context->bindUniform(_instanceBuffer, 4);
 
     updateInstanceData();
 
@@ -153,12 +154,14 @@ void RenderWorld::updateInstanceData()
 {
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* transform = _transforms.getPtr(0);
-
+    _drawIdBufferData.resize(_meshIndex.size());
     for (int i = 0; i < _meshIndex.size(); i++)
     {
         _instanceUniformData.instance[i].tranform = glm::mat4(transform[i]);
+        _drawIdBufferData[i] = i;
     }
     _instanceBuffer.update(0, (uint32_t) (sizeof(InstanceData) * _meshIndex.size()), _instanceUniformData.instance);
+    _drawIdBuffer.update(0, (uint32_t)(sizeof(uint32_t) * _meshIndex.size()), &_drawIdBufferData[0]);
 }
 
 void RenderWorld::updateUniforms()
@@ -195,30 +198,61 @@ void RenderWorld::setupMultidraw(RenderContext* context, bool skipTransparent)
         cmd.instanceCount = 1;
         cmd.vertexCount = elem[i]._count;
     }
-
+    
     context->bindBuffer(_indirectBuffer, GpuBuffer::Indirect);
     _indirectBuffer.update(0, (uint32_t) (sizeof(DrawIndirectCommand) * _indirectBufferData.size()), &_indirectBufferData[0]);
 
     context->bindVao(elem[0]._vao);
-    context->bindBuffer(_instanceBuffer, GpuBuffer::Vertex);
+
+    /*context->bindBuffer(_instanceBuffer, GpuBuffer::Vertex);
     GLsizei vec4Size = (GLsizei)sizeof(glm::vec4);
 
     glEnableVertexAttribArray((int)VertexAttributeIndex::Matrix);
     glVertexAttribPointer((int)VertexAttributeIndex::Matrix, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+    glVertexAttribDivisor((int)VertexAttributeIndex::Matrix, 1);
 
     glEnableVertexAttribArray((int)VertexAttributeIndex::Matrix + 1);
     glVertexAttribPointer((int)VertexAttributeIndex::Matrix + 1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * sizeof(glm::vec4)));
+    glVertexAttribDivisor((int)VertexAttributeIndex::Matrix + 1, 1);
 
     glEnableVertexAttribArray((int)VertexAttributeIndex::Matrix + 2);
     glVertexAttribPointer((int)VertexAttributeIndex::Matrix + 2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * sizeof(glm::vec4)));
+    glVertexAttribDivisor((int)VertexAttributeIndex::Matrix + 2, 1);
 
     glEnableVertexAttribArray((int)VertexAttributeIndex::Matrix + 3);
     glVertexAttribPointer((int)VertexAttributeIndex::Matrix + 3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * sizeof(glm::vec4)));
+    glVertexAttribDivisor((int)VertexAttributeIndex::Matrix + 3, 1);*/
 
-    glVertexAttribDivisor((int)VertexAttributeIndex::Matrix, 1);
-    glVertexAttribDivisor((int)VertexAttributeIndex::Matrix + 1, 1);
-    glVertexAttribDivisor((int)VertexAttributeIndex::Matrix + 2, 1);
-    glVertexAttribDivisor((int)VertexAttributeIndex::Matrix + 3, 1);
+    context->bindBuffer(_drawIdBuffer, GpuBuffer::Vertex);
+    glEnableVertexAttribArray((int)VertexAttributeIndex::DrawId);
+    glVertexAttribIPointer((int)VertexAttributeIndex::DrawId, 1, GL_UNSIGNED_INT, sizeof(uint32_t), (void*)0);
+    glVertexAttribDivisor((int)VertexAttributeIndex::DrawId, 1);
+
+    struct stream_t
+    {
+        GpuBuffer* buffer;
+        struct attrib_t
+        {
+            uint8_t index;
+            uint8_t size;
+            uint8_t type;
+            bool normalised;
+            uint8_t divisor;
+            uint8_t stride;
+            uint8_t offset;
+        };
+
+        attrib_t attribs[16];
+        uint8_t numAttribs;
+    };
+    //void bindStreams(stream_t* strems, uint8_t numStreams);
+
+    struct geometry_t
+    {
+        IndexBuffer* index;
+        VertexBuffer* streams[16];
+
+    };
 }
 
 void RenderWorld::issueMultidraw(RenderContext* context, int offset, int size)
@@ -229,10 +263,11 @@ void RenderWorld::issueMultidraw(RenderContext* context, int offset, int size)
 
 void RenderWorld::teardownMultidraw(RenderContext* context)
 {
-    glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix);
+    glDisableVertexAttribArray((int)VertexAttributeIndex::DrawId);
+    /*glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix);
     glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix + 1);
     glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix + 2);
-    glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix + 4);
+    glDisableVertexAttribArray((int)VertexAttributeIndex::Matrix + 4);*/
 }
 
 static const glm::vec3 boxForward[] = 
@@ -300,7 +335,7 @@ void RenderWorld::renderShadowMaps()
             _viewUniform.updateFull(viewParms);
 
             context->bindProgram(*_shadowManager._renderPass._program);
-
+            
             if (RenderConstrains::multidraw)
             {
                 issueMultidraw(context, 0, (int)_indirectBufferData.size());
@@ -328,7 +363,6 @@ void RenderWorld::renderShadowMaps()
 void RenderWorld::renderOpaque(RenderContext* context, ShaderProgram* prog, uint8_t flags)
 {
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 3, -1, "RenderWorld::renderOpaque");
-    context->bindBuffer(_instanceBuffer, GpuBuffer::Vertex);
     if (_meshIndex.size() == 0)
     {
         return;
@@ -343,7 +377,6 @@ void RenderWorld::renderOpaque(RenderContext* context, ShaderProgram* prog, uint
     RenderElement* elem = _meshes.getPtr(0);
     context->bindProgram(*prog);
     context->bindUniform(_instanceBuffer, 4);
-    
     for (int i = 0; i < _meshIndex.size(); i++)
     {
         if (elem[i]._transparent)
@@ -353,8 +386,9 @@ void RenderWorld::renderOpaque(RenderContext* context, ShaderProgram* prog, uint
 
         prog->setDrawId(i);
         elem[i].render(context, flags);
-        
+
     }
+    
     glPopDebugGroup();
 }
 
