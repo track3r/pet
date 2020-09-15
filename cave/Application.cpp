@@ -19,6 +19,11 @@
 char g_bufferInfo[512] = {};
 void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const  void* userParam)
 {
+	if (source == GL_DEBUG_SOURCE_APPLICATION)
+	{
+		return;
+	}
+
 	const char signature[] = "Buffer info:";
 	if (strncmp(message, signature, sizeof(signature) - 1) == 0)
 	{
@@ -26,6 +31,7 @@ void openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severi
 		return;
 	}
 	LOG_NOFILELINE("%i - %s", severity, message);
+	assert(type != GL_DEBUG_TYPE_ERROR);
 	/*std::cout << "message: " << message << " ";
 	std::cout << "type: ";
 	switch (type) {
