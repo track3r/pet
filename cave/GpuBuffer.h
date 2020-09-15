@@ -13,7 +13,7 @@ public:
 
 	~GpuBuffer();
 
-	bool init(Type type, uint32_t size);
+	bool init(Type type, uint32_t size, const char* debugName = nullptr);
 	bool init(const GpuBuffer& ref, uint32_t offset, uint32_t size);
 
 	void update(uint32_t offset, uint32_t size, const void* data) const;

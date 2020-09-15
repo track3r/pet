@@ -7,7 +7,7 @@ GpuBuffer::~GpuBuffer()
 
 }
 
-bool GpuBuffer::init(Type type, uint32_t size)
+bool GpuBuffer::init(Type type, uint32_t size, const char* debugName)
 {
 	assert(_apiObject == 0);
 	_type = type;
@@ -16,6 +16,10 @@ bool GpuBuffer::init(Type type, uint32_t size)
 	RenderContext* ogl = RenderContext::oglContext;
 	ogl->bindGlBuffer(type, _apiObject);
 	glBufferData(RenderContext::glBufferType(type), size, NULL, GL_STATIC_DRAW);
+	if (debugName != nullptr)
+	{
+		glObjectLabel(GL_BUFFER, _apiObject, -1, debugName);
+	}
 	return true;
 }
 
@@ -46,3 +50,9 @@ void GpuBuffer::update(uint32_t offset, uint32_t size, const void* data) const
 		glBufferSubData(RenderContext::glBufferType(_type), offset + _offset, size, data);
 	}
 }
+
+//map = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT
+//create = map | GL_DYNAMIC_STORAGE_BIT
+// void* map();
+//void* ptr();
+//void unmap();
