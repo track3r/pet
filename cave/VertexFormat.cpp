@@ -2,7 +2,7 @@
 #include "VertexFormat.h"
 
 
-VertexFormat::VertexFormat(VertexFormatCode code) 
+constexpr VertexFormat::VertexFormat(const VertexFormatCode code)
 : m_code(code)
 , m_offsets(makeOffsetsArray(code))
 , m_size(calculateSize(code))
@@ -10,7 +10,7 @@ VertexFormat::VertexFormat(VertexFormatCode code)
 
 }
 
-VertexFormat::VertexFormat(const std::initializer_list<VertexAttributeIndex>& input) 
+constexpr VertexFormat::VertexFormat(const std::initializer_list<VertexAttributeIndex>& input)
 : m_code(makeCode(input))
 , m_offsets(makeOffsetsArray(m_code))
 , m_size(calculateSize(m_code))
@@ -18,7 +18,7 @@ VertexFormat::VertexFormat(const std::initializer_list<VertexAttributeIndex>& in
 
 }
 
-VertexFormatCode VertexFormat::makeCode(const std::initializer_list<VertexAttributeIndex>& input)
+constexpr VertexFormatCode VertexFormat::makeCode(const std::initializer_list<VertexAttributeIndex>& input)
 {
 	VertexFormatCode code = 0;
 	for (VertexAttributeIndex i : input)
@@ -29,9 +29,9 @@ VertexFormatCode VertexFormat::makeCode(const std::initializer_list<VertexAttrib
 	return code;
 }
 
-VertexFormat::Offsets VertexFormat::makeOffsetsArray(VertexFormatCode code)
+constexpr VertexFormat::Offsets VertexFormat::makeOffsetsArray(const VertexFormatCode code)
 {
-	Offsets out;
+	Offsets out = {};
 	char offset = 0;
 
 	int cur = 0;
@@ -47,18 +47,13 @@ VertexFormat::Offsets VertexFormat::makeOffsetsArray(VertexFormatCode code)
 	return out;
 }
 
-size_t VertexFormat::size() const
-{
-	return m_size;
-}
-
-bool VertexFormat::haveAttribute(VertexAttributeIndex attr) const
+/*constexpr bool VertexFormat::haveAttribute(const VertexAttributeIndex attr) const
 {
 	auto ret = m_code & ((VertexFormatCode)1 << (VertexFormatCode)attr);
 	return ret != 0;
-}
+}*/
 
-int VertexFormat::calculateSize(VertexFormatCode code)
+constexpr int VertexFormat::calculateSize(const VertexFormatCode code)
 {
 	int size = 0;
 	for (VertexFormatCode i = 0; i < (int)VertexAttributeIndex::Last; i++)
@@ -68,7 +63,7 @@ int VertexFormat::calculateSize(VertexFormatCode code)
 	return size * sizeof(float);
 }
 
-int VertexFormat::attributeOffset(VertexAttributeIndex attr) const
+/*constexpr int VertexFormat::attributeOffset(const VertexAttributeIndex attr) const
 {
 	return m_offsets[(int)attr] * sizeof(float);
-}
+}*/

@@ -5,7 +5,7 @@
 class GeometryBuilder
 {
 public:
-	GeometryBuilder(VertexBuffer& vertex, IndexBuffer& index);
+	GeometryBuilder(VertexData& vertex, IndexData& index);
 
 	int addIndex(int idx);
 	
@@ -13,7 +13,7 @@ public:
 private:
 	int m_indexPos = 0;
 	int m_vertexPos = 0;
-	VertexBuffer& m_vertexBuffer;
-	IndexBuffer& m_indexBuffer;
+	VertexData& m_vertexBuffer;
+	IndexData& m_indexBuffer;
 };
 

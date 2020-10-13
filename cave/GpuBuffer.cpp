@@ -11,11 +11,12 @@ bool GpuBuffer::init(Type type, uint32_t size, const char* debugName)
 {
 	assert(_apiObject == 0);
 	_type = type;
-	_size = _size;
+	_size = size;
 	glGenBuffers(1, &_apiObject);
 	RenderContext* ogl = RenderContext::oglContext;
 	ogl->bindGlBuffer(type, _apiObject);
 	glBufferData(RenderContext::glBufferType(type), size, NULL, GL_STATIC_DRAW);
+	CheckGlError();
 	if (debugName != nullptr)
 	{
 		glObjectLabel(GL_BUFFER, _apiObject, -1, debugName);
@@ -41,13 +42,15 @@ void GpuBuffer::update(uint32_t offset, uint32_t size, const void* data) const
 {
 	RenderContext* ogl = RenderContext::oglContext;
 	ogl->bindGlBuffer(_type, _apiObject);
-	if (offset == 0 && _offset == 0)
+	if (offset == 0 && _offset == 0 && size == _size)
 	{
 		glBufferData(RenderContext::glBufferType(_type), size, data, GL_STATIC_DRAW);
+		CheckGlError();
 	}
 	else
 	{
 		glBufferSubData(RenderContext::glBufferType(_type), offset + _offset, size, data);
+		CheckGlError();
 	}
 }
 

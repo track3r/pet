@@ -29,7 +29,7 @@ struct Mesh
 class BufferBuilder
 {
 public:
-	BufferBuilder(IndexBuffer& index, VertexBuffer& vertex, int indexPos = 0, int vertexPos = 0)
+	BufferBuilder(IndexData& index, VertexData& vertex, int indexPos = 0, int vertexPos = 0)
 		: m_index(index)
 		, m_vertex(vertex)
 		, m_indexPos(indexPos)
@@ -55,8 +55,8 @@ public:
 		m_vertexPos++;
 	}
 
-	IndexBuffer& m_index;
-	VertexBuffer& m_vertex;
+	IndexData& m_index;
+	VertexData& m_vertex;
 	int m_indexPos = 0;
 	int m_vertexPos = 0;
 	const VertexFormat& m_format;

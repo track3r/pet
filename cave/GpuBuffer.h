@@ -22,6 +22,7 @@ public:
 
 private:
 	uint8_t _type = None;
+	uint8_t _flags = 0;
 	GLuint _apiObject = 0;
 	uint32_t _size = 0;
 	uint32_t _offset = 0;

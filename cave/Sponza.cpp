@@ -8,6 +8,7 @@
 #include "RenderWorld.h"
 #include "ObjReader.h"
 #include "Job.h"
+#include "Utils.h"
 
 #define WIN32_EXTRALEAN
 #define VC_EXTRALEAN
@@ -77,6 +78,8 @@ void CreateLight2(ecs3::World* _world, ecs3::Id lightId)
 
 void LoadTestScene(RenderContext* context, ecs3::World* _world)
 {
+	RenderWorld* renderWorld = _world->get<RenderSingleton>().world;
+	RenderGeometryManager& geometryManager = renderWorld->getGeometryManager();
 	ObjMtlReader mtlReader;
 	const char* sponzaMtl = "..\\assets\\sponza\\sponza.mtl";
 	if (!mtlReader.parse(sponzaMtl))
@@ -147,14 +150,10 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f)));
 	meshConf.addComponent(meshComp);
 	LOG("Uploading meshes...");
-	VertexBuffer* worldVb = new VertexBuffer((uint32_t)reader.faces.size() * 3, c_defaultVf);
-	IndexBuffer* worldIb = new IndexBuffer((uint32_t)reader.faces.size() * 3);
+	//VertexData* worldVb = new VertexData((uint32_t)reader.faces.size() * 3, c_defaultVf);
+	//IndexData* worldIb = new IndexData((uint32_t)reader.faces.size() * 3);
 	uint32_t offset = 0;
-	RenderElement* world = new RenderElement();
-	world->m_vertices = worldVb;
-	world->m_indices = worldIb;
 	
-	world->setupEmptyVbo(context, false);
 	for (const ObjReader::group_t& group : reader.groups)
 	{
 		//meshConf.addComponent(ecs3::TransformComponent(glm::vec3(10.f * randfun(), 0.f * randfun(), 10.f * randfun())));
@@ -179,25 +178,40 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 		//LOG(">>Mesh %s", group.name);
 		//VertexBuffer* vb = new VertexBuffer(faces * 3, c_defaultVf);
 		//IndexBuffer* ib = new IndexBuffer(faces * 3);
+		RenderElement alloc;
+		if (!geometryManager.allocate(alloc, faces * 3, faces * 3))
+		{
+			LOG("geometry allocation failed");
+			break;
+		}
+
 		uint32_t index = 0;
 		for (uint32_t f = group.startFace; f < group.endFace; f++)
 		{
 			const ObjReader::face_t& face = reader.faces[f];
 			for (int v = 0; v < 3; v++)
 			{
-				worldVb->value<glm::vec3, VertexAttributeIndex::Pos>(offset + index) = reader.positions[face.vertices[v] - 1];
-				worldVb->value<glm::vec2, VertexAttributeIndex::Uv>(offset + index) = reader.texcoords[face.texcoords[v] - 1];
-				worldVb->value<glm::vec3, VertexAttributeIndex::Normal>(offset + index) = reader.normals[face.normals[v] - 1];
-				worldIb->intPointer()[offset + index] = offset + index;
+				//worldVb->value<glm::vec3, VertexAttributeIndex::Pos>(offset + index) = reader.positions[face.vertices[v] - 1];
+				//worldVb->value<glm::vec2, VertexAttributeIndex::Uv>(offset + index) = reader.texcoords[face.texcoords[v] - 1];
+				//worldVb->value<glm::vec3, VertexAttributeIndex::Normal>(offset + index) = reader.normals[face.normals[v] - 1];
+				//worldIb->intPointer()[offset + index] = offset + index;
+				alloc.m_vertices->value<glm::vec3, VertexAttributeIndex::Pos>(index) = reader.positions[face.vertices[v] - 1];
+				alloc.m_vertices->value<glm::vec2, VertexAttributeIndex::Uv>(index) = reader.texcoords[face.texcoords[v] - 1];
+				alloc.m_vertices->value<glm::vec3, VertexAttributeIndex::Normal>(index) = reader.normals[face.normals[v] - 1];
 				index++;
 			}
 		}
 
-		RenderElement* element = new RenderElement(*world, offset, faces * 3);
-		element->textures[0] = textures[group.material];
-		if (element->textures[0] != nullptr)
+		//RenderElement element(*world, offset, faces * 3);
+		//element.textures[0] = textures[group.material];
+		alloc.textures[0] = textures[group.material];
+		//if (element.textures[0] != nullptr)
+		//{
+			//element._transparent = element.textures[0]->hasAlpha;
+		//}
+		if (alloc.textures[0] != nullptr)
 		{
-			element->_transparent = element->textures[0]->hasAlpha;
+			alloc._transparent = alloc.textures[0]->hasAlpha;
 		}
 		offset += faces * 3;
 		//char nameBuffer[256];
@@ -208,12 +222,14 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 		//sprintf(nameBuffer, "%s_vao", group.name);
 		//glObjectLabel(GL_BUFFER, element->_vao, -1, nameBuffer);
 
-		meshComp.mesh = _world->get<RenderSingleton>().world->createMesh(*element);
+		//meshComp.mesh = _world->get<RenderSingleton>().world->createMesh(element);
+		alloc.updateVbo(context);
+		meshComp.mesh = _world->get<RenderSingleton>().world->createMesh(alloc);
 		meshConf._data.addComponent(meshComp);
 		_world->createEntity(meshConf);
 		//break;
 	}
-	world->updateVbo(context);
+	//world->updateVbo(context);
 	LOG("Finalising texture jobs");
 	jobs.assist(job, func);
 	LOG("Uploading textures");

@@ -44,10 +44,10 @@ private:
 	const uint32_t m_elements;
 };
 
-class IndexBuffer : public Buffer
+class IndexData : public Buffer
 {
 public:
-	IndexBuffer(int32_t size)
+	IndexData(int32_t size)
 		:Buffer(size * sizeof(uint32_t), size, GL_ELEMENT_ARRAY_BUFFER)
 		, m_elementType(GL_UNSIGNED_INT)
 	{}
@@ -60,10 +60,10 @@ private:
 	GLenum m_elementType;
 };
 
-class VertexBuffer : public Buffer
+class VertexData : public Buffer
 {
 public:
-	VertexBuffer(uint32_t elements, const VertexFormat& format)
+	VertexData(uint32_t elements, const VertexFormat& format)
 		:Buffer(format.size() * elements, elements, GL_ARRAY_BUFFER)
 		, format(format)
 	{}
@@ -80,7 +80,7 @@ public:
 };
 
 
-class RenderElement
+class RenderElement//RenderSubMesh 
 {
 public:
 	enum Flags
@@ -91,6 +91,7 @@ public:
 
 	RenderElement(GLenum primitive = GL_TRIANGLES);
 	RenderElement(const RenderElement& other, int offset, int count);
+	RenderElement(GpuBuffer indexBuffer, uint32_t indexOffset, uint32_t count, GpuBuffer vertexBuffer, uint32_t vertexOffset, uint32_t vertexCount, const VertexFormat& format);
 	~RenderElement();
 
 	void setupVbo(RenderContext* context, bool isStream);
@@ -98,22 +99,28 @@ public:
 	void updateVbo(RenderContext* context);
 	void render(RenderContext* context, uint8_t flags = None) const;
 
-	IndexBuffer*	m_indices = nullptr;
-	VertexBuffer*	m_vertices = nullptr;
-	Texture*		textures[2] = { 0 };
+	static void setupVao(GLuint vao, GpuBuffer& vertexBuffer, const VertexFormat& format);
 
+	//Geometry
+	IndexData*	m_indices = nullptr;
+	VertexData*	m_vertices = nullptr;
+
+	//material
+	Texture*		textures[2] = { 0 };
 	bool			_transparent = false;
 
-    int				_offset = 0;
-    int				_count = -1;
+    uint32_t		_offset = 0;
+	uint32_t		_count = -1;
+	uint32_t		_vertexOffset = 0;
 	
 
-	//GLuint			m_objects[2];
+	//allocation
 	GpuBuffer		_vertexBuffer;
 	GpuBuffer		_indexBuffer;
+
 	GLuint			_vao = 0;
 	bool			_isStream = false;
-	GLenum			m_mode;
+	GLenum			m_mode = GL_TRIANGLES;
 	bool			_reference = false;
 };
 

@@ -99,6 +99,7 @@
     <ClCompile Include="ecs3\TransformAnimationSystem.cpp" />
     <ClCompile Include="FsUtils.cpp" />
     <ClCompile Include="GeometryBuilder.cpp" />
+    <ClCompile Include="RenderGeometryManager.cpp" />
     <ClCompile Include="Job.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="ecs3\TransformAnimationSystem.h" />
     <ClInclude Include="FsUtils.h" />
     <ClInclude Include="GeometryBuilder.h" />
+    <ClInclude Include="RenderGeometryManager.h" />
     <ClInclude Include="GlHeaders.h" />
     <ClInclude Include="GlmIncludes.h" />
     <ClInclude Include="Job.h" />

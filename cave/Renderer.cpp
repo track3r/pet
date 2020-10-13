@@ -86,8 +86,8 @@ void Renderer::init()
     };//36
 
 
-    static VertexBuffer vb(36, c_defaultVf);
-    static IndexBuffer ib(36);
+    static VertexData vb(36, c_defaultVf);
+    static IndexData ib(36);
     m_test.m_vertices = &vb;
     m_test.m_indices = &ib;
 

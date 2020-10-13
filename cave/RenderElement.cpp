@@ -12,7 +12,7 @@ uint32_t Buffer::memorySize()
 	return (uint32_t)m_buffer.size();
 }
 
-uint32_t* IndexBuffer::intPointer()
+uint32_t* IndexData::intPointer()
 {
 	return (uint32_t*)pointer();
 }
@@ -27,8 +27,13 @@ RenderElement::RenderElement(GLenum primitive)
 
 RenderElement::~RenderElement()
 {
-	//TODO: fixme
-	//glDeleteBuffers(2, m_objects);
+	if (!_reference)
+	{
+		//glDeleteBuffers(2, m_objects);
+	}
+
+	//delete m_vertices;
+	//delete m_indices;
 }
 
 RenderElement::RenderElement(const RenderElement& other, int offset, int count)
@@ -44,20 +49,30 @@ RenderElement::RenderElement(const RenderElement& other, int offset, int count)
 	m_mode = other.m_mode;
 }
 
+RenderElement::RenderElement(GpuBuffer indexBuffer, uint32_t indexOffset, uint32_t count, GpuBuffer vertexBuffer, uint32_t vertexOffset, uint32_t vertexCount, const VertexFormat& format)
+{
+	_reference = true;
+	_vertexBuffer.init(vertexBuffer, 0, 0);
+	_indexBuffer.init(indexBuffer, 0, 0);
+	_offset = indexOffset;
+	_count = count;
+	_vertexOffset = vertexOffset;
+	
+	m_vertices = new VertexData(vertexCount, format);
+	m_indices = new IndexData(count);
+}
+
 void RenderElement::setupVbo(RenderContext* context, bool isStream)
 {
 	setupEmptyVbo(context, isStream);
 	updateVbo(context);
 }
 
-void RenderElement::setupEmptyVbo(RenderContext* context, bool isStream)
+void RenderElement::setupVao(GLuint vao, GpuBuffer& vertexBuffer, const VertexFormat& format)
 {
-	_isStream = isStream;
-	GLenum type = isStream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
-	RenderContext::oglContext->bindVao(_vao);
-	_vertexBuffer.init(GpuBuffer::Vertex, m_vertices->memorySize());
+	RenderContext::oglContext->bindVao(vao);
+	RenderContext::oglContext->bindBuffer(vertexBuffer, GpuBuffer::Vertex);
 
-	const VertexFormat& format = m_vertices->format;
 	for (const auto& atr : c_attribs)
 	{
 		if (!format.haveAttribute(atr.index))
@@ -65,19 +80,38 @@ void RenderElement::setupEmptyVbo(RenderContext* context, bool isStream)
 
 		glEnableVertexAttribArray((int)atr.index);
 		CheckGlError();
+
 		glVertexAttribPointer((int)atr.index, atr.size, GL_FLOAT, GL_FALSE, (GLsizei)format.size(), (const void*)(size_t)format.attributeOffset(atr.index));
 		CheckGlError();
 	}
+}
+
+void RenderElement::setupEmptyVbo(RenderContext* context, bool isStream)
+{
+	if (_reference)
+	{
+		return;
+	}
+	_isStream = isStream;
+	GLenum type = isStream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
+	
+	_vertexBuffer.init(GpuBuffer::Vertex, m_vertices->memorySize());
+	setupVao(_vao, _vertexBuffer, m_vertices->format);
 
 	_indexBuffer.init(GpuBuffer::Index, m_indices->memorySize());
 }
 
 void RenderElement::updateVbo(RenderContext* context)
 {
+	if (m_vertices == nullptr || m_indices == nullptr)
+	{
+		return;
+	}
 	GLenum type = _isStream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
+	_indexBuffer.update(_offset * sizeof(uint32_t), m_indices->memorySize(), m_indices->pointer());
 	RenderContext::oglContext->bindVao(_vao);
-	_vertexBuffer.update(0, m_vertices->memorySize(), m_vertices->pointer());
-	_indexBuffer.update(0, m_indices->memorySize(), m_indices->pointer());
+	_vertexBuffer.update(_vertexOffset * m_vertices->format.size(), m_vertices->memorySize(), m_vertices->pointer());
+	
 }
 
 void RenderElement::render(RenderContext* context, uint8_t flags) const

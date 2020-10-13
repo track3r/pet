@@ -5,6 +5,7 @@
 RenderWorld::RenderWorld()
     :_meshIndex(1024)
     ,_lightIndex(1024)
+    ,_geometryManager(c_defaultVf)
 {
 
 }
@@ -20,9 +21,9 @@ ecs3::Id RenderWorld::createMesh(const RenderElement& element)
 
 void RenderWorld::destroyMesh(ecs3::Id id)
 {
-    int pos = _meshIndex.remove(id);
+    int pos = _meshIndex.swapToEndAndRemove(id);
     _meshes.getPtr(pos)->~RenderElement();
-    _meshes.remove(pos);    
+    _meshes.remove(pos);
     _transforms.remove(pos);
 }
 
@@ -87,7 +88,7 @@ void RenderWorld::updateLight(ecs3::Id id, const RenderLight& light)
 
 void RenderWorld::destroyLight(ecs3::Id id)
 {
-    int pos = _lightIndex.remove(id);
+    int pos = _lightIndex.swapToEndAndRemove(id);
     _lights.remove(pos);
 }
 
@@ -118,9 +119,22 @@ bool RenderWorld::init()
         return false;
     }
 
+    uint32_t indices = 2 * 1000 * 1000;
+    if (!_geometryManager.init(indices, indices))
+    {
+        return false;
+    }
+
     _indirectBuffer.init(GpuBuffer::Indirect, sizeof(DrawIndirectCommand) * RenderConstrains::maxInstancesPerDraw, "indirect");
     _instanceBuffer.init(GpuBuffer::Vertex, sizeof(InstanceData) * RenderConstrains::maxInstancesPerDraw, "instance");
     _drawIdBuffer.init(GpuBuffer::Vertex, sizeof(uint32_t) * RenderConstrains::maxInstancesPerDraw, "drawid");
+    _drawIdBufferData.resize(RenderConstrains::maxInstancesPerDraw);
+    for (int i = 0; i < RenderConstrains::maxInstancesPerDraw; i++)
+    {
+        _drawIdBufferData[i] = i;
+    }
+    _drawIdBuffer.update(0, (uint32_t)(sizeof(uint32_t) * RenderConstrains::maxInstancesPerDraw), &_drawIdBufferData[0]);
+
     return true;
 }
 
@@ -154,14 +168,11 @@ void RenderWorld::updateInstanceData()
 {
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* transform = _transforms.getPtr(0);
-    _drawIdBufferData.resize(_meshIndex.size());
     for (int i = 0; i < _meshIndex.size(); i++)
     {
         _instanceUniformData.instance[i].tranform = glm::mat4(transform[i]);
-        _drawIdBufferData[i] = i;
     }
     _instanceBuffer.update(0, (uint32_t) (sizeof(InstanceData) * _meshIndex.size()), _instanceUniformData.instance);
-    _drawIdBuffer.update(0, (uint32_t)(sizeof(uint32_t) * _meshIndex.size()), &_drawIdBufferData[0]);
 }
 
 void RenderWorld::updateUniforms()
@@ -175,8 +186,8 @@ void RenderWorld::setupMultidraw(RenderContext* context, bool skipTransparent)
     _indirectBufferData.reserve(_meshIndex.size());
     assert(_meshIndex.size() < RenderConstrains::maxInstancesPerDraw);
 
-    VertexBuffer* vb = nullptr;
-    IndexBuffer* ib = nullptr;
+    VertexData* vb = nullptr;
+    IndexData* ib = nullptr;
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* transform = _transforms.getPtr(0);
     vb = elem->m_vertices;
@@ -228,9 +239,8 @@ void RenderWorld::setupMultidraw(RenderContext* context, bool skipTransparent)
     glVertexAttribIPointer((int)VertexAttributeIndex::DrawId, 1, GL_UNSIGNED_INT, sizeof(uint32_t), (void*)0);
     glVertexAttribDivisor((int)VertexAttributeIndex::DrawId, 1);
 
-    struct stream_t
+    /*struct stream_t
     {
-        GpuBuffer* buffer;
         struct attrib_t
         {
             uint8_t index;
@@ -245,13 +255,15 @@ void RenderWorld::setupMultidraw(RenderContext* context, bool skipTransparent)
         attrib_t attribs[16];
         uint8_t numAttribs;
     };
-    //void bindStreams(stream_t* strems, uint8_t numStreams);
+    void bindVertexBuffer(GpuBuffer* buffer, uint8_t numBuffers);
+    void bindStreamState(stream_t* streams, uint8_t numStreams);
+
+    */
 
     struct geometry_t
     {
-        IndexBuffer* index;
-        VertexBuffer* streams[16];
-
+        IndexData* index;
+        VertexData* streams[16];
     };
 }
 

@@ -61,6 +61,9 @@
     <ClCompile Include="GpuBuffer.cpp">
       <Filter>render</Filter>
     </ClCompile>
+    <ClCompile Include="RenderGeometryManager.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -128,6 +131,9 @@
     <ClInclude Include="FsUtils.h" />
     <ClInclude Include="Sponza.h" />
     <ClInclude Include="GpuBuffer.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderGeometryManager.h">
       <Filter>render</Filter>
     </ClInclude>
   </ItemGroup>

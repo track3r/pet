@@ -2,7 +2,7 @@
 #include "GeometryBuilder.h"
 
 
-GeometryBuilder::GeometryBuilder(VertexBuffer& vertex, IndexBuffer& index)
+GeometryBuilder::GeometryBuilder(VertexData& vertex, IndexData& index)
 	:m_vertexBuffer(vertex)
 	, m_indexBuffer(index)
 {

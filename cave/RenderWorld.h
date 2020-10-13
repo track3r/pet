@@ -2,6 +2,7 @@
 
 #include "GpuBuffer.h"
 #include "RenderShadow.h"
+#include "RenderGeometryManager.h"
 
 class RenderElement;
 
@@ -92,6 +93,8 @@ public:
     void teardownMultidraw(RenderContext* context);
     void updateUniforms();
 
+    RenderGeometryManager& getGeometryManager() { return _geometryManager; }
+
 private:
     ecs3::PackedArrayIndex<ecs3::Id> _meshIndex;
     ecs3::TypedData<RenderElement> _meshes;
@@ -113,4 +116,5 @@ private:
     GpuBuffer _indirectBuffer;
     GpuBuffer _instanceBuffer;
     GpuBuffer _drawIdBuffer;
+    RenderGeometryManager _geometryManager;
 };

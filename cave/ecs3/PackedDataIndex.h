@@ -59,8 +59,8 @@ namespace ecs3
             return !(*this == other);
         }
 
-        int index : 24;
-        int check : 8;
+        unsigned int index : 24;
+        unsigned int check : 8;
     };
 
     
@@ -176,16 +176,6 @@ namespace ecs3
             return Id(elem, _index[elem].check);
         }
 
-        int remove(Tid id)
-        {
-            assert(_index[id.index].check == id.check);
-
-            _index[id.index].check++;
-            putFreeElement(id.index);
-            _size--;
-            return _index[id.index].dataIndex;
-        }
-
         void swapData(int a, int b)
         {
             if (a == b)
@@ -215,6 +205,16 @@ namespace ecs3
 
         
     private:
+        int remove(Tid id)
+        {
+            assert(_index[id.index].check == id.check);
+
+            _index[id.index].check++;
+            putFreeElement(id.index);
+            _size--;
+            return _index[id.index].dataIndex;
+        }
+
         int getFreeElement()
         {
             if (_firstFree == -1)

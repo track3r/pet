@@ -41,25 +41,31 @@ class VertexFormat
 public:
 	typedef std::array<char, (int)VertexAttributeIndex::Last> Offsets;
 
-	VertexFormat(VertexFormatCode code);
-	VertexFormat(const std::initializer_list<VertexAttributeIndex>& input);
+	constexpr VertexFormat(const VertexFormatCode code);
+	constexpr VertexFormat(const std::initializer_list<VertexAttributeIndex>& input);
 
 	template<class T, VertexAttributeIndex a>
-	T& value(void* base) const
+	constexpr T& value(void* base) const
 	{
 		static_assert(sizeof(T) == c_attribs[(int)a].size * sizeof(float), "Wrong data type");
 		const char* ptr = (char*)base + attributeOffset(a);
 		return *((T*)ptr);
 	}
 
-	size_t size() const;
-	bool haveAttribute(VertexAttributeIndex attr) const;
-	int attributeOffset(VertexAttributeIndex attr) const;
+	constexpr uint32_t size() const { return m_size; }
+	constexpr bool haveAttribute(const VertexAttributeIndex attr) const
+	{
+		return (m_code & ((VertexFormatCode)1 << (VertexFormatCode)attr)) != 0;
+	}
+	constexpr int attributeOffset(const VertexAttributeIndex attr) const
+	{
+		return m_offsets[(int)attr] * sizeof(float);
+	}
 
 private:
-	static VertexFormatCode makeCode(const std::initializer_list<VertexAttributeIndex>& input);
-	static Offsets makeOffsetsArray(VertexFormatCode code);
-	static int calculateSize(VertexFormatCode code);
+	static constexpr VertexFormatCode makeCode(const std::initializer_list<VertexAttributeIndex>& input);
+	static constexpr Offsets makeOffsetsArray(const VertexFormatCode code);
+	static constexpr int calculateSize(const VertexFormatCode code);
 
 private:
 	const VertexFormatCode m_code;
@@ -81,7 +87,7 @@ const VertexFormat c_debugVf =
 	VertexAttributeIndex::Color
 };
 
-const VertexFormat c_testVf = 
+const VertexFormat c_testVf =
 {
 	VertexAttributeIndex::Pos
 };

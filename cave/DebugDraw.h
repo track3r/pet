@@ -25,8 +25,8 @@ public:
 	void reset();
 
 	RenderElement m_element;
-	IndexBuffer m_indices = IndexBuffer(c_maxDebugIndices);
-	VertexBuffer m_vertices = VertexBuffer(c_maxDebugIndices * 2, c_debugVf);
+	IndexData m_indices = IndexData(c_maxDebugIndices);
+	VertexData m_vertices = VertexData(c_maxDebugIndices * 2, c_debugVf);
 	ShaderProgram m_program;
 	int m_currentIdx = 0;
 	int m_currentVtx = 0;
