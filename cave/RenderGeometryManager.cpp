@@ -17,8 +17,10 @@ uint32_t ExternalAllocator::allocate(uint32_t size)
     }
 
     _lastSize = size;
+    uint32_t ret = _ptr;
+    _ptr += size;
 
-    return true;
+    return ret;
 }
 
 void ExternalAllocator::free(uint32_t offset)
@@ -40,7 +42,6 @@ bool RenderGeometryManager::init(uint32_t indexSize, uint32_t vertexSize)
 {
     _indexAllocator.init(indexSize);
     _index.init(GpuBuffer::Index, indexSize * sizeof(uint32_t), "WorldGeoIndex");
-
     _vertexAllocator.init(vertexSize);
     _vertex.init(GpuBuffer::Vertex, _vertexFormat.size() * vertexSize, "WorldGeoIndexVertex");
     glGenVertexArrays(1, &_vao);
@@ -74,7 +75,7 @@ bool RenderGeometryManager::allocate(meshAlloc_t& output, uint32_t indexNum, uin
 bool RenderGeometryManager::allocate(RenderElement& output, uint32_t indexNum, uint32_t vertexNum)
 {
     meshAlloc_t alloc;
-    if (!allocate(alloc, indexNum, vertexNum))
+    if (!allocate(alloc, indexNum + 1, vertexNum + 1))
     {
         return false;
     }

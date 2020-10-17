@@ -108,6 +108,7 @@ void RenderElement::updateVbo(RenderContext* context)
 		return;
 	}
 	GLenum type = _isStream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
+	LOG("[%i %i]", _offset * sizeof(uint32_t), _offset * sizeof(uint32_t) + m_indices->memorySize());
 	_indexBuffer.update(_offset * sizeof(uint32_t), m_indices->memorySize(), m_indices->pointer());
 	RenderContext::oglContext->bindVao(_vao);
 	_vertexBuffer.update(_vertexOffset * m_vertices->format.size(), m_vertices->memorySize(), m_vertices->pointer());

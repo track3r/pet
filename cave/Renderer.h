@@ -17,15 +17,15 @@ class RenderContext
 public:
     bool init();
     void bindProgram(const ShaderProgram& program);
-    void bindBuffer(const GpuBuffer& buffer, uint8_t bindAs = GpuBuffer::None);
+    void bindBuffer(const GpuBuffer& buffer, GpuBuffer::Type bindAs = GpuBuffer::None);
     void bindUniform(const GpuBuffer& uniform, uint8_t unit);
     //void bindFrameBuffer();
     void bindTexture(const Texture& texture, uint8_t unit);
 
 #ifdef OPENGL
     static RenderContext* oglContext;
-    static GLenum glBufferType(uint8_t type);
-    void bindGlBuffer(uint8_t type, GLuint buffer);
+    static GLenum glBufferType(GpuBuffer::Type type);
+    void bindGlBuffer(GpuBuffer::Type type, GLuint buffer);
     void bindVao(GLuint vao);
     void setTu(uint8_t unit);
 #endif

@@ -15,12 +15,18 @@ bool GpuBuffer::init(Type type, uint32_t size, const char* debugName)
 	glGenBuffers(1, &_apiObject);
 	RenderContext* ogl = RenderContext::oglContext;
 	ogl->bindGlBuffer(type, _apiObject);
-	glBufferData(RenderContext::glBufferType(type), size, NULL, GL_STATIC_DRAW);
-	CheckGlError();
 	if (debugName != nullptr)
 	{
 		glObjectLabel(GL_BUFFER, _apiObject, -1, debugName);
 	}
+	glBufferData(RenderContext::glBufferType(type), size, NULL, GL_STATIC_DRAW);
+
+	char* ptr = (char* )glMapBuffer(RenderContext::glBufferType(type), GL_WRITE_ONLY);
+	ptr[0] = 0;
+	ptr[size - 1] = 0;
+	glUnmapBuffer(RenderContext::glBufferType(type));
+	CheckGlError();
+	
 	return true;
 }
 

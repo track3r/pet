@@ -198,6 +198,7 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 				alloc.m_vertices->value<glm::vec3, VertexAttributeIndex::Pos>(index) = reader.positions[face.vertices[v] - 1];
 				alloc.m_vertices->value<glm::vec2, VertexAttributeIndex::Uv>(index) = reader.texcoords[face.texcoords[v] - 1];
 				alloc.m_vertices->value<glm::vec3, VertexAttributeIndex::Normal>(index) = reader.normals[face.normals[v] - 1];
+				alloc.m_indices->intPointer()[index] = index + alloc._offset;
 				index++;
 			}
 		}

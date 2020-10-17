@@ -18,10 +18,10 @@ public:
 
 	void update(uint32_t offset, uint32_t size, const void* data) const;
 	GLuint getGlObject() const { return _apiObject; }
-	uint8_t getType() const { return _type; }
+	Type getType() const { return _type; }
 
 private:
-	uint8_t _type = None;
+	Type _type = None;
 	uint8_t _flags = 0;
 	GLuint _apiObject = 0;
 	uint32_t _size = 0;

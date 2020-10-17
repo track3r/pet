@@ -222,18 +222,18 @@ RenderContext* RenderContext::oglContext = nullptr;
 // Vertex, Index, Uniform, Indirect, MaxType
 static GLenum toGlEnum[] = { GL_NONE, GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_UNIFORM_BUFFER, GL_DRAW_INDIRECT_BUFFER, GL_NONE };
 
-GLenum RenderContext::glBufferType(uint8_t type)
+GLenum RenderContext::glBufferType(GpuBuffer::Type type)
 {
     return toGlEnum[type];
 }
 
-void RenderContext::bindGlBuffer(uint8_t type, GLuint buffer)
+void RenderContext::bindGlBuffer(GpuBuffer::Type type, GLuint buffer)
 {
     if (_boundBuffers[type] == buffer)
     {
         return;
     }
-
+    LOG("[%i,%i]=%i", type, toGlEnum[type], buffer);
     glBindBuffer(toGlEnum[type], buffer);
     _boundBuffers[type] = buffer;
 }
@@ -250,7 +250,7 @@ void RenderContext::bindProgram(const ShaderProgram& program)
     _program = &program;
 }
 
-void RenderContext::bindBuffer(const GpuBuffer& buffer, uint8_t bindAs)
+void RenderContext::bindBuffer(const GpuBuffer& buffer, GpuBuffer::Type bindAs)
 {
     if (bindAs == GpuBuffer::None)
     {

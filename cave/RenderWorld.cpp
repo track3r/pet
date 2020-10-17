@@ -119,11 +119,14 @@ bool RenderWorld::init()
         return false;
     }
 
-    uint32_t indices = 2 * 1000 * 1000;
+    uint32_t indices = 500 * 1000;
     if (!_geometryManager.init(indices, indices))
     {
         return false;
     }
+
+    RenderContext::oglContext->bindGlBuffer(GpuBuffer::Index, 0);
+    RenderContext::oglContext->bindGlBuffer(GpuBuffer::Vertex, 0);
 
     _indirectBuffer.init(GpuBuffer::Indirect, sizeof(DrawIndirectCommand) * RenderConstrains::maxInstancesPerDraw, "indirect");
     _instanceBuffer.init(GpuBuffer::Vertex, sizeof(InstanceData) * RenderConstrains::maxInstancesPerDraw, "instance");
