@@ -125,8 +125,6 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 		}
 
 		Texture* texture = new Texture();
-
-		//texture->init(textureDataArray[i]);
 		textures[mtlReader.materials[i].name] = texture;
 	}
 
@@ -150,8 +148,6 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 	meshConf.addComponent(ecs3::TransformComponent(glm::vec3(0.f)));
 	meshConf.addComponent(meshComp);
 	LOG("Uploading meshes...");
-	//VertexData* worldVb = new VertexData((uint32_t)reader.faces.size() * 3, c_defaultVf);
-	//IndexData* worldIb = new IndexData((uint32_t)reader.faces.size() * 3);
 	uint32_t offset = 0;
 	
 	for (const ObjReader::group_t& group : reader.groups)
@@ -176,8 +172,6 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 #endif
 		int faces = group.endFace - group.startFace;
 		//LOG(">>Mesh %s", group.name);
-		//VertexBuffer* vb = new VertexBuffer(faces * 3, c_defaultVf);
-		//IndexBuffer* ib = new IndexBuffer(faces * 3);
 		RenderElement alloc;
 		if (!geometryManager.allocate(alloc, faces * 3, faces * 3))
 		{
@@ -191,10 +185,6 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 			const ObjReader::face_t& face = reader.faces[f];
 			for (int v = 0; v < 3; v++)
 			{
-				//worldVb->value<glm::vec3, VertexAttributeIndex::Pos>(offset + index) = reader.positions[face.vertices[v] - 1];
-				//worldVb->value<glm::vec2, VertexAttributeIndex::Uv>(offset + index) = reader.texcoords[face.texcoords[v] - 1];
-				//worldVb->value<glm::vec3, VertexAttributeIndex::Normal>(offset + index) = reader.normals[face.normals[v] - 1];
-				//worldIb->intPointer()[offset + index] = offset + index;
 				alloc.m_vertices->value<glm::vec3, VertexAttributeIndex::Pos>(index) = reader.positions[face.vertices[v] - 1];
 				alloc.m_vertices->value<glm::vec2, VertexAttributeIndex::Uv>(index) = reader.texcoords[face.texcoords[v] - 1];
 				alloc.m_vertices->value<glm::vec3, VertexAttributeIndex::Normal>(index) = reader.normals[face.normals[v] - 1];
@@ -203,8 +193,6 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 			}
 		}
 
-		//RenderElement element(*world, offset, faces * 3);
-		//element.textures[0] = textures[group.material];
 		alloc.textures[0] = textures[group.material];
 		//if (element.textures[0] != nullptr)
 		//{
@@ -215,22 +203,12 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 			alloc._transparent = alloc.textures[0]->hasAlpha;
 		}
 		offset += faces * 3;
-		//char nameBuffer[256];
-		//sprintf(nameBuffer, "%s_vbo", group.name);
-		//glObjectLabel(GL_BUFFER, element->m_objects[0], -1, nameBuffer);
-		//sprintf(nameBuffer, "%s_ebo", group.name);
-		//glObjectLabel(GL_BUFFER, element->m_objects[1], -1, nameBuffer);
-		//sprintf(nameBuffer, "%s_vao", group.name);
-		//glObjectLabel(GL_BUFFER, element->_vao, -1, nameBuffer);
 
-		//meshComp.mesh = _world->get<RenderSingleton>().world->createMesh(element);
 		alloc.updateVbo(context);
 		meshComp.mesh = _world->get<RenderSingleton>().world->createMesh(alloc);
 		meshConf._data.addComponent(meshComp);
 		_world->createEntity(meshConf);
-		//break;
 	}
-	//world->updateVbo(context);
 	LOG("Finalising texture jobs");
 	jobs.assist(job, func);
 	LOG("Uploading textures");

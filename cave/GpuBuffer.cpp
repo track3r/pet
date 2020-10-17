@@ -47,17 +47,8 @@ void GpuBuffer::update(uint32_t offset, uint32_t size, const void* data) const
 	
 	RenderContext* ogl = RenderContext::oglContext;
 	ogl->bindGlBuffer(_type, _apiObject);
-	//glBindBuffer(RenderContext::glBufferType(_type), _apiObject);
 	if (_mappedUpdate) {
-		char* ptr = nullptr;
-		glGetBufferPointerv(RenderContext::glBufferType(_type), GL_BUFFER_MAP_POINTER, &((void*)ptr));
-		if (ptr != nullptr)
-		{
-			LOG("buffer mapped!");
-			glUnmapBuffer(RenderContext::glBufferType(_type));
-		}
-		
-		ptr = (char*)glMapBuffer(RenderContext::glBufferType(_type), GL_WRITE_ONLY);
+		char* ptr = (char*)glMapBuffer(RenderContext::glBufferType(_type), GL_WRITE_ONLY);
 		memcpy(ptr + offset + _offset, data, size);
 		glUnmapBuffer(RenderContext::glBufferType(_type));
 		return;

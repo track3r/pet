@@ -233,7 +233,7 @@ void RenderContext::bindGlBuffer(GpuBuffer::Type type, GLuint buffer)
     {
         return;
     }
-    LOG("[%i,%i]=%i", type, toGlEnum[type], buffer);
+    //LOG("[%i,%i]=%i", type, toGlEnum[type], buffer);
     glBindBuffer(toGlEnum[type], buffer);
     _boundBuffers[type] = buffer;
 }

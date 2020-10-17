@@ -213,7 +213,6 @@ void RenderWorld::setupMultidraw(RenderContext* context, bool skipTransparent)
     context->bindBuffer(_indirectBuffer, GpuBuffer::Indirect);
     _indirectBuffer.update(0, (uint32_t) (sizeof(DrawIndirectCommand) * _indirectBufferData.size()), &_indirectBufferData[0]);
 
-    //context->bindVao(elem[0]._vao);
     context->bindVao(_geometryManager.getVao());
     /*context->bindBuffer(_instanceBuffer, GpuBuffer::Vertex);
     GLsizei vec4Size = (GLsizei)sizeof(glm::vec4);

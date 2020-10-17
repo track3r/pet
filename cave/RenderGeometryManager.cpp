@@ -42,11 +42,9 @@ void ExternalAllocator::reset()
 bool RenderGeometryManager::init(uint32_t indexSize, uint32_t vertexSize)
 {
     _indexAllocator.init(sizeof(uint32_t) * indexSize);
-    //_index._mappedUpdate = true;
     _index.init(GpuBuffer::Index, indexSize * sizeof(uint32_t), "WorldGeoIndex");
 
     _vertexAllocator.init(_vertexFormat.size() * vertexSize);
-    //_vertex._mappedUpdate = true;
     _vertex.init(GpuBuffer::Vertex, _vertexFormat.size() * vertexSize, "WorldGeoIndexVertex");
 
     glGenVertexArrays(1, &_vao);
