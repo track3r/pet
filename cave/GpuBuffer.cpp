@@ -21,10 +21,7 @@ bool GpuBuffer::init(Type type, uint32_t size, const char* debugName)
 	}
 	glBufferData(RenderContext::glBufferType(type), size, NULL, GL_STATIC_DRAW);
 
-	char* ptr = (char* )glMapBuffer(RenderContext::glBufferType(type), GL_WRITE_ONLY);
-	ptr[0] = 0;
-	ptr[size - 1] = 0;
-	glUnmapBuffer(RenderContext::glBufferType(type));
+	
 	CheckGlError();
 	
 	return true;
@@ -41,13 +38,31 @@ bool GpuBuffer::init(const GpuBuffer& ref, uint32_t offset, uint32_t size)
 	_size = size;
 	_apiObject = ref._apiObject;
 	_type = ref._type;
+	_mappedUpdate = ref._mappedUpdate;
 	return true;
 }
 
 void GpuBuffer::update(uint32_t offset, uint32_t size, const void* data) const
 {
+	
 	RenderContext* ogl = RenderContext::oglContext;
 	ogl->bindGlBuffer(_type, _apiObject);
+	//glBindBuffer(RenderContext::glBufferType(_type), _apiObject);
+	if (_mappedUpdate) {
+		char* ptr = nullptr;
+		glGetBufferPointerv(RenderContext::glBufferType(_type), GL_BUFFER_MAP_POINTER, &((void*)ptr));
+		if (ptr != nullptr)
+		{
+			LOG("buffer mapped!");
+			glUnmapBuffer(RenderContext::glBufferType(_type));
+		}
+		
+		ptr = (char*)glMapBuffer(RenderContext::glBufferType(_type), GL_WRITE_ONLY);
+		memcpy(ptr + offset + _offset, data, size);
+		glUnmapBuffer(RenderContext::glBufferType(_type));
+		return;
+	}
+
 	if (offset == 0 && _offset == 0 && size == _size)
 	{
 		glBufferData(RenderContext::glBufferType(_type), size, data, GL_STATIC_DRAW);

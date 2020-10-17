@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "RenderGeometryManager.h"
+#include "Renderer.h"
 
 void ExternalAllocator::init(uint32_t maxSize)
 {
@@ -40,12 +41,17 @@ void ExternalAllocator::reset()
 
 bool RenderGeometryManager::init(uint32_t indexSize, uint32_t vertexSize)
 {
-    _indexAllocator.init(indexSize);
+    _indexAllocator.init(sizeof(uint32_t) * indexSize);
+    //_index._mappedUpdate = true;
     _index.init(GpuBuffer::Index, indexSize * sizeof(uint32_t), "WorldGeoIndex");
-    _vertexAllocator.init(vertexSize);
+
+    _vertexAllocator.init(_vertexFormat.size() * vertexSize);
+    //_vertex._mappedUpdate = true;
     _vertex.init(GpuBuffer::Vertex, _vertexFormat.size() * vertexSize, "WorldGeoIndexVertex");
+
     glGenVertexArrays(1, &_vao);
     RenderElement::setupVao(_vao, _vertex, _vertexFormat);
+    RenderContext::oglContext->bindBuffer(_index);
     return true;
 }
 
@@ -81,7 +87,7 @@ bool RenderGeometryManager::allocate(RenderElement& output, uint32_t indexNum, u
     }
 
     output = RenderElement(_index, alloc.indexOffset / sizeof(uint32_t), indexNum, _vertex, alloc.vertexOffset / _vertexFormat.size(), vertexNum, _vertexFormat);
-
+    output._vao = _vao;
     return true;
 }
 

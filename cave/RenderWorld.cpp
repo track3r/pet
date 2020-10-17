@@ -119,12 +119,13 @@ bool RenderWorld::init()
         return false;
     }
 
-    uint32_t indices = 500 * 1000;
+    uint32_t indices = 2 * 1000 * 1000;
     if (!_geometryManager.init(indices, indices))
     {
         return false;
     }
 
+    RenderContext::oglContext->oglContext->bindVao(0);
     RenderContext::oglContext->bindGlBuffer(GpuBuffer::Index, 0);
     RenderContext::oglContext->bindGlBuffer(GpuBuffer::Vertex, 0);
 
@@ -189,12 +190,8 @@ void RenderWorld::setupMultidraw(RenderContext* context, bool skipTransparent)
     _indirectBufferData.reserve(_meshIndex.size());
     assert(_meshIndex.size() < RenderConstrains::maxInstancesPerDraw);
 
-    VertexData* vb = nullptr;
-    IndexData* ib = nullptr;
     RenderElement* elem = _meshes.getPtr(0);
     glm::mat4* transform = _transforms.getPtr(0);
-    vb = elem->m_vertices;
-    ib = elem->m_indices;
     int drawId = 0;
     for (int i = 0; i < _meshIndex.size(); i++)
     {
@@ -216,8 +213,8 @@ void RenderWorld::setupMultidraw(RenderContext* context, bool skipTransparent)
     context->bindBuffer(_indirectBuffer, GpuBuffer::Indirect);
     _indirectBuffer.update(0, (uint32_t) (sizeof(DrawIndirectCommand) * _indirectBufferData.size()), &_indirectBufferData[0]);
 
-    context->bindVao(elem[0]._vao);
-
+    //context->bindVao(elem[0]._vao);
+    context->bindVao(_geometryManager.getVao());
     /*context->bindBuffer(_instanceBuffer, GpuBuffer::Vertex);
     GLsizei vec4Size = (GLsizei)sizeof(glm::vec4);
 
@@ -241,6 +238,8 @@ void RenderWorld::setupMultidraw(RenderContext* context, bool skipTransparent)
     glEnableVertexAttribArray((int)VertexAttributeIndex::DrawId);
     glVertexAttribIPointer((int)VertexAttributeIndex::DrawId, 1, GL_UNSIGNED_INT, sizeof(uint32_t), (void*)0);
     glVertexAttribDivisor((int)VertexAttributeIndex::DrawId, 1);
+
+    context->bindBuffer(_geometryManager.getIndexBuffer());
 
     /*struct stream_t
     {

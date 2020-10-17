@@ -19,7 +19,7 @@ public:
 	void update(uint32_t offset, uint32_t size, const void* data) const;
 	GLuint getGlObject() const { return _apiObject; }
 	Type getType() const { return _type; }
-
+	bool _mappedUpdate = false;
 private:
 	Type _type = None;
 	uint8_t _flags = 0;

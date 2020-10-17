@@ -292,6 +292,8 @@ void RenderContext::bindVao(GLuint vao)
 
     glBindVertexArray(vao);
     _vao = vao;
+
+    bindGlBuffer(GpuBuffer::Index, 0);
 }
 
 void RenderContext::setTu(uint8_t unit)

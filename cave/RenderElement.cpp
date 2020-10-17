@@ -84,6 +84,7 @@ void RenderElement::setupVao(GLuint vao, GpuBuffer& vertexBuffer, const VertexFo
 		glVertexAttribPointer((int)atr.index, atr.size, GL_FLOAT, GL_FALSE, (GLsizei)format.size(), (const void*)(size_t)format.attributeOffset(atr.index));
 		CheckGlError();
 	}
+	RenderContext::oglContext->bindGlBuffer(GpuBuffer::Vertex, 0);
 }
 
 void RenderElement::setupEmptyVbo(RenderContext* context, bool isStream)
@@ -110,15 +111,16 @@ void RenderElement::updateVbo(RenderContext* context)
 	GLenum type = _isStream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
 	LOG("[%i %i]", _offset * sizeof(uint32_t), _offset * sizeof(uint32_t) + m_indices->memorySize());
 	_indexBuffer.update(_offset * sizeof(uint32_t), m_indices->memorySize(), m_indices->pointer());
-	RenderContext::oglContext->bindVao(_vao);
+	//RenderContext::oglContext->bindVao(_vao);
 	_vertexBuffer.update(_vertexOffset * m_vertices->format.size(), m_vertices->memorySize(), m_vertices->pointer());
+	//RenderContext::oglContext->bindVao(0);
 	
 }
 
 void RenderElement::render(RenderContext* context, uint8_t flags) const
 {
 	context->bindVao(_vao);
-
+	context->bindBuffer(_indexBuffer);
 	if ( (flags & NoTextures) == 0 )
 	{
 		if (textures[0] != nullptr)

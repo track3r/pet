@@ -79,7 +79,7 @@ namespace ecs3
     public:
         struct IndexElement
         {
-            int check : 8;
+            unsigned int check : 8;
             int nextFree;
             int dataIndex;
         };

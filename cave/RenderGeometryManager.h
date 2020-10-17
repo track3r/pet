@@ -40,6 +40,9 @@ public:
     void updateIndex(uint32_t offset, uint32_t size, void* data);
     void updateVertex(uint32_t offset, uint32_t size, void* data);
 
+    GLuint getVao() { return _vao; }
+    const GpuBuffer& getIndexBuffer() { return _index; }
+
 private:
     RenderGeometryManager(const RenderGeometryManager& other) 
         :_vertexFormat(c_debugVf)
