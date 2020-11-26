@@ -29,13 +29,16 @@
 - [x] render pass class (sorta)
 - [x] geometry manager -> buffer -> render context
 - [x] cleanup + premake
+
+- [ ] remove entity
+- [ ] enitity lifecycle listener
+
 - [ ] "2d in 3d" tile scene
 - [ ] permutation flags
 - [ ] fix cursor capture
 - [ ] 2x2 mip bug
 - [ ] Rendering back/front end with sorting and commmand gen?
 - [ ] voxel chunk component
-- [ ] remove entity
 - [ ] light types?
 later
 - [ ] landscape or dungeon gen

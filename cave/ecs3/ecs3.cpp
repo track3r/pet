@@ -51,6 +51,27 @@ namespace ecs3
         return localId;
     }
 
+    bool Family::deleteEnity(Id id)
+    {
+        if (_index.lookup(id) == -1)
+        {
+            return false;
+        }
+
+        int pos = _index.swapToEndAndRemove(id);
+        for (int i = 0; i < _configuration._components.size(); i++)
+        {
+            _data[i].remove(pos);
+        }
+
+        return true;
+    }
+
+    int Family::lookup(Id id)
+    {
+        return _index.lookup(id);
+    }
+
     void* Family::getData(int id)
     {
         for (int i = 0; i < _configuration._components.size(); i++)
@@ -96,6 +117,7 @@ namespace ecs3
                 //_entities[id]._family = i;
                 entity._family = i;
                 _data.add(entity);
+                notifyCreate(id, _families[i], _families[i].lookup(entity._localId));
                 return id;
             }
         }
@@ -112,7 +134,48 @@ namespace ecs3
         }
         entity._family = familyId;
         _data.add(entity);
+
+        notifyCreate(id, _families[familyId], _families[familyId].lookup(entity._localId));
+        
+
         return id;
+    }
+
+    void World::notifyCreate(Id entityId, Family& family, int pos)
+    {
+        EntityAccessor acc(family, pos);
+        for (System* sys : _systems)
+        {
+            if (family._configuration.matches(sys->getConfiguration()))
+            {
+                sys->onCreateEntity(entityId, acc);
+            }
+        }
+    }
+
+    bool World::deleteEntity(Id entityId)
+    {
+        int pos = _index.lookup(entityId);
+        if (pos == -1)
+        {
+            return false;
+        }
+
+        //notify interested systems
+        const entityLocation_t& loc = _data.get(pos);
+        Family& family = _families[loc._family];
+        Configuration& conf = family._configuration;
+        EntityAccessor acc(family, family.lookup(entityId));
+        for (System* sys : _systems)
+        {
+            if (conf.matches(sys->getConfiguration()))
+            {
+                sys->onDeleteEntity(entityId, acc);
+            }
+        }
+
+        _garbage.push_back(entityId);
+        return true;
     }
 
     bool World::getBlock(const Configuration& configuration, BlockIterator& out)
@@ -152,6 +215,20 @@ namespace ecs3
         {
             sys->update();
         }
+
+        for (Id entityId : _garbage)
+        {
+            int pos = _index.lookup(entityId);
+            if (pos == -1)
+            {
+                continue;
+            }
+
+            const entityLocation_t& loc = _data.get(pos);
+            Family& family = _families[loc._family];
+            family.deleteEnity(entityId);
+        }
+        _garbage.clear();
     }
 
     World::~World()
@@ -172,8 +249,13 @@ namespace ecs3
         return std::binary_search(_components.begin(), _components.end(), id);
     }
 
-    bool Configuration::matches(const Configuration& other)
+    bool Configuration::matches(const Configuration& other) const
     {
+        if (_components.empty() || other._components.empty())
+        {
+            return false;
+        }
+
         int otherIndex = 0;
         int myIndex = 0;
 

@@ -166,12 +166,12 @@ void Application::update(float dt)
 	}
 
 	const float move = m_dt * c_speed;
-    _renderer.camera().moveForward(move * m_input.getControlls().forwad);
+    _renderer.camera().moveForward(move * m_input.getControlls().forward);
     _renderer.camera().strafe(move * m_input.getControlls().strafe);
 	//_renderer.beginRender();
     _world->update();
 	//_renderer.endRender();
-	//printf(" forward = %f\n", m_input.getControlls().forwad);
+	//printf(" forward = %f\n", m_input.getControlls().forward);
 }
 
 void Application::reshape(int width, int height)

@@ -12,7 +12,9 @@ namespace ecs3
         Mesh = 3,
         Light = 4,
         TransformAnim = 5,
-        Max,
+        Debug = 6,
+        User = 64,
+        Max = 256,
     };
 
     class ComponentFactory
@@ -110,8 +112,6 @@ namespace ecs3
     public:
         std::vector<int> _components;
 
-       
-
         bool haveComponent(int id);
 
         bool operator==(const Configuration& other) const 
@@ -131,8 +131,10 @@ namespace ecs3
             return true;
         }
 
-        bool matches(const Configuration& other);
+        //has all components from other
+        bool matches(const Configuration& other) const;
         template<class C>
+
         Configuration& addComponent()
         {
             if (haveComponent(C::ID))
@@ -205,9 +207,11 @@ namespace ecs3
 
         Id addEntity(Id id);
         Id addEntity(Id id, const PrefabData& data);
+        bool deleteEnity(Id id);
         void* getData(int id);
         Id* getEntities();
         size_t size();
+        int lookup(Id id);
 
         template<class T>
         T* getComponents()
@@ -219,6 +223,31 @@ namespace ecs3
         std::vector<Data>       _data;
         PackedArrayIndex<Id>    _index;
         TypedData<Id>          _externalIds;
+    };
+
+    class EntityAccessor
+    {
+    public:
+        EntityAccessor(Family& family, int pos)
+            :_family(family)
+            ,_pos(pos)
+        {}
+
+        template<class T>
+        T* getComponent()
+        {
+            T* components = _family.getComponents<T>();
+            if (components == nullptr)
+            {
+                return nullptr;
+            }
+
+            return components[_pos];
+        }
+
+    private:
+        Family& _family;
+        const int _pos;
     };
 
     //to be extended to handle non consecutive data blocks too
@@ -304,6 +333,8 @@ namespace ecs3
             T* t = (T*)memory;
             delete t;
         }
+
+        bool deleteEntity(Id entity);
         //TODO global getComponent
         /*template<typename T>
         T* getComponent(Id entity)
@@ -317,16 +348,17 @@ namespace ecs3
             const Entity ent = _data.get(pos);
 
         }*/
-        
+        void notifyCreate(Id entityId, Family& family, int pos);
         
         typedef void (*deleteSingeltonFn)(uint8_t* memory);
         std::vector<System*>        _systems;
-        uint8_t*                    _singletons[MAX_SINGLETONS] = { 0 };
-        deleteSingeltonFn           _singletonDestructors[MAX_SINGLETONS];
+        uint8_t*                    _singletons[MAX_SINGLETONS] = {};
+        deleteSingeltonFn           _singletonDestructors[MAX_SINGLETONS] = {};
         static int                  _numSingletons;
         std::vector<Family>         _families;
         PackedArrayIndex<Id>        _index;
         TypedData<entityLocation_t> _data;
+        std::vector<Id>             _garbage;
     };
     
     class System
@@ -342,10 +374,12 @@ namespace ecs3
             _configuration.addComponent<T>();
             return _configuration;
         }
+
         void beforeUpdate()
         {
             onBeforeUpdate();
         }
+
         bool update()
         {
             BlockIterator iterator;
@@ -357,10 +391,14 @@ namespace ecs3
             return true;
         }
 
+        const Configuration& getConfiguration() { return _configuration; }
+
         virtual ~System() {}
         virtual void onUpdate(BlockIterator& iterator) {}
         virtual void onBeforeUpdate() {}
         virtual void onRegister() {}
+        virtual void onCreateEntity(Id entId, EntityAccessor& entity) {}
+        virtual void onDeleteEntity(Id entId, EntityAccessor& entity) {}
 
     protected:
         World* _world;
