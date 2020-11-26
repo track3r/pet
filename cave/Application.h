@@ -6,11 +6,11 @@
 #include <SDL2/SDL.h>
 
 #include "Camera.h"
-#include "RenderElement.h"
-#include "Renderer.h"
+#include "render/RenderElement.h"
+#include "render/Renderer.h"
 #include "UserInput.h"
-#include "ShaderProgram.h"
-#include "DebugDraw.h"
+#include "render/ShaderProgram.h"
+#include "render/DebugDraw.h"
 
 
 const float c_speed = 300.0f;

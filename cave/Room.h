@@ -1,7 +1,7 @@
 #pragma once
 
-#include "RenderElement.h"
-#include "DebugDraw.h"
+#include "render/RenderElement.h"
+#include "render/DebugDraw.h"
 
 struct Mesh
 {

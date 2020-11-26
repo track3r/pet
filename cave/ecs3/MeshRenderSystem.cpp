@@ -2,7 +2,7 @@
 #include "MeshRenderSystem.h"
 
 #include "../Application.h"
-#include "../RenderWorld.h"
+#include "../render/RenderWorld.h"
 
 MeshComponent::~MeshComponent()
 {

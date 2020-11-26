@@ -28,8 +28,8 @@
 - [x] multi lights - move light vectors out of  varyings, etc
 - [x] render pass class (sorta)
 - [x] geometry manager -> buffer -> render context
-- [x] "2d in 3d" tile scene
-- [ ] cleanup + premake?
+- [x] cleanup + premake
+- [ ] "2d in 3d" tile scene
 - [ ] permutation flags
 - [ ] fix cursor capture
 - [ ] 2x2 mip bug

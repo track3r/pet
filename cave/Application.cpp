@@ -6,7 +6,7 @@
 #include "Log.h"
 #include "Utils.h"
 
-#include "RenderWorld.h"
+#include "render/RenderWorld.h"
 
 #include "ecs3/SampleRenderSystem.h"
 #include "ecs3/PlayerSystem.h"
