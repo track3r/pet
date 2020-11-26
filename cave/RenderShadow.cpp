@@ -50,7 +50,7 @@ void ShadowCubeRt::init(int width, int height)
     float aspect = (float)width / (float)height;
     float near = 1.0f;
     float far = 25.0f;
-    _projection = glm::perspective(glm::radians(90.0f), aspect, near, far);
+    _projection = glm::perspective(glm::radians(95.001f), aspect, near, far);
 
     const float bias[16] = {
          };

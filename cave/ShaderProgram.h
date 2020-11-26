@@ -2,6 +2,7 @@
 
 #include "GlHeaders.h"
 #include "GlmIncludes.h"
+#include "Resource.h"
 
 class ShaderProgram : public Resource
 {

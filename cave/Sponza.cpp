@@ -239,9 +239,11 @@ void SponzaApplication::subInit()
 	CreateTestComponents(_world);
 
 	CreateLight(_world, renderWorld->createLight(RenderLight()), 0);
+	
 	CreateLight(_world, renderWorld->createLight(RenderLight()), 1);
 	CreateLight(_world, renderWorld->createLight(RenderLight()), 2);
 	CreateLight(_world, renderWorld->createLight(RenderLight()), 3);
+	
 	CreateLight2(_world, renderWorld->createLight(RenderLight()));
 	LoadTestScene(&_renderer.getRenderContext(), _world);
 }

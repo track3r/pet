@@ -27,10 +27,11 @@
 - [x] sample shadow atlas
 - [x] multi lights - move light vectors out of  varyings, etc
 - [x] render pass class (sorta)
-- [ ] geometry manager -> buffer -> render context
+- [x] geometry manager -> buffer -> render context
+- [x] "2d in 3d" tile scene
+- [ ] cleanup + premake?
 - [ ] permutation flags
 - [ ] fix cursor capture
-- [ ] cleanup + premake?
 - [ ] 2x2 mip bug
 - [ ] Rendering back/front end with sorting and commmand gen?
 - [ ] voxel chunk component
