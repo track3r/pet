@@ -19,12 +19,13 @@ ecs3::Id RenderWorld::createMesh(const RenderElement& element)
     return ret;
 }
 
-void RenderWorld::destroyMesh(ecs3::Id id)
+void RenderWorld::destroyMesh(ecs3::Id& id)
 {
     int pos = _meshIndex.swapToEndAndRemove(id);
     _meshes.getPtr(pos)->~RenderElement();
     _meshes.remove(pos);
     _transforms.remove(pos);
+    id = ecs3::invalid<ecs3::Id>();
 }
 
 void RenderWorld::transform(ecs3::Id id, glm::mat4 transform)

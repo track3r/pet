@@ -116,6 +116,7 @@ void Renderer::init()
 
     m_test.setupVbo(&_context, false);
     m_debugDraw.m_element.setupVbo(&_context, true);
+    m_debugDrawOverlay.m_element.setupVbo(&_context, true);
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
@@ -150,6 +151,13 @@ void Renderer::beginRender()
     m_debugDraw.m_program.setMMatrix(glm::mat4( 1.0f ));
     m_debugDraw.drawGrid();
 
+    m_debugDrawOverlay.reset();
+    _context.bindProgram(m_debugDrawOverlay.m_program);
+    m_debugDrawOverlay.m_program.setPMatrix(camera().getProjection());
+    m_debugDrawOverlay.m_program.setVMatrix(camera().getView());
+    m_debugDrawOverlay.m_program.setMMatrix(glm::mat4(1.0f));
+    m_debugDrawOverlay.drawGrid();
+
     _context.bindProgram(*m_program);
     m_program->setLightPos(_lightPos);    
     
@@ -157,11 +165,12 @@ void Renderer::beginRender()
 
 void Renderer::endRender()
 {
-    glDisable(GL_DEPTH_TEST);
-    
-
     m_debugDraw.m_element.updateVbo(&_context);
     renderElement(m_debugDraw.m_program, m_debugDraw.m_element);
+
+    glDisable(GL_DEPTH_TEST);    
+    m_debugDrawOverlay.m_element.updateVbo(&_context);
+    renderElement(m_debugDrawOverlay.m_program, m_debugDrawOverlay.m_element);
     glEnable(GL_DEPTH_TEST);
 }
 

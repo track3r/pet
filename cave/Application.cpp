@@ -165,6 +165,8 @@ void Application::update(float dt)
 		resourceManager->checkForUpdates();
 	}
 
+	subUpdate();
+
 	const float move = m_dt * c_speed;
     _renderer.camera().moveForward(move * m_input.getControlls().forward);
     _renderer.camera().strafe(move * m_input.getControlls().strafe);
@@ -172,6 +174,7 @@ void Application::update(float dt)
     _world->update();
 	//_renderer.endRender();
 	//printf(" forward = %f\n", m_input.getControlls().forward);
+	_world->get<ecs3::InputSingleton>().frame();
 }
 
 void Application::reshape(int width, int height)

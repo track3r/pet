@@ -38,6 +38,8 @@ public:
     virtual void onRegister() override;
     virtual void onBeforeUpdate() override;
     virtual void onUpdate(ecs3::BlockIterator& iterator) override;
+    virtual void onCreateEntity(ecs3::Id entId, ecs3::EntityAccessor& entity) override;
+    virtual void onDeleteEntity(ecs3::Id entId, ecs3::EntityAccessor& entity) override;
 };
 
 class LightRenderSystem final : public ecs3::System

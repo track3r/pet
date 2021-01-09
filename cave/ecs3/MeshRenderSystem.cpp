@@ -23,13 +23,25 @@ void MeshRenderSystem::onBeforeUpdate()
 {
 }
 
+void MeshRenderSystem::onCreateEntity(ecs3::Id entId, ecs3::EntityAccessor& entity)
+{
+
+}
+
+void MeshRenderSystem::onDeleteEntity(ecs3::Id entId, ecs3::EntityAccessor& entity)
+{
+    MeshComponent* mesh = entity.getComponent<MeshComponent>();
+    assert(mesh);
+    _world->get<RenderSingleton>().world->destroyMesh(mesh->mesh);
+}
+
 void MeshRenderSystem::onUpdate(ecs3::BlockIterator& iterator)
 {
     Renderer* renderer = Application::getRenderer();
 
     ecs3::InputSingleton& input = _world->get<ecs3::InputSingleton>();
     ecs3::FrameSingleton& frame = _world->get<ecs3::FrameSingleton>();
-
+    RenderSingleton& render = _world->get<RenderSingleton>();
     for (int i = 0; i < iterator.size(); i++)
     {
         ecs3::Id& id = iterator.getEntities()[i];
@@ -39,7 +51,7 @@ void MeshRenderSystem::onUpdate(ecs3::BlockIterator& iterator)
         if (mesh.mesh != ecs3::invalid<ecs3::Id>())
         {
             //renderer->renderElement(*renderer->getDefaultProgram(), *mesh.mesh, transform.matrix);
-            _world->get<RenderSingleton>().world->transform(mesh.mesh, transform.matrix);
+            render.world->transform(mesh.mesh, transform.matrix);
         }
     }
 }

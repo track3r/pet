@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "sponza.h"
-
+#include <SDL2/SDL.h>
 #include "ecs3/SampleRenderSystem.h"
 #include "ecs3/PlayerSystem.h"
 #include "ecs3/MeshRenderSystem.h"
@@ -76,7 +76,7 @@ void CreateLight2(ecs3::World* _world, ecs3::Id lightId)
 	_world->createEntity(conf);
 }
 
-void LoadTestScene(RenderContext* context, ecs3::World* _world)
+void LoadTestScene(RenderContext* context, ecs3::World* _world, std::vector<ecs3::Id>& ids)
 {
 	RenderWorld* renderWorld = _world->get<RenderSingleton>().world;
 	RenderGeometryManager& geometryManager = renderWorld->getGeometryManager();
@@ -207,7 +207,8 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 		alloc.updateVbo(context);
 		meshComp.mesh = _world->get<RenderSingleton>().world->createMesh(alloc);
 		meshConf._data.addComponent(meshComp);
-		_world->createEntity(meshConf);
+		ecs3::Id id = _world->createEntity(meshConf);
+		ids.push_back(id);
 	}
 	LOG("Finalising texture jobs");
 	jobs.assist(job, func);
@@ -232,6 +233,15 @@ void LoadTestScene(RenderContext* context, ecs3::World* _world)
 	TRACE();
 }
 
+void SponzaApplication::subUpdate()
+{
+	if (_world->get<ecs3::InputSingleton>().isReleased(SDLK_DELETE))
+	{
+		_world->deleteEntity(_entities[0]);
+		_entities.erase(begin(_entities));
+	}
+}
+
 void SponzaApplication::subInit()
 {
 	RenderWorld* renderWorld = _world->get<RenderSingleton>().world;
@@ -245,5 +255,5 @@ void SponzaApplication::subInit()
 	CreateLight(_world, renderWorld->createLight(RenderLight()), 3);
 	
 	CreateLight2(_world, renderWorld->createLight(RenderLight()));
-	LoadTestScene(&_renderer.getRenderContext(), _world);
+	LoadTestScene(&_renderer.getRenderContext(), _world, _entities);
 }

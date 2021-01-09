@@ -29,12 +29,14 @@ public:
 	virtual void subInit() {}
 	void render();
 	void update(float dt);
+	virtual void subUpdate() {};
 	void finish();
 	void reshape(int width, int height);
 	
 	glm::vec2 getWindowSize() { return m_windowSize; }
 	void updateMouseView(int dx, int dy);
 	void keyEvent(SDL_Keycode key, bool pressed);
+	UserInput& getInput() { return m_input; }
     static Application* get();
     static Renderer* getRenderer();
 

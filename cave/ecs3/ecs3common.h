@@ -53,6 +53,10 @@ namespace ecs3
 
     struct InputSingleton
     {
+        void frame()
+        {
+            released.clear();
+        }
         void keyDown(uint32_t key)
         {
             keyStates[key] = 1;
@@ -60,7 +64,13 @@ namespace ecs3
 
         void keyUp(uint32_t key)
         {
-            keyStates[key] = 0;
+            keyStates.erase(key);
+            released.insert(key);
+        }
+
+        bool isReleased(uint32_t key)
+        {
+            return released.find(key) != end(released);
         }
 
         float forward = 0;
@@ -70,7 +80,7 @@ namespace ecs3
         glm::vec2 mouse;
         glm::vec2 cameraMove;
         std::unordered_map<uint32_t, char>  keyStates;
-
+        std::unordered_set<uint32_t> released;
         static const int ID = -1;
     };
 

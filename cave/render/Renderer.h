@@ -61,10 +61,12 @@ public:
     ShaderProgram* getDefaultProgram() { return m_program; }
     Camera& camera();
     DebugDraw& getDebugDraw() { return m_debugDraw; }
+    DebugDraw& getDebugDrawOverlay() { return m_debugDrawOverlay; }
     RenderContext& getRenderContext() { return _context; }
 private:
     Camera m_camera;
     DebugDraw m_debugDraw;
+    DebugDraw m_debugDrawOverlay;
     RenderElement m_test;
     Texture m_defaultTexture;
     ShaderProgram* m_program;

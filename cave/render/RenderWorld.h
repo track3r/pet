@@ -74,7 +74,7 @@ public:
     bool init();
 
     ecs3::Id createMesh(const RenderElement& element);
-    void destroyMesh(ecs3::Id id);
+    void destroyMesh(ecs3::Id& id);
     void transform(ecs3::Id id, glm::mat4 transform);
 
     ecs3::Id createLight(const RenderLight& light);

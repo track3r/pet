@@ -242,7 +242,7 @@ namespace ecs3
                 return nullptr;
             }
 
-            return components[_pos];
+            return &components[_pos];
         }
 
     private:
