@@ -27,6 +27,7 @@ class ShadowPass
 {
 public:
     ShadowPass();
+    ~ShadowPass();
     void init(int width, int height);
     void begin();
     void end();

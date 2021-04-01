@@ -95,22 +95,22 @@ void RenderWorld::destroyLight(ecs3::Id id)
 
 bool RenderWorld::init()
 {
-    if (!_modelUniform.init())
+    if (!_modelUniform.init("modelUniform"))
     {
         return false;
     }
 
-    if (!_viewUniform.init())
+    if (!_viewUniform.init("viewUniform"))
     {
         return false;
     }
 
-    if (!_lightUniform.init())
+    if (!_lightUniform.init("lightUniform"))
     {
         return false;
     }
 
-    if (!_instanceUniform.init())
+    if (!_instanceUniform.init("instanceUniform"))
     {
         return false;
     }

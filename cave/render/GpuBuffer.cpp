@@ -4,7 +4,10 @@
 
 GpuBuffer::~GpuBuffer()
 {
-
+	if (!_isReference)
+	{
+		glDeleteBuffers(1, &_apiObject);
+	}
 }
 
 bool GpuBuffer::init(Type type, uint32_t size, const char* debugName)
@@ -23,7 +26,7 @@ bool GpuBuffer::init(Type type, uint32_t size, const char* debugName)
 
 	
 	CheckGlError();
-	
+	_debugName = debugName;
 	return true;
 }
 

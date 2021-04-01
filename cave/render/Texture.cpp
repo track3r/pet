@@ -220,5 +220,5 @@ Texture& Texture::operator=(Texture&& other)
 
 Texture::~Texture()
 {
-
+	glDeleteTextures(1, &m_texture);
 }

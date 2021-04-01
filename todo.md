@@ -29,9 +29,8 @@
 - [x] render pass class (sorta)
 - [x] geometry manager -> buffer -> render context
 - [x] cleanup + premake
-
-- [ ] remove entity
-- [ ] enitity lifecycle listener
+- [x] remove entity
+- [x] enitity lifecycle listener
 
 - [ ] "2d in 3d" tile scene
 - [ ] permutation flags

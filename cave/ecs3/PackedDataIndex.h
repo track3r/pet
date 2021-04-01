@@ -252,16 +252,29 @@ namespace ecs3
     class Data
     {
     public:
-        uint8_t* _data;
+        uint8_t* _data = nullptr;
         size_t _size = 0;
         int _elements = 0;
         size_t _elementSize = 0;
 
     public:
-        Data()
+        ~Data()
         {
+            free(_data);
         }
 
+        Data()
+        {
+
+        }
+
+        Data(Data&& o)
+        {
+            std::swap(_data, o._data);
+            std::swap(_size, o._size);
+            std::swap(_elements, o._elements);
+            std::swap(_elementSize, o._elementSize);
+        }
         void init(size_t elementSize)
         {
             _elementSize = elementSize;

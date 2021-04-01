@@ -91,7 +91,7 @@ public:
 
 	RenderElement(GLenum primitive = GL_TRIANGLES);
 	RenderElement(const RenderElement& other, int offset, int count);
-	RenderElement(GpuBuffer indexBuffer, uint32_t indexOffset, uint32_t count, GpuBuffer vertexBuffer, uint32_t vertexOffset, uint32_t vertexCount, const VertexFormat& format);
+	RenderElement(const GpuBuffer& indexBuffer, uint32_t indexOffset, uint32_t count, const GpuBuffer& vertexBuffer, uint32_t vertexOffset, uint32_t vertexCount, const VertexFormat& format);
 	~RenderElement();
 
 	void setupVbo(RenderContext* context, bool isStream);

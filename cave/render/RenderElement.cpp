@@ -49,7 +49,7 @@ RenderElement::RenderElement(const RenderElement& other, int offset, int count)
 	m_mode = other.m_mode;
 }
 
-RenderElement::RenderElement(GpuBuffer indexBuffer, uint32_t indexOffset, uint32_t count, GpuBuffer vertexBuffer, uint32_t vertexOffset, uint32_t vertexCount, const VertexFormat& format)
+RenderElement::RenderElement(const GpuBuffer& indexBuffer, uint32_t indexOffset, uint32_t count, const GpuBuffer& vertexBuffer, uint32_t vertexOffset, uint32_t vertexCount, const VertexFormat& format)
 {
 	_reference = true;
 	_vertexBuffer.init(vertexBuffer, 0, 0);

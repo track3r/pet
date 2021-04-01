@@ -93,6 +93,13 @@ ShadowPass::ShadowPass()
 {
 
 }
+
+ShadowPass::~ShadowPass()
+{
+    glDeleteFramebuffers(1, &_fb);
+    glDeleteTextures(1, &_texture);
+}
+
 void ShadowPass::init(int width, int height)
 {
     _width = width;

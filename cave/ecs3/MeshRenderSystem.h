@@ -11,7 +11,6 @@ struct RenderSingleton
 class MeshComponent : public ecs3::AutoRegisterComponent<MeshComponent, (int)ecs3::ComponentType::Mesh>
 {
 public:
-    ~MeshComponent();
     ecs3::Id mesh = ecs3::invalid<ecs3::Id>();
 };
 
