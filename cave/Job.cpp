@@ -27,7 +27,7 @@ void JobRunner::startJob(job_t& job, const std::function<void(job_t&)>& callback
 
 bool JobRunner::finished(job_t& job)
 {
-    return  (job.numElements - job.counter) / job.granularity >= (uint32_t)job.workers;
+    return  ((int)job.counter - (int)job.numElements) / (int)job.granularity >= (int)job.workers;
 }
 
 void JobRunner::assist(job_t& job, const std::function<void(job_t&)>& callback)
@@ -38,6 +38,7 @@ void JobRunner::assist(job_t& job, const std::function<void(job_t&)>& callback)
     {
         
     }
+    LOG("elements: %i, counter %i, gran: %i workers: %i, check: %i", job.numElements, job.counter, job.granularity, (uint32_t)job.workers, ((int)job.counter - (int)job.numElements) / (int)job.granularity);
 }
 
 void JobRunner::threadFunc()

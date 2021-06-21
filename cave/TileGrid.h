@@ -1,4 +1,5 @@
 #pragma once
+#include "render/RenderElement.h"
 
 enum TileGridTypes
 {
@@ -37,3 +38,4 @@ class TileGridSystem : public ecs3::System
     virtual void onCreateEntity(ecs3::Id entId, ecs3::EntityAccessor& entity) override;
     virtual void onDeleteEntity(ecs3::Id entId, ecs3::EntityAccessor& entity) override;
 };
+

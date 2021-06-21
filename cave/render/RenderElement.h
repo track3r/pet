@@ -35,6 +35,7 @@ protected:
 		, m_type(other.m_type)
 		, m_elements(other.m_elements)
 	{
+		
 	}
 
 	std::vector<unsigned char> m_buffer;
@@ -71,6 +72,7 @@ public:
 	template<class T, VertexAttributeIndex a>
 	T& value(uint32_t index)
 	{
+		static_assert(c_attribs[(int)a].size == sizeof(T)/sizeof(float), "size mismatch");
 		assert(index < elements());
 		void* base = &m_buffer[format.size() * index];
 		return format.value<T, a>(base);
