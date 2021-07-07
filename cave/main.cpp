@@ -13,6 +13,7 @@
 
 #include "Application.h"
 #include "Sponza.h"
+#include "TileGridApplication.h"
 #include "Log.h"
 
 #if _DEBUG
@@ -78,8 +79,10 @@ int main(int argc, char *argv[])
 
 	bool quit = false;
 
-	SponzaApplication* spozaApp = new SponzaApplication();
-	Application* application = spozaApp;
+	//SponzaApplication* spozaApp = new SponzaApplication();
+	TileGridApplication* tileGridApp = new TileGridApplication();
+	//Application* application = spozaApp;
+	Application* application = tileGridApp;
 	Application& app = *application;
 	if (!app.init(mainwindow))
 	{

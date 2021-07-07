@@ -2,27 +2,18 @@
 #include "RenderElement.h"
 #include "Renderer.h"
 
-const void* Buffer::pointer()
-{
-	return &m_buffer[0];
-}
-
-uint32_t Buffer::memorySize()
+uint32_t Buffer::memorySize() const
 {
 	return (uint32_t)m_buffer.size();
 }
 
-uint32_t* IndexData::intPointer()
+RenderElement::RenderElement()
 {
-	return (uint32_t*)pointer();
 }
 
-RenderElement::RenderElement(GLenum primitive)
-	:m_mode(primitive)
+void RenderElement::init(RenderContext* context)
 {
 	glGenVertexArrays(1, &_vao);
-	textures[0] = nullptr;
-	textures[1] = nullptr;
 }
 
 RenderElement::~RenderElement()
@@ -36,7 +27,7 @@ RenderElement::~RenderElement()
 	//delete m_indices;
 }
 
-RenderElement::RenderElement(const RenderElement& other, int offset, int count)
+/*RenderElement::RenderElement(const RenderElement& other, int offset, int count)
 {
 	_reference = true;
 	_vertexBuffer.init(other._vertexBuffer, 0, 0);
@@ -47,7 +38,12 @@ RenderElement::RenderElement(const RenderElement& other, int offset, int count)
 	m_indices = other.m_indices;
 	_vao = other._vao;
 	m_mode = other.m_mode;
-}
+}*/
+
+/*RenderElement::RenderElement(RenderElement&& other)
+{
+	
+}*/
 
 RenderElement::RenderElement(const GpuBuffer& indexBuffer, uint32_t indexOffset, uint32_t count, const GpuBuffer& vertexBuffer, uint32_t vertexOffset, uint32_t vertexCount, const VertexFormat& format)
 {
@@ -89,6 +85,7 @@ void RenderElement::setupVao(GLuint vao, GpuBuffer& vertexBuffer, const VertexFo
 
 void RenderElement::setupEmptyVbo(RenderContext* context, bool isStream)
 {
+	assert(_vao != -1);
 	if (_reference)
 	{
 		return;
@@ -114,11 +111,17 @@ void RenderElement::updateVbo(RenderContext* context)
 	//RenderContext::oglContext->bindVao(_vao);
 	_vertexBuffer.update(_vertexOffset * m_vertices->format.size(), m_vertices->memorySize(), m_vertices->pointer());
 	//RenderContext::oglContext->bindVao(0);
-	
+}
+
+void RenderElement::updateVbo(RenderContext* context, const Geometry& geometry)
+{
+	_indexBuffer.update(_offset * sizeof(uint32_t), geometry.indexData.memorySize(), geometry.indexData.pointer());
+	_vertexBuffer.update(_vertexOffset * geometry.vertexData.format.size(), geometry.vertexData.memorySize(), geometry.vertexData.pointer());
 }
 
 void RenderElement::render(RenderContext* context, uint8_t flags) const
 {
+	assert(_vao != -1);
 	context->bindVao(_vao);
 	context->bindBuffer(_indexBuffer);
 	if ( (flags & NoTextures) == 0 )

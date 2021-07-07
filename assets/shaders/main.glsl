@@ -155,11 +155,11 @@ void main()
         lightSum += light;
     }
     
-    vec3 ambient = vec3(0.02, 0.02, 0.02);
+    vec3 ambient = vec3(0.02, 0.02, 0.02) * 10;
     //f_texcoord0
     //gl_FragColor = texture(texture0, vec2(0.5, 0.5)) * vec4(lightSum + ambient, 1.0) ;
     gl_FragColor = texture(texture0, f_texcoord0) * vec4(lightSum + ambient, 1.0) ;
-
+//gl_FragColor = texture(texture0, f_texcoord0);
     //if (inShadow) {
         //gl_FragColor.x += 0.5;
     //}

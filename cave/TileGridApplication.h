@@ -3,5 +3,6 @@
 
 class TileGridApplication: public Application
 {
-    void subInit();
+    void subInit() override;
+    void subUpdate() override;
 };

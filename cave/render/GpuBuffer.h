@@ -29,7 +29,7 @@ private:
 	bool _isReference = false;
 	const char* _debugName = nullptr;
 
-	GpuBuffer(const GpuBuffer& o);
+	//GpuBuffer(const GpuBuffer& o);
 };
 
 template<class T>

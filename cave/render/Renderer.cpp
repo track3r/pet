@@ -22,6 +22,10 @@ void Renderer::init()
 {
     _context.init();
 
+    m_debugDraw.init(&_context);
+    m_test.init(&_context);
+    m_debugDrawOverlay.init(&_context);
+
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
     //m_program->init(vShaderStr, fShaderStr);

@@ -306,6 +306,11 @@ static const glm::vec3 boxUp[] =
 
 void RenderWorld::renderShadowMaps()
 {
+    if (_lightIndex.size() == 0)
+    {
+        return;
+    }
+
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 2, -1, "RenderWorld::renderShadowMaps");
     Renderer* renderer = Application::getRenderer();
     RenderContext* context = &renderer->getRenderContext();

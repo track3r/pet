@@ -26,9 +26,8 @@ void main()
 )glsl";
 
 DebugDraw::DebugDraw()
-	:m_element(GL_LINES)
 {
-	m_program.init(c_vShaderStr, c_fShaderStr);
+	m_element.m_mode = GL_LINES;
 	m_element.m_indices = &m_indices;
 	m_element.m_vertices = &m_vertices;
 }
@@ -38,6 +37,11 @@ DebugDraw::~DebugDraw()
 {
 }
 
+void DebugDraw::init(RenderContext* context)
+{
+	m_element.init(context);
+	m_program.init(c_vShaderStr, c_fShaderStr);	
+}
 
 void DebugDraw::addLine(const glm::vec3& a, const glm::vec3 b, const glm::vec4 color, const glm::vec4 color2)
 {
@@ -150,7 +154,7 @@ void DebugDraw::renderFrustum(glm::mat4 matrix)
 	}
 
 	glm::vec4 pos = inverse * glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f);
-	drawCube(glm::vec3(pos));
+	//drawCube(glm::vec3(pos / pos.w));
 
 	addLine(glm::vec3(cube[0]) / cube[0].w, glm::vec3(cube[1]) / cube[1].w, c_red, c_green);
 	addLine(glm::vec3(cube[2]) / cube[2].w, glm::vec3(cube[3]) / cube[3].w, c_red, c_green);

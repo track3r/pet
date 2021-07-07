@@ -15,10 +15,12 @@ class RenderContext;
 class Buffer
 {
 public:
-	const void* pointer();
-	uint32_t memorySize();
+	const void* pointer() const { return &m_buffer[0]; }
+	void* pointer() { return &m_buffer[0]; }
 
-	uint32_t elements()
+	uint32_t memorySize() const;
+
+	uint32_t elements() const
 	{
 		return m_elements;
 	}
@@ -52,10 +54,12 @@ public:
 		:Buffer(size * sizeof(uint32_t), size, GL_ELEMENT_ARRAY_BUFFER)
 		, m_elementType(GL_UNSIGNED_INT)
 	{}
-	uint32_t* intPointer();
-	GLenum type()
+	uint32_t* intPointer() { return (uint32_t*)pointer(); }
+	const uint32_t* intPointer() const { return (uint32_t*)pointer(); }
+	GLenum type() const { return m_elementType;	}
+	void copyFrom(const IndexData& data)
 	{
-		return m_elementType;
+
 	}
 private:
 	GLenum m_elementType;
@@ -78,9 +82,35 @@ public:
 		return format.value<T, a>(base);
 	}
 
+	template<class T, VertexAttributeIndex a>
+	const T& value(uint32_t index) const
+	{
+		static_assert(c_attribs[(int)a].size == sizeof(T) / sizeof(float), "size mismatch");
+		assert(index < elements());
+		void* base = &m_buffer[format.size() * index];
+		return format.value<T, a>(base);
+	}
+
 	const VertexFormat& format;
 };
 
+struct Geometry
+{
+	Geometry()
+		:indexData(1024)
+		,vertexData(1024, c_defaultVf)
+	{
+	}
+
+	Geometry(int indices, int vertices, const VertexFormat& format)
+		:indexData(indices)
+		,vertexData(vertices, format)
+	{
+	}
+
+	IndexData indexData;
+	VertexData vertexData;
+};
 
 class RenderElement//RenderSubMesh 
 {
@@ -91,14 +121,18 @@ public:
 		NoTextures = 1,
 	};
 
-	RenderElement(GLenum primitive = GL_TRIANGLES);
-	RenderElement(const RenderElement& other, int offset, int count);
+	RenderElement();
+	//RenderElement(RenderElement&& other);
+	//RenderElement(const RenderElement& other, int offset, int count);
 	RenderElement(const GpuBuffer& indexBuffer, uint32_t indexOffset, uint32_t count, const GpuBuffer& vertexBuffer, uint32_t vertexOffset, uint32_t vertexCount, const VertexFormat& format);
 	~RenderElement();
 
+	void init(RenderContext* context);
 	void setupVbo(RenderContext* context, bool isStream);
 	void setupEmptyVbo(RenderContext* context, bool isStream);
 	void updateVbo(RenderContext* context);
+	void updateVbo(RenderContext* context, const Geometry& geometry);
+
 	void render(RenderContext* context, uint8_t flags = None) const;
 
 	static void setupVao(GLuint vao, GpuBuffer& vertexBuffer, const VertexFormat& format);
@@ -120,7 +154,7 @@ public:
 	GpuBuffer		_vertexBuffer;
 	GpuBuffer		_indexBuffer;
 
-	GLuint			_vao = 0;
+	GLuint			_vao = -1;
 	bool			_isStream = false;
 	GLenum			m_mode = GL_TRIANGLES;
 	bool			_reference = false;
